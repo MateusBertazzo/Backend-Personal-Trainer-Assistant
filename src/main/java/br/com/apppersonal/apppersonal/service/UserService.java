@@ -1,5 +1,6 @@
 package br.com.apppersonal.apppersonal.service;
 
+import br.com.apppersonal.apppersonal.model.UserDto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -21,13 +22,17 @@ public class UserService {
         userRepository.save(userEntity);
     }
 
-    public UserEntity loginUser(UserEntity userEntity) {
-        UserEntity user = userRepository.findByEmail(userEntity.getEmail());
+    public UserEntity loginUser(UserDto userDto) {
+        UserEntity user = userRepository.findByEmail(userDto.getEmail());
+        if(user == null) return null;
 
-        if (!(user != null) && new BCryptPasswordEncoder().matches(userEntity.getPassword(), user.getPassword())) {
+        if (!new BCryptPasswordEncoder().matches(userDto.getPassword(), user.getPassword())) {
             return null;
         }
 
-        return user;
+        UserEntity userNoPassword = new UserEntity
+                (user.getId(), user.getName(), user.getEmail(), "", user.getRole());
+
+        return userNoPassword;
     }
 }
