@@ -6,16 +6,15 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class User {
+public class UserService {
 
     private final UserRepository userRepository;
 
-    public User(UserRepository userRepository) {
+    public UserService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     public UserEntity createUser(UserEntity userEntity) {
-
 
         String hashedPassword = new BCryptPasswordEncoder().encode(userEntity.getPassword());
         userEntity.setPassword(hashedPassword);
