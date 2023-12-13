@@ -20,4 +20,14 @@ public class UserService {
         userEntity.setPassword(hashedPassword);
         return userRepository.save(userEntity);
     }
+
+    public UserEntity loginUser(UserEntity userEntity) {
+        UserEntity user = userRepository.findByEmail(userEntity.getEmail());
+
+        if (!(user == null) && new BCryptPasswordEncoder().matches(userEntity.getPassword(), user.getPassword())) {
+            return null;
+        }
+
+        return user;
+    }
 }

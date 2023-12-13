@@ -20,4 +20,10 @@ public class UserController  {
     public UserEntity createUser(@RequestBody UserEntity userEntity) {
         return userService.createUser(userEntity);
     }
+
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public UserEntity loginUser(@RequestBody UserEntity userEntity) {
+        return userService.loginUser(userEntity);
+    }
 }
