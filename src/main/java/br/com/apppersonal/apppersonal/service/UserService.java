@@ -14,17 +14,17 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public UserEntity createUser(UserEntity userEntity) {
+    public void createUser(UserEntity userEntity) {
 
         String hashedPassword = new BCryptPasswordEncoder().encode(userEntity.getPassword());
         userEntity.setPassword(hashedPassword);
-        return userRepository.save(userEntity);
+        userRepository.save(userEntity);
     }
 
     public UserEntity loginUser(UserEntity userEntity) {
         UserEntity user = userRepository.findByEmail(userEntity.getEmail());
 
-        if (!(user == null) && new BCryptPasswordEncoder().matches(userEntity.getPassword(), user.getPassword())) {
+        if (!(user != null) && new BCryptPasswordEncoder().matches(userEntity.getPassword(), user.getPassword())) {
             return null;
         }
 

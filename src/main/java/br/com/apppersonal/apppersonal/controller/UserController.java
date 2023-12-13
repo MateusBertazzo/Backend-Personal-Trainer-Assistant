@@ -17,8 +17,8 @@ public class UserController  {
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public UserEntity createUser(@RequestBody UserEntity userEntity) {
-        return userService.createUser(userEntity);
+    public void createUser(@RequestBody UserEntity userEntity) {
+         userService.createUser(userEntity);
     }
 
     @PostMapping("/login")
