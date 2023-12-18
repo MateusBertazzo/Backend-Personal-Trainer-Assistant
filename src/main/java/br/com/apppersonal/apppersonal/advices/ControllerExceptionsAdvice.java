@@ -1,6 +1,7 @@
 package br.com.apppersonal.apppersonal.advices;
 
 import br.com.apppersonal.apppersonal.exceptions.CreateUserErrorException;
+import br.com.apppersonal.apppersonal.exceptions.NotFoundProfileException;
 import br.com.apppersonal.apppersonal.exceptions.PasswordIncorrectException;
 import br.com.apppersonal.apppersonal.exceptions.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -23,5 +24,10 @@ public class ControllerExceptionsAdvice {
     @ExceptionHandler(PasswordIncorrectException.class)
     public ResponseEntity<String> passwordIncorrectExceptionHandler(PasswordIncorrectException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
+
+    @ExceptionHandler(NotFoundProfileException.class)
+    public ResponseEntity<String> notFoundProfileExceptionHandler(NotFoundProfileException e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 }

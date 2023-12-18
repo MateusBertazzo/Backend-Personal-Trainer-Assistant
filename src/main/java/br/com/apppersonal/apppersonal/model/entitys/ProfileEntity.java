@@ -1,5 +1,6 @@
 package br.com.apppersonal.apppersonal.model.entitys;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -10,6 +11,7 @@ public class ProfileEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -34,4 +36,8 @@ public class ProfileEntity {
     }
 
     public ProfileEntity() {}
+
+    public ProfileEntity(UserEntity userEntity) {
+        this.user = userEntity;
+    }
 }

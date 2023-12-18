@@ -1,5 +1,6 @@
 package br.com.apppersonal.apppersonal.model.entitys;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -16,6 +17,10 @@ public class UserEntity {
     private String password;
 
     private String role = "ROLE_USER";
+
+    @JsonIgnore
+    @OneToOne(mappedBy = "user")
+    private ProfileEntity profile;
 
     public UserEntity(Long id, String name, String email, String password, String role) {
         this.id = id;
