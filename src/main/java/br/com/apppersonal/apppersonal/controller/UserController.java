@@ -1,6 +1,6 @@
 package br.com.apppersonal.apppersonal.controller;
 
-import br.com.apppersonal.apppersonal.model.UserDto.UserDto;
+import br.com.apppersonal.apppersonal.model.Dto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.service.UserService;
 import org.springframework.http.HttpStatus;

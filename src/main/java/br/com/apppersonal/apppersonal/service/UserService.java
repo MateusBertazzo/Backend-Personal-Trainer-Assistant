@@ -3,7 +3,7 @@ package br.com.apppersonal.apppersonal.service;
 import br.com.apppersonal.apppersonal.exceptions.CreateUserErrorException;
 import br.com.apppersonal.apppersonal.exceptions.PasswordIncorrectException;
 import br.com.apppersonal.apppersonal.exceptions.UserNotFoundException;
-import br.com.apppersonal.apppersonal.model.UserDto.UserDto;
+import br.com.apppersonal.apppersonal.model.Dto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.UserRepository;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;

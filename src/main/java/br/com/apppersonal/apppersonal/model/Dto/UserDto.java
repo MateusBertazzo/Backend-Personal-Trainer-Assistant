@@ -1,4 +1,4 @@
-package br.com.apppersonal.apppersonal.model.UserDto;
+package br.com.apppersonal.apppersonal.model.Dto;
 
 import lombok.Data;
 
