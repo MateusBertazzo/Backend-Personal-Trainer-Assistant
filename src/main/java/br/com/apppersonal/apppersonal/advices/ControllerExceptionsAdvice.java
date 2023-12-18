@@ -1,9 +1,6 @@
 package br.com.apppersonal.apppersonal.advices;
 
-import br.com.apppersonal.apppersonal.exceptions.CreateUserErrorException;
-import br.com.apppersonal.apppersonal.exceptions.NotFoundProfileException;
-import br.com.apppersonal.apppersonal.exceptions.PasswordIncorrectException;
-import br.com.apppersonal.apppersonal.exceptions.UserNotFoundException;
+import br.com.apppersonal.apppersonal.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -29,5 +26,10 @@ public class ControllerExceptionsAdvice {
     @ExceptionHandler(NotFoundProfileException.class)
     public ResponseEntity<String> notFoundProfileExceptionHandler(NotFoundProfileException e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
+
+    @ExceptionHandler(UpdateProfileException.class)
+    public ResponseEntity<String> updateProfileExceptionHandler(UpdateProfileException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 }

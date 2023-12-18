@@ -1,15 +1,14 @@
 package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.NotFoundProfileException;
+import br.com.apppersonal.apppersonal.exceptions.UpdateProfileException;
 import br.com.apppersonal.apppersonal.model.Dto.ProfileDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.ProfileRepository;
-import org.hibernate.annotations.NotFound;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProfileService {
@@ -21,20 +20,23 @@ public class ProfileService {
     }
 
     public void updateProfile(Long id, ProfileDto profileDto) {
-        ProfileEntity profileEntity = getProfileById(id);
+        try{
+            ProfileEntity profileEntity = getProfileById(id);
 
-        profileEntity.setFoto(profileDto.getFoto());
-        profileEntity.setNumeroTelefone(profileDto.getNumeroTelefone());
-        profileEntity.setObservacao(profileDto.getObservacao());
-        profileEntity.setObjetivo(profileDto.getObjetivo());
+            profileEntity.setFoto(profileDto.getFoto());
+            profileEntity.setNumeroTelefone(profileDto.getNumeroTelefone());
+            profileEntity.setObservacao(profileDto.getObservacao());
+            profileEntity.setObjetivo(profileDto.getObjetivo());
 
-        profileRepository.save(profileEntity);
+            profileRepository.save(profileEntity);
+        } catch (UpdateProfileException e) {
+            throw new UpdateProfileException();
+        }
     }
 
     public List<ProfileEntity> getAllProfiles() {
 
         List<ProfileEntity> profileEntityList = profileRepository.findAll();
-        int a = 0;
         return profileEntityList;
     }
 

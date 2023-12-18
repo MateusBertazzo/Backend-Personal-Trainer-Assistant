@@ -18,7 +18,7 @@ public class ProfileController {
     }
 
     @PutMapping("/{id}/update")
-    @ResponseStatus(HttpStatus.CREATED)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void updateProfile(@PathVariable long id, @RequestBody ProfileDto profileDto) {
         profileService.updateProfile(id, profileDto);
     }
