@@ -1,7 +1,7 @@
 # Personal Trainer Assistant
 
 
-O Personal Trainer Assistant é uma aplicação web desenvolvida para auxiliar personal trainers no controle e acompanhamento dos treinos de seus alunos. A plataforma oferece funcionalidades como o envio de treinos diários via WhatsApp, consulta do histórico de treinos, sistema de login e cadastro, administração de treinos e uma galeria de fotos para visualizar a evolução dos alunos.
+O Personal Trainer Assistant é uma aplicação web desenvolvida para auxiliar personal trainers no controle e acompanhamento dos treinos de seus alunos. A plataforma oferece funcionalidades como o envio de treinos diários via WhatsApp, consulta do histórico de treinos, sistema de login e cadastro, administração de treinos e uma galeria de fotos para visualizar a evolução dos alunos também possui um Perfil de cada aluno, onde o mesmo pode realizar o cadastro.
 
 ## Funcionalidades
 
