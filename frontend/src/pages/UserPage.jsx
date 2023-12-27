@@ -1,9 +1,17 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import context from '../context/MyContext';
+import Login from '../components/Login';
+import Cadastro from '../components/Cadastro';
 
 function UserPage() {
+  const { loginState } = useContext(context);
   return (
     <div>
-      <h1>UserPage</h1>
+      {
+        loginState === true
+          ? <Login />
+          : <Cadastro />
+      }
     </div>
   )
 }
