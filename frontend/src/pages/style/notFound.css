@@ -1,0 +1,39 @@
+:root {
+  --primary-color: #007bff;
+  --background-color: #151B29;
+  --text-color: #333;
+}
+
+.notFoundContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: var(--background-color);
+  font-family: Arial, sans-serif;
+  color: var(--text-color);
+}
+
+.notFoundTitle {
+  color: var(--primary-color);
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 0;
+}
+
+.notFoundText {
+  font-size: 2.5rem;
+}
+
+.backToHomeLink {
+  font-size: 1.3rem;
+  color: var(--primary-color);
+  text-decoration: none;
+  opacity: 0.5;
+  transition: opacity 0.8s ease 0s;
+}
+
+.backToHomeLink:hover {
+  opacity: 1;
+}
