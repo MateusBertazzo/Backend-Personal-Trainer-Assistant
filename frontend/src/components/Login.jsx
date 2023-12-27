@@ -1,11 +1,13 @@
 import React, { useContext, useState } from 'react'
 import context from '../context/MyContext';
 import { toast } from 'react-toastify';
+import { useHistory } from 'react-router-dom';
 
 function Login() {
   const { setLoginState } = useContext(context);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const history = useHistory();
 
   const isEmailValid = (email) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -25,6 +27,7 @@ function Login() {
       return;
     }
 
+    history.push('/mainpage');
     toast.success('Login efetuado com sucesso');
   };
   return (
