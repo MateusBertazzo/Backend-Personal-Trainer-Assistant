@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import context from '../context/MyContext';
 import { toast } from 'react-toastify';
 import { useHistory } from 'react-router-dom';
+import './style/login.css'
 
 function Login() {
   const { setLoginState } = useContext(context);
@@ -31,23 +32,27 @@ function Login() {
     toast.success('Login efetuado com sucesso');
   };
   return (
-    <div>
-      <h1>Entrar</h1>
-
-      <input
-        type="text"
-        placeholder="E-mail"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-      />
-      <input
-        type="password"
-        placeholder="Senha"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-      />
+    <div className='login-container'>
+      <h1 className='h1Login'>Entrar</h1>
+      <div className='inputContainer'>
+        <input
+          className='emailInput'
+          type="text"
+          placeholder="E-mail"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+        />
+        <input
+          className='passwordInput'
+          type="password"
+          placeholder="Senha"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+      </div>
 
       <button
+        className='loginButton'
         type="button"
         onClick={handleSubmit}
       >
@@ -55,6 +60,7 @@ function Login() {
       </button>
 
       <button
+        className='createAccountButton'
         type="button"
         onClick={() => setLoginState(false)}
       >
