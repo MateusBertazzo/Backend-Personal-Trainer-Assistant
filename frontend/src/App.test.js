@@ -1,18 +1,14 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import App from './App';
-import { createMemoryHistory } from 'history';
-import { Router } from 'react-router-dom';
 import MyContext from './context/MyContext';
+import renderWithRouter from './helpers/renderWithRouter';
 
 test('renders "Entrar" link', () => {
-  const history = createMemoryHistory();
-  render(
-    <Router history={ history }>
-      <MyContext.Provider value={{ loginState: true }}>
-        <App />
-      </MyContext.Provider>
-    </Router>,
+  renderWithRouter(
+    <MyContext.Provider value={{ loginState: true }}>
+      <App />
+    </MyContext.Provider>
   );
   const linkElement = screen.getByRole('heading', {
     name: /Entrar/i
