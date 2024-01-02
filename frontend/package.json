@@ -19,7 +19,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test:coverage": "jest --coverage",
+    "test:coverage": "jest --coverage --collectCoverageFrom='src/**/*.{js,jsx,ts,tsx}' --coveragePathIgnorePatterns='src/reportWebVitals.js'",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
