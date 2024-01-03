@@ -48,9 +48,15 @@ public class UserService {
             throw new PasswordIncorrectException();
         }
 
-        UserEntity userNoPassword = new UserEntity
-                (user.getId(), user.getName(), user.getEmail(), "", user.getRole());
+        return user;
+    }
 
-        return userNoPassword;
+    public UserEntity getUserById(Long id) {
+        UserEntity user = userRepository.findById(id).orElse(null);
+        if(user == null) {
+            throw new UserNotFoundException();
+        }
+
+        return user;
     }
 }
