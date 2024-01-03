@@ -9,7 +9,7 @@ function Cadastro() {
       <button
         onClick={() => setLoginState(true)}
       >
-        to login
+        Já tenho cadastro
       </button>
     </div>
   )
