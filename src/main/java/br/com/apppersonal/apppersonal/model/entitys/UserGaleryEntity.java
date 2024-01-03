@@ -13,6 +13,7 @@ public class UserGaleryEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "url_foto")
     private String urlFoto;
 
     @ManyToOne
@@ -29,4 +30,6 @@ public class UserGaleryEntity {
         this.dataFoto = dataFoto;
     }
     public UserGaleryEntity() {}
+
+    public UserGaleryEntity(UserEntity userEntity) { this.user = userEntity; }
 }
