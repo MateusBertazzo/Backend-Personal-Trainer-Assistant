@@ -92,7 +92,7 @@ function Cadastro() {
         onChange={(e) => setPassword2(e.target.value)}
       />
       <input
-        type="text"
+        type="number"
         placeholder="(xx)xxxxx-xxxx"
         value={number}
         onChange={(e) => setNumber(e.target.value)}
