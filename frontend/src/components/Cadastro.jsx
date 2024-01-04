@@ -36,7 +36,7 @@ function Cadastro() {
     event.preventDefault();
 
     if (!isNameValid(name)) {
-      toast.error('Nome precisa ter mais de 3 letras');
+      toast.error('Nome precisa ter no mínimo 3 letras');
       return;
     }
   
