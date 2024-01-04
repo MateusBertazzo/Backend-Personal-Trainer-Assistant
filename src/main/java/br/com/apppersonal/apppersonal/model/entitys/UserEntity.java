@@ -31,6 +31,10 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<UserGaleryEntity> userGaleryEntity;
 
+    @JsonIgnore
+    @OneToOne(mappedBy = "user")
+    private UserMetrics userMetrics;
+
     public UserEntity(Long id, String name, String email, String password, String role) {
         this.id = id;
         this.name = name;
