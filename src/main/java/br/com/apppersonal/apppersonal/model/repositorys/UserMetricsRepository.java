@@ -1,7 +1,7 @@
 package br.com.apppersonal.apppersonal.model.repositorys;
 
-import br.com.apppersonal.apppersonal.model.entitys.UserMetrics;
+import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface UserMetricsRepository extends JpaRepository<UserMetrics, Long> {
+public interface UserMetricsRepository extends JpaRepository<UserMetricsEntity, Long> {
 }

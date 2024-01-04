@@ -3,6 +3,7 @@ package br.com.apppersonal.apppersonal.service;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserGaleryEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.UserGaleryRepository;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,6 +14,7 @@ public class UserGaleryService {
 
     private final UserService userService;
 
+    @Autowired
     public UserGaleryService(UserGaleryRepository userGaleryRepository, UserService userService) {
         this.userGaleryRepository = userGaleryRepository;
         this.userService = userService;
