@@ -6,7 +6,9 @@ import br.com.apppersonal.apppersonal.exceptions.UserNotFoundException;
 import br.com.apppersonal.apppersonal.model.Dto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
+import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.ProfileRepository;
+import br.com.apppersonal.apppersonal.model.repositorys.UserMetricsRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -18,10 +20,13 @@ public class UserService {
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
 
+    private final UserMetricsRepository userMetricsRepository;
+
     @Autowired
-    public UserService(UserRepository userRepository, ProfileRepository profileRepository) {
+    public UserService(UserRepository userRepository, ProfileRepository profileRepository, UserMetricsRepository userMetricsRepository) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
+        this.userMetricsRepository = userMetricsRepository;
     }
 
     public void createUser(UserEntity userEntity) {
@@ -30,9 +35,12 @@ public class UserService {
             userEntity.setPassword(hashedPassword);
             UserEntity user = userRepository.save(userEntity);
             ProfileEntity profileEntity = new ProfileEntity();
+            UserMetricsEntity userMetricsEntity = new UserMetricsEntity();
             profileEntity.setUser(user);
+            userMetricsEntity.setUser(user);
 
             profileRepository.save(profileEntity);
+            userMetricsRepository.save(userMetricsEntity);
         } catch (Exception e) {
             throw new CreateUserErrorException();
         }

@@ -37,10 +37,6 @@ public class UserMetricsEntity {
 
     public UserMetricsEntity() {}
 
-    public UserMetricsEntity(UserEntity userEntity) {
-        this.user = userEntity;
-    }
-
     public UserMetricsEntity(Long id, UserEntity user, LocalDate dataStart, Double weight,
                              Double height, Integer age, Double tronco, Double quadril,
                              Double bracoEsquerdo,
