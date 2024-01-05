@@ -18,7 +18,7 @@ public class UserMetricsController {
     }
 
     @PutMapping("/{userId}/update")
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     private void addUserMetrics(@PathVariable Long userId, @RequestBody UserMetricsEntity userMetricsEntity) {
         userMetricsService.updateUserMetrics(userId, userMetricsEntity);
     }

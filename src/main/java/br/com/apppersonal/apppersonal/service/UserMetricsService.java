@@ -4,6 +4,7 @@ import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.UserMetricsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import java.time.LocalDate;
 
 @Service
 public class UserMetricsService {
@@ -16,14 +17,14 @@ public class UserMetricsService {
     }
 
     public void updateUserMetrics(Long userId, UserMetricsEntity userMetricsEntity) {
-        UserMetricsEntity userMetrics = userMetricsRepository.findByUserId(userId);
-
-        if (userMetrics == null) {
-            throw new IllegalArgumentException("Usuário não encontrado");
+        if (userId == null) {
+            throw new IllegalArgumentException("Id do usuário não pode ser nulo");
         }
 
+        UserMetricsEntity userMetrics = userMetricsRepository.findByUserId(userId);
+
         try {
-            userMetrics.setDataStart(userMetricsEntity.getDataStart());
+            userMetrics.setDataStart(LocalDate.now());
             userMetrics.setWeight(userMetricsEntity.getWeight());
             userMetrics.setHeight(userMetricsEntity.getHeight());
             userMetrics.setAge(userMetricsEntity.getAge());
