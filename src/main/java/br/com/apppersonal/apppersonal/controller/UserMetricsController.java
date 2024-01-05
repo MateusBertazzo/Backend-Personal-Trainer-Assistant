@@ -17,7 +17,7 @@ public class UserMetricsController {
         this.userMetricsService = userMetricsService;
     }
 
-    @PostMapping("/{id}/update")
+    @PutMapping("/{userId}/update")
     @ResponseStatus(HttpStatus.OK)
     private void addUserMetrics(@PathVariable Long userId, @RequestBody UserMetricsEntity userMetricsEntity) {
         userMetricsService.updateUserMetrics(userId, userMetricsEntity);
