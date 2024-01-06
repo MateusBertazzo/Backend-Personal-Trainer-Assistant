@@ -22,4 +22,10 @@ public class UserMetricsController {
     private void addUserMetrics(@PathVariable Long userId, @RequestBody UserMetricsEntity userMetricsEntity) {
         userMetricsService.updateUserMetrics(userId, userMetricsEntity);
     }
+
+    @GetMapping("/{userId}/get")
+    @ResponseStatus(HttpStatus.OK)
+    private UserMetricsEntity getUserMetricsByUserId(@PathVariable Long userId) {
+        return userMetricsService.getUserMetricsByUserId(userId);
+    }
 }

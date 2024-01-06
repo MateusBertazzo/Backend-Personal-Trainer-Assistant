@@ -43,4 +43,18 @@ public class UserMetricsService {
         }
 
     }
+
+    public UserMetricsEntity getUserMetricsByUserId(Long userId) {
+        if (userId == null) {
+            throw new IllegalArgumentException("Id do usuário não pode ser nulo");
+        }
+
+        UserMetricsEntity userMetrics = userMetricsRepository.findByUserId(userId);
+
+        if (userMetrics == null) {
+            throw new IllegalArgumentException("Usuário não encontrado");
+        }
+
+        return userMetrics;
+    }
 }
