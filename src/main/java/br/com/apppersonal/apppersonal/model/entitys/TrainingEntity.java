@@ -21,6 +21,7 @@ public class TrainingEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+    @Column(name = "day_of_week")
     private String dayOfWeek;
 
     public TrainingEntity() {}
@@ -28,5 +29,9 @@ public class TrainingEntity {
         this.id = id;
         this.user = user;
         this.dayOfWeek = dayOfWeek;
+    }
+
+    public TrainingEntity(UserEntity user) {
+        this.user = user;
     }
 }

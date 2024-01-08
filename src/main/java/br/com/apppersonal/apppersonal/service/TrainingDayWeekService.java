@@ -24,8 +24,8 @@ public class TrainingDayWeekService {
         this.exerciseRepository = exerciseRepository;
     }
 
-    public void createTrainingDayWeek(Long userId, String dayOfWeek, List<ExerciseEntity> exerciseEntity) {
-        if (exerciseEntity.isEmpty()) throw new RuntimeException("Exercício não pode ser vazio");
+    public void createTrainingDayWeek(Long userId, String dayOfWeek, List<ExerciseEntity> exerciseEntityList) {
+        if (exerciseEntityList.isEmpty()) throw new RuntimeException("Exercício não pode ser vazio");
         if (dayOfWeek.isEmpty()) throw new RuntimeException("Dia da semana não pode ser vazio");
         if (userId == null) throw new RuntimeException("Usuário não pode ser vazio");
 
@@ -35,11 +35,9 @@ public class TrainingDayWeekService {
         trainingEntity.setUser(user);
         trainingEntity.setDayOfWeek(dayOfWeek);
 
-        for (ExerciseEntity exercise : exerciseEntity) {
-            exercise.setTraining(trainingEntity);
-        }
 
-        trainingEntity.setExercise(exerciseEntity);
+
+        trainingEntity.setExercise(exerciseEntityList);
         trainingRepository.save(trainingEntity);
     }
 }
