@@ -6,6 +6,7 @@ import br.com.apppersonal.apppersonal.model.repositorys.UserGaleryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Service
@@ -24,7 +25,7 @@ public class UserGaleryService {
         try {
             UserEntity user = userService.getUserById(userId);
             UserGaleryEntity userGaleryEntity = new UserGaleryEntity();
-            userGaleryEntity.setDataFoto(java.time.LocalDate.now());
+            userGaleryEntity.setDataFoto(LocalDate.now());
             userGaleryEntity.setUrlFoto(urlFoto);
             userGaleryEntity.setUser(user);
 
