@@ -1,6 +1,7 @@
 package br.com.apppersonal.apppersonal.controller;
 
 import br.com.apppersonal.apppersonal.model.entitys.ExerciseEntity;
+import br.com.apppersonal.apppersonal.model.entitys.TrainingEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import br.com.apppersonal.apppersonal.service.TrainingDayWeekService;
@@ -22,5 +23,11 @@ public class TrainingDayWeekController {
                                       @RequestParam String dayOfWeek,
                                       @RequestBody List<ExerciseEntity> exerciseEntity) {
         trainingDayWeekService.createTrainingDayWeek(userId, dayOfWeek, exerciseEntity);
+    }
+
+    @GetMapping("/get/{trainingId}")
+    @ResponseStatus(HttpStatus.OK)
+    public List<ExerciseEntity> getExerciseByTrainingId(@PathVariable Long trainingId) {
+        return trainingDayWeekService.getExerciseByTrainingId(trainingId);
     }
 }

@@ -41,4 +41,12 @@ public class TrainingDayWeekService {
 
         exerciseRepository.saveAll(exerciseEntityList);
     }
+
+    public List<ExerciseEntity> getExerciseByTrainingId(Long trainingId) {
+        if (trainingId == null) throw new RuntimeException("Usuário não pode ser vazio");
+
+        List exerciseEntity = exerciseRepository.findAllByTrainingId(trainingId);
+
+        return  exerciseEntity;
+    }
 }
