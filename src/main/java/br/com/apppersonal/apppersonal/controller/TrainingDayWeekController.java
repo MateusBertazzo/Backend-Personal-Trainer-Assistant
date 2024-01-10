@@ -30,5 +30,4 @@ public class TrainingDayWeekController {
     public List<ExerciseEntity> getExerciseByTrainingId(@PathVariable Long trainingId) {
         return trainingDayWeekService.getExerciseByTrainingId(trainingId);
     }
-//    TESTE
 }
