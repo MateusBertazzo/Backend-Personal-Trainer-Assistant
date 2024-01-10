@@ -1,5 +1,6 @@
 package br.com.apppersonal.apppersonal.model.entitys;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -13,8 +14,8 @@ public class TrainingEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany
-    @JoinColumn(name = "training_id")
+    @JsonIgnore
+    @OneToMany(mappedBy = "training")
     private List<ExerciseEntity> exercise;
 
     @ManyToOne

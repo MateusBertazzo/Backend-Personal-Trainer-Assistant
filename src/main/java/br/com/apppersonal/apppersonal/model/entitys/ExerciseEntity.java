@@ -25,5 +25,24 @@ public class ExerciseEntity {
 
     private int repose;
 
+    public ExerciseEntity() {}
 
+    public ExerciseEntity(Long id, String name,
+                          TrainingEntity training,
+                          String description,
+                          int repetition,
+                          double weight,
+                          int repose) {
+        this.id = id;
+        this.name = name;
+        this.training = training;
+        this.description = description;
+        this.repetition = repetition;
+        this.weight = weight;
+        this.repose = repose;
+    }
+
+    public ExerciseEntity(TrainingEntity training) {
+        this.training = training;
+    }
 }

@@ -35,9 +35,10 @@ public class TrainingDayWeekService {
         trainingEntity.setUser(user);
         trainingEntity.setDayOfWeek(dayOfWeek);
 
+        exerciseEntityList.forEach(exercise -> exercise.setTraining(trainingEntity));
 
-
-        trainingEntity.setExercise(exerciseEntityList);
         trainingRepository.save(trainingEntity);
+
+        exerciseRepository.saveAll(exerciseEntityList);
     }
 }

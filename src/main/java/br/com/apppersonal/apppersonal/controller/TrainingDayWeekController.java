@@ -19,7 +19,7 @@ public class TrainingDayWeekController {
     @PostMapping("/create/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
     public void createTrainingDayWeek(@PathVariable Long userId,
-                                      @RequestBody String dayOfWeek,
+                                      @RequestParam String dayOfWeek,
                                       @RequestBody List<ExerciseEntity> exerciseEntity) {
         trainingDayWeekService.createTrainingDayWeek(userId, dayOfWeek, exerciseEntity);
     }
