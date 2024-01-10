@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Entity
 @Data
 @Table(name = "user_metrics")
-public class UserMetrics {
+public class UserMetricsEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -35,17 +35,13 @@ public class UserMetrics {
     @Column(name = "panturrilha_direita")
     private Double panturrilhaDireita;
 
-    public UserMetrics() {}
+    public UserMetricsEntity() {}
 
-    public UserMetrics(UserEntity userEntity) {
-        this.user = userEntity;
-    }
-
-    public UserMetrics(Long id, UserEntity user, LocalDate dataStart, Double weight,
-                       Double height, Integer age, Double tronco, Double quadril,
-                       Double bracoEsquerdo,
-                       Double bracoDireito, Double pernaEsquerda, Double pernaDireita,
-                       Double panturrilhaEsquerda, Double panturrilhaDireita) {
+    public UserMetricsEntity(Long id, UserEntity user, LocalDate dataStart, Double weight,
+                             Double height, Integer age, Double tronco, Double quadril,
+                             Double bracoEsquerdo,
+                             Double bracoDireito, Double pernaEsquerda, Double pernaDireita,
+                             Double panturrilhaEsquerda, Double panturrilhaDireita) {
 
         this.id = id;
         this.user = user;

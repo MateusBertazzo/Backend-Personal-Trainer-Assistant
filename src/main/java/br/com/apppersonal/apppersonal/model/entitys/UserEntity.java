@@ -33,7 +33,11 @@ public class UserEntity {
 
     @JsonIgnore
     @OneToOne(mappedBy = "user")
-    private UserMetrics userMetrics;
+    private UserMetricsEntity userMetricsEntity;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "user")
+    private List<TrainingEntity> trainingEntity;
 
     public UserEntity(Long id, String name, String email, String password, String role) {
         this.id = id;
