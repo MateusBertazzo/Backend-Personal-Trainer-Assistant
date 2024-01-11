@@ -56,5 +56,6 @@ public class UserMetricsService {
         }
 
         return userMetrics;
+//        teste
     }
 }
