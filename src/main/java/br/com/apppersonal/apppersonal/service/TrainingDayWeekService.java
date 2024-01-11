@@ -33,15 +33,21 @@ public class TrainingDayWeekService {
 
         if (user == null) throw new RuntimeException("Usuário não encontrado");
 
-        TrainingEntity trainingEntity = new TrainingEntity();
-        trainingEntity.setUser(user);
-        trainingEntity.setDayOfWeek(dayOfWeek);
+        try {
+            TrainingEntity trainingEntity = new TrainingEntity();
+            trainingEntity.setUser(user);
+            trainingEntity.setDayOfWeek(dayOfWeek);
 
-        exerciseEntityList.forEach(exercise -> exercise.setTraining(trainingEntity));
+            exerciseEntityList.forEach(exercise -> exercise.setTraining(trainingEntity));
 
-        trainingRepository.save(trainingEntity);
+            trainingRepository.save(trainingEntity);
 
-        exerciseRepository.saveAll(exerciseEntityList);
+            exerciseRepository.saveAll(exerciseEntityList);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao criar treino");
+        }
+
     }
 
     public List<ExerciseEntity> getExerciseByTrainingId(Long trainingId) {
