@@ -31,6 +31,8 @@ public class TrainingDayWeekService {
 
         UserEntity user = userService.getUserById(userId);
 
+        if (user == null) throw new RuntimeException("Usuário não encontrado");
+
         TrainingEntity trainingEntity = new TrainingEntity();
         trainingEntity.setUser(user);
         trainingEntity.setDayOfWeek(dayOfWeek);
@@ -46,6 +48,8 @@ public class TrainingDayWeekService {
         if (trainingId == null) throw new RuntimeException("Usuário não pode ser vazio");
 
         List exerciseEntity = exerciseRepository.findAllByTrainingId(trainingId);
+
+        if (exerciseEntity.isEmpty()) throw new RuntimeException("Treino não encontrado");
 
         return  exerciseEntity;
     }
