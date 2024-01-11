@@ -51,6 +51,5 @@ public class UserGaleryService {
         }
 
         return userGalery;
-//        teste
     }
 }
