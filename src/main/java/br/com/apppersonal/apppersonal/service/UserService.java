@@ -30,6 +30,8 @@ public class UserService {
     }
 
     public void createUser(UserEntity userEntity) {
+        if (userEntity == null) throw new RuntimeException("Usuário não pode ser vazio");
+
         try {
             String hashedPassword = new BCryptPasswordEncoder().encode(userEntity.getPassword());
             userEntity.setPassword(hashedPassword);
@@ -47,6 +49,8 @@ public class UserService {
     }
 
     public UserEntity loginUser(UserDto userDto) {
+        if (userDto == null) throw new RuntimeException("Usuário não pode ser vazio");
+
         UserEntity user = userRepository.findByEmail(userDto.getEmail());
         if(user == null) {
             throw new UserNotFoundException();

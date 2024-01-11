@@ -22,6 +22,10 @@ public class UserGaleryService {
     }
 
     public void postFoto(Long userId, String urlFoto) {
+        if (userId == null || urlFoto.isEmpty()) {
+            throw new IllegalArgumentException("Id do usuário ou Foto não pode ser nulo");
+        }
+
         try {
             UserEntity user = userService.getUserById(userId);
             UserGaleryEntity userGaleryEntity = new UserGaleryEntity();

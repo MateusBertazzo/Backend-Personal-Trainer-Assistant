@@ -31,21 +31,31 @@ public class TrainingDayWeekService {
 
         UserEntity user = userService.getUserById(userId);
 
-        TrainingEntity trainingEntity = new TrainingEntity();
-        trainingEntity.setUser(user);
-        trainingEntity.setDayOfWeek(dayOfWeek);
+        if (user == null) throw new RuntimeException("Usuário não encontrado");
 
-        exerciseEntityList.forEach(exercise -> exercise.setTraining(trainingEntity));
+        try {
+            TrainingEntity trainingEntity = new TrainingEntity();
+            trainingEntity.setUser(user);
+            trainingEntity.setDayOfWeek(dayOfWeek);
 
-        trainingRepository.save(trainingEntity);
+            exerciseEntityList.forEach(exercise -> exercise.setTraining(trainingEntity));
 
-        exerciseRepository.saveAll(exerciseEntityList);
+            trainingRepository.save(trainingEntity);
+
+            exerciseRepository.saveAll(exerciseEntityList);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Erro ao criar treino");
+        }
+
     }
 
     public List<ExerciseEntity> getExerciseByTrainingId(Long trainingId) {
         if (trainingId == null) throw new RuntimeException("Usuário não pode ser vazio");
 
         List exerciseEntity = exerciseRepository.findAllByTrainingId(trainingId);
+
+        if (exerciseEntity.isEmpty()) throw new RuntimeException("Treino não encontrado");
 
         return  exerciseEntity;
     }
