@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.Collection;
 import java.util.List;
 
 @Data
@@ -14,7 +15,7 @@ public class UserEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String name;
+    private String username;
     @Column(unique = true)
     private String email;
 
@@ -39,9 +40,9 @@ public class UserEntity {
     @OneToMany(mappedBy = "user")
     private List<TrainingEntity> trainingEntity;
 
-    public UserEntity(Long id, String name, String email, String password, String role) {
+    public UserEntity(Long id, String username, String email, String password, String role) {
         this.id = id;
-        this.name = name;
+        this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
