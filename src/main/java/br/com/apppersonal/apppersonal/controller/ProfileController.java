@@ -26,13 +26,14 @@ public class ProfileController {
 
     @GetMapping("/get-all")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('USER')")
+    @PreAuthorize("hasRole('PERSONAL')")
     public List<ProfileEntity> getAllProfiles() {
        return profileService.getAllProfiles();
     }
 
     @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('PERSONAL')")
     public ProfileEntity getProfileById(@PathVariable Long id) {
         return profileService.getProfileById(id);
     }

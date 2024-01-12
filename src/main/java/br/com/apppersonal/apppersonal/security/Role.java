@@ -3,7 +3,7 @@ package br.com.apppersonal.apppersonal.security;
 
 public enum Role {
     ADMIN("ROLE_ADMIN"),
-    MANAGER("ROLE_MANAGER"),
+    PERSONAL("ROLE_PERSONAL"),
     USER("ROLE_USER");
 
     private final String name;

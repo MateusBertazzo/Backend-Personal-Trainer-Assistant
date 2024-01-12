@@ -10,7 +10,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/training")
-//@PreAuthorize("hasRole('ROLE_ADMIN')")
 public class TrainingDayWeekController {
     private final TrainingDayWeekService trainingDayWeekService;
 
@@ -20,7 +19,7 @@ public class TrainingDayWeekController {
 
     @PostMapping("/create/{userId}")
     @ResponseStatus(HttpStatus.CREATED)
-//    @PreAuthorize("hasRole('ROLE_ADMIN')")
+    @PreAuthorize("hasRole('PERSONAL')")
     public void createTrainingDayWeek(@PathVariable Long userId,
                                       @RequestParam String dayOfWeek,
                                       @RequestBody List<ExerciseEntity> exerciseEntity) {
