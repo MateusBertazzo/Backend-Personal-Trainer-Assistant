@@ -1,17 +1,19 @@
 package br.com.apppersonal.apppersonal.model.entitys;
 
+import br.com.apppersonal.apppersonal.security.Role;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
-
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.List;
 
 @Data
 @Entity
 @Table(name = "users")
-public class UserEntity {
+public class UserEntity implements UserDetails, GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -22,25 +24,25 @@ public class UserEntity {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
 
-    private String role = "ROLE_USER";
+    private Role role;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "user")
-    private ProfileEntity profile;
+//    @JsonIgnore
+//    @OneToOne(mappedBy = "user")
+//    private ProfileEntity profile;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    private List<UserGaleryEntity> userGaleryEntity;
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "user")
+//    private List<UserGaleryEntity> userGaleryEntity;
 
-    @JsonIgnore
-    @OneToOne(mappedBy = "user")
-    private UserMetricsEntity userMetricsEntity;
+//    @JsonIgnore
+//    @OneToOne(mappedBy = "user")
+//    private UserMetricsEntity userMetricsEntity;
 
-    @JsonIgnore
-    @OneToMany(mappedBy = "user")
-    private List<TrainingEntity> trainingEntity;
+//    @JsonIgnore
+//    @OneToMany(mappedBy = "user")
+//    private List<TrainingEntity> trainingEntity;
 
-    public UserEntity(Long id, String username, String email, String password, String role) {
+    public UserEntity(Long id, String username, String email, String password, Role role) {
         this.id = id;
         this.username = username;
         this.email = email;
@@ -50,5 +52,35 @@ public class UserEntity {
 
     public UserEntity() {
 
+    }
+
+    @Override
+    public String getAuthority() {
+        return this.getRole().getAuthority();
+    }
+
+    @Override
+    public Collection<UserEntity> getAuthorities() {
+        return List.of(this);
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }

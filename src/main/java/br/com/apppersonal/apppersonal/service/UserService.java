@@ -10,12 +10,16 @@ import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.ProfileRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.UserMetricsRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.UserRepository;
+import br.com.apppersonal.apppersonal.security.Role;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
@@ -35,6 +39,7 @@ public class UserService {
         try {
             String hashedPassword = new BCryptPasswordEncoder().encode(userEntity.getPassword());
             userEntity.setPassword(hashedPassword);
+            userEntity.setRole(Role.USER);
             UserEntity user = userRepository.save(userEntity);
             ProfileEntity profileEntity = new ProfileEntity();
             UserMetricsEntity userMetricsEntity = new UserMetricsEntity();
@@ -70,5 +75,19 @@ public class UserService {
         }
 
         return user;
+    }
+
+
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        UserEntity userEntity = userRepository.findByUsername(username);
+        if(userEntity == null) {
+            throw new UsernameNotFoundException("User not found");
+        }
+
+        return new org.springframework.security.core.userdetails.User(
+                userEntity.getUsername(),
+                userEntity.getPassword(),
+                userEntity.getAuthorities()
+        );
     }
 }

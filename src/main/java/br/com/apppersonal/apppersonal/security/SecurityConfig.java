@@ -23,7 +23,6 @@ public class SecurityConfig {
                 .authorizeHttpRequests(
                         authorize -> authorize
                                 .requestMatchers(HttpMethod.POST, "/users/sign-up").permitAll()
-                                .requestMatchers(HttpMethod.POST, "/users/login").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .build();
