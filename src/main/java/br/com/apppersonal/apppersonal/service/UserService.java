@@ -23,7 +23,6 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
-
     private final UserMetricsRepository userMetricsRepository;
 
     @Autowired
@@ -33,18 +32,24 @@ public class UserService implements UserDetailsService {
         this.userMetricsRepository = userMetricsRepository;
     }
 
-    public void createUser(UserEntity userEntity) {
-        if (userEntity == null) throw new RuntimeException("Usuário não pode ser vazio");
+    public void createUser(UserEntity userParameter) {
+        if (userParameter == null) throw new RuntimeException("Usuário não pode ser vazio");
 
         try {
-            String hashedPassword = new BCryptPasswordEncoder().encode(userEntity.getPassword());
+            UserEntity userEntity = new UserEntity();
+            String hashedPassword = new BCryptPasswordEncoder().encode(userParameter.getPassword());
             userEntity.setPassword(hashedPassword);
+            userEntity.setEmail(userParameter.getEmail());
+            userEntity.setUsername(userParameter.getUsername());
             userEntity.setRole(Role.USER);
-            UserEntity user = userRepository.save(userEntity);
+
+            UserEntity savedUser = userRepository.save(userEntity);
+
             ProfileEntity profileEntity = new ProfileEntity();
             UserMetricsEntity userMetricsEntity = new UserMetricsEntity();
-            profileEntity.setUser(user);
-            userMetricsEntity.setUser(user);
+
+            profileEntity.setUser(savedUser);
+            userMetricsEntity.setUser(savedUser);
 
             profileRepository.save(profileEntity);
             userMetricsRepository.save(userMetricsEntity);
@@ -53,20 +58,20 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public UserEntity loginUser(UserDto userDto) {
-        if (userDto == null) throw new RuntimeException("Usuário não pode ser vazio");
-
-        UserEntity user = userRepository.findByEmail(userDto.getEmail());
-        if(user == null) {
-            throw new UserNotFoundException();
-        }
-
-        if (!new BCryptPasswordEncoder().matches(userDto.getPassword(), user.getPassword())) {
-            throw new PasswordIncorrectException();
-        }
-
-        return user;
-    }
+//    public UserEntity loginUser(UserDto userDto) {
+//        if (userDto == null) throw new RuntimeException("Usuário não pode ser vazio");
+//
+//        UserEntity user = userRepository.findByEmail(userDto.getEmail());
+//        if(user == null) {
+//            throw new UserNotFoundException();
+//        }
+//
+//        if (!new BCryptPasswordEncoder().matches(userDto.getPassword(), user.getPassword())) {
+//            throw new PasswordIncorrectException();
+//        }
+//
+//        return user;
+//    }
 
     public UserEntity getUserById(Long id) {
         UserEntity user = userRepository.findById(id).orElse(null);
@@ -77,17 +82,14 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-
+    @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findByUsername(username);
-        if(userEntity == null) {
-            throw new UsernameNotFoundException("User not found");
+        UserDetails user = userRepository.findByUsername(username);
+
+        if (user == null) {
+            throw new UserNotFoundException();
         }
 
-        return new org.springframework.security.core.userdetails.User(
-                userEntity.getUsername(),
-                userEntity.getPassword(),
-                userEntity.getAuthorities()
-        );
+        return user;
     }
 }
