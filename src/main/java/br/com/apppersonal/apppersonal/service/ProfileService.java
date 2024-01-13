@@ -37,6 +37,10 @@ public class ProfileService {
     public List<ProfileEntity> getAllProfiles() {
 
         List<ProfileEntity> profileEntityList = profileRepository.findAll();
+
+        if (profileEntityList.isEmpty()) {
+            throw new NotFoundProfileException();
+        }
         return profileEntityList;
     }
 
