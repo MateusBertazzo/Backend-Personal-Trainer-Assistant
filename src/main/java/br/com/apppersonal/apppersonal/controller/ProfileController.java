@@ -1,6 +1,7 @@
 package br.com.apppersonal.apppersonal.controller;
 
 import br.com.apppersonal.apppersonal.model.Dto.ProfileDto;
+import br.com.apppersonal.apppersonal.model.Dto.UserProfileDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.service.ProfileService;
 import org.springframework.http.HttpStatus;
@@ -26,15 +27,15 @@ public class ProfileController {
 
     @GetMapping("/get-all")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('PERSONAL')")
-    public List<ProfileEntity> getAllProfiles() {
+    @PreAuthorize("hasRole('ADMIN')")
+    public List<UserProfileDto> getAllProfiles() {
        return profileService.getAllProfiles();
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/get/{id}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('PERSONAL')")
-    public ProfileEntity getProfileById(@PathVariable Long id) {
+    public UserProfileDto getProfileById(@PathVariable Long id) {
         return profileService.getProfileById(id);
     }
 }
