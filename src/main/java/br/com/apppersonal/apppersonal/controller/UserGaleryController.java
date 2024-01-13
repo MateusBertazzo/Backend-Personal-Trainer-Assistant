@@ -1,5 +1,6 @@
 package br.com.apppersonal.apppersonal.controller;
 
+import br.com.apppersonal.apppersonal.model.Dto.GaleryDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserGaleryEntity;
 import br.com.apppersonal.apppersonal.service.UserGaleryService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,7 @@ public class UserGaleryController {
     @GetMapping("/get-fotos/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('PERSONAL')")
-    public List<UserGaleryEntity> getFotos(@PathVariable Long userId) {
-      return userGaleryService.getFotos(userId);
+    public List<GaleryDto> getFotos(@PathVariable Long userId) {
+      return userGaleryService.getFotosById(userId);
     }
 }

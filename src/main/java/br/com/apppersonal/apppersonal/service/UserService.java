@@ -43,13 +43,13 @@ public class UserService implements UserDetailsService {
             userEntity.setUsername(userParameter.getUsername());
             userEntity.setRole(Role.USER);
 
-            UserEntity savedUser = userRepository.save(userEntity);
+            UserEntity saveUser = userRepository.save(userEntity);
 
             ProfileEntity profileEntity = new ProfileEntity();
             UserMetricsEntity userMetricsEntity = new UserMetricsEntity();
 
-            profileEntity.setUser(savedUser);
-            userMetricsEntity.setUser(savedUser);
+            profileEntity.setUser(saveUser);
+            userMetricsEntity.setUser(saveUser);
 
             profileRepository.save(profileEntity);
             userMetricsRepository.save(userMetricsEntity);

@@ -34,6 +34,7 @@ public class ProfileService {
         }
     }
 
+//    Busca todos os perfis
     public List<ProfileEntity> getAllProfiles() {
 
         List<ProfileEntity> profileEntityList = profileRepository.findAll();
@@ -44,6 +45,7 @@ public class ProfileService {
         return profileEntityList;
     }
 
+//  Busca um perfil por ID
     public ProfileEntity getProfileById(Long id) {
         return profileRepository.findById(id).orElseThrow(NotFoundProfileException::new);
     }
