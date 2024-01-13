@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/user-metrics")
 public class UserMetricsController {
-
     private final UserMetricsService userMetricsService;
 
     @Autowired
@@ -21,7 +20,8 @@ public class UserMetricsController {
     @PutMapping("/{userId}/update")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('PERSONAL')")
-    private void addUserMetrics(@PathVariable Long userId, @RequestBody UserMetricsEntity userMetricsEntity) {
+    private void updateUserMetrics(@PathVariable Long userId, @RequestBody UserMetricsEntity userMetricsEntity) {
+        int i = 0;
         userMetricsService.updateUserMetrics(userId, userMetricsEntity);
     }
 

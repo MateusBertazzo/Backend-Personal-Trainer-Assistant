@@ -17,13 +17,14 @@ public class UserMetricsService {
     }
 
     public void updateUserMetrics(Long userId, UserMetricsEntity userMetricsEntity) {
-        if (userId == null) {
+        if (userId == null || userMetricsEntity == null) {
             throw new IllegalArgumentException("Id do usuário não pode ser nulo");
         }
 
-        UserMetricsEntity userMetrics = userMetricsRepository.findByUserId(userId);
-
+        UserMetricsEntity userMetrics = userMetricsRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
         try {
+            userMetrics.setUser(userMetricsEntity.getUser());
             userMetrics.setDataStart(LocalDate.now());
             userMetrics.setWeight(userMetricsEntity.getWeight());
             userMetrics.setHeight(userMetricsEntity.getHeight());
@@ -56,6 +57,5 @@ public class UserMetricsService {
         }
 
         return userMetrics;
-//        teste
     }
 }

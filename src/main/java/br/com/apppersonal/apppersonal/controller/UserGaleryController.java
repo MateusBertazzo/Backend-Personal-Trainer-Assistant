@@ -1,7 +1,6 @@
 package br.com.apppersonal.apppersonal.controller;
 
 import br.com.apppersonal.apppersonal.model.Dto.GaleryDto;
-import br.com.apppersonal.apppersonal.model.entitys.UserGaleryEntity;
 import br.com.apppersonal.apppersonal.service.UserGaleryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -52,6 +52,7 @@ public class ProfileService {
                 .collect(Collectors.toList());
     }
 
+//    Converte um perfil para DTO
     public UserProfileDto convertToDTO(ProfileEntity profileEntity) {
         UserProfileDto profileDTO = new UserProfileDto();
         UserEntity userEntity = profileEntity.getUser();

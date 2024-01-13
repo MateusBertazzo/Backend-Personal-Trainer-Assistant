@@ -58,4 +58,8 @@ public class UserMetricsEntity {
         this.panturrilhaEsquerda = panturrilhaEsquerda;
         this.panturrilhaDireita = panturrilhaDireita;
     }
+
+    public UserMetricsEntity(UserEntity user) {
+        this.user = user;
+    }
 }

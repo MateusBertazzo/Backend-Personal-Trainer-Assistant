@@ -23,8 +23,8 @@ public class UserGaleryService {
     }
 
     public void postFoto(Long userId, String urlFoto) {
-        if (userId == null || urlFoto.isEmpty()) {
-            throw new IllegalArgumentException("Id do usuário ou Foto não pode ser nulo");
+        if (userId == null || urlFoto == null) {
+            throw new IllegalArgumentException("Foto ou UserID não pode ser null");
         }
 
         try {
