@@ -16,15 +16,15 @@ public class UserMetricsService {
         this.userMetricsRepository = userMetricsRepository;
     }
 
-    public void updateUserMetrics(Long userId, UserMetricsEntity userMetricsEntity) {
-        if (userId == null || userMetricsEntity == null) {
+    public void updateUserMetrics(UserMetricsEntity userMetricsEntity) {
+        if (userMetricsEntity == null ) {
             throw new IllegalArgumentException("Id do usuário não pode ser nulo");
         }
 
-        UserMetricsEntity userMetrics = userMetricsRepository.findById(userId)
+        UserMetricsEntity userMetrics = userMetricsRepository.findById(userMetricsEntity.getUser().getId())
                 .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+
         try {
-            userMetrics.setUser(userMetricsEntity.getUser());
             userMetrics.setDataStart(LocalDate.now());
             userMetrics.setWeight(userMetricsEntity.getWeight());
             userMetrics.setHeight(userMetricsEntity.getHeight());

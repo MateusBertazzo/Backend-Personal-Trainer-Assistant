@@ -17,18 +17,17 @@ public class UserMetricsController {
         this.userMetricsService = userMetricsService;
     }
 
-    @PutMapping("/{userId}/update")
+    @PutMapping("/update")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('PERSONAL')")
-    private void updateUserMetrics(@PathVariable Long userId, @RequestBody UserMetricsEntity userMetricsEntity) {
-        int i = 0;
-        userMetricsService.updateUserMetrics(userId, userMetricsEntity);
+    public void updateUserMetrics(@RequestBody UserMetricsEntity userMetricsEntity) {
+        userMetricsService.updateUserMetrics(userMetricsEntity);
     }
 
     @GetMapping("/{userId}/get")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('PERSONAL')")
-    private UserMetricsEntity getUserMetricsByUserId(@PathVariable Long userId) {
+    public UserMetricsEntity getUserMetricsByUserId(@PathVariable Long userId) {
         return userMetricsService.getUserMetricsByUserId(userId);
     }
 }
