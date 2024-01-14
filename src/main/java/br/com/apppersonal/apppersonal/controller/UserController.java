@@ -37,12 +37,6 @@ public class UserController  {
          userService.createUser(userEntity);
     }
 
-//    @PostMapping("/login")
-//    @ResponseStatus(HttpStatus.OK)
-//    public UserEntity loginUser(@RequestBody UserDto userDto) {
-//        return userService.loginUser(userDto);
-//    }
-
     @PostMapping("/auth/login")
     public ResponseEntity<?> login(@RequestBody UserDto userDto) {
         try {
