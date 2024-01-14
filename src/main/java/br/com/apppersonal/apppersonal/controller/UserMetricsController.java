@@ -1,5 +1,6 @@
 package br.com.apppersonal.apppersonal.controller;
 
+import br.com.apppersonal.apppersonal.model.Dto.UserMetricsDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
 import br.com.apppersonal.apppersonal.service.UserMetricsService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +28,7 @@ public class UserMetricsController {
     @GetMapping("/{userId}/get")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('PERSONAL')")
-    public UserMetricsEntity getUserMetricsByUserId(@PathVariable Long userId) {
+    public UserMetricsDto getUserMetricsByUserId(@PathVariable Long userId) {
         return userMetricsService.getUserMetricsByUserId(userId);
     }
 }

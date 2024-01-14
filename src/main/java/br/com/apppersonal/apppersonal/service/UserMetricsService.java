@@ -1,5 +1,6 @@
 package br.com.apppersonal.apppersonal.service;
 
+import br.com.apppersonal.apppersonal.model.Dto.UserMetricsDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.UserMetricsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,17 +46,36 @@ public class UserMetricsService {
 
     }
 
-    public UserMetricsEntity getUserMetricsByUserId(Long userId) {
+    public UserMetricsDto getUserMetricsByUserId(Long userId) {
         if (userId == null) {
             throw new IllegalArgumentException("Id do usuário não pode ser nulo");
         }
 
         UserMetricsEntity userMetrics = userMetricsRepository.findByUserId(userId);
 
+        System.out.println(userMetrics);
         if (userMetrics == null) {
             throw new IllegalArgumentException("Usuário não encontrado");
         }
 
-        return userMetrics;
+        return new UserMetricsDto(
+                userMetrics.getId(),
+                userMetrics.getUser().getId(),
+                userMetrics.getUser().getRole(),
+                userMetrics.getDataStart(),
+                userMetrics.getWeight(),
+                userMetrics.getHeight(),
+                userMetrics.getAge(),
+                userMetrics.getTronco(),
+                userMetrics.getQuadril(),
+                userMetrics.getBracoEsquerdo(),
+                userMetrics.getBracoDireito(),
+                userMetrics.getPernaEsquerda(),
+                userMetrics.getPernaDireita(),
+                userMetrics.getPanturrilhaEsquerda(),
+                userMetrics.getPanturrilhaDireita()
+        );
     }
+
+
 }
