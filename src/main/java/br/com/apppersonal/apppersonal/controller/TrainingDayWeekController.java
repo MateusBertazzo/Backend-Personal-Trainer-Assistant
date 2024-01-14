@@ -29,6 +29,7 @@ public class TrainingDayWeekController {
 
     @GetMapping("/get/{trainingId}")
     @ResponseStatus(HttpStatus.OK)
+    @PreAuthorize("hasRole('PERSONAL')")
     public List<TrainingExercicesDto> getExerciseByTrainingId(@PathVariable Long trainingId) {
         return trainingDayWeekService.getExerciseByTrainingId(trainingId);
     }
