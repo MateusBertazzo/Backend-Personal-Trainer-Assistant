@@ -1,5 +1,6 @@
 package br.com.apppersonal.apppersonal.controller;
 
+import br.com.apppersonal.apppersonal.model.Dto.TrainingExercicesDto;
 import br.com.apppersonal.apppersonal.model.entitys.ExerciseEntity;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,7 +29,7 @@ public class TrainingDayWeekController {
 
     @GetMapping("/get/{trainingId}")
     @ResponseStatus(HttpStatus.OK)
-    public List<ExerciseEntity> getExerciseByTrainingId(@PathVariable Long trainingId) {
+    public List<TrainingExercicesDto> getExerciseByTrainingId(@PathVariable Long trainingId) {
         return trainingDayWeekService.getExerciseByTrainingId(trainingId);
     }
 }

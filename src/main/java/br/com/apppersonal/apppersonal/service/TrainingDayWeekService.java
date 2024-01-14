@@ -1,5 +1,6 @@
 package br.com.apppersonal.apppersonal.service;
 
+import br.com.apppersonal.apppersonal.model.Dto.TrainingExercicesDto;
 import br.com.apppersonal.apppersonal.model.entitys.ExerciseEntity;
 import br.com.apppersonal.apppersonal.model.entitys.TrainingEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
@@ -7,7 +8,9 @@ import br.com.apppersonal.apppersonal.model.repositorys.ExerciseRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.TrainingRepository;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class TrainingDayWeekService {
@@ -50,13 +53,27 @@ public class TrainingDayWeekService {
 
     }
 
-    public List<ExerciseEntity> getExerciseByTrainingId(Long trainingId) {
+    public List<TrainingExercicesDto> getExerciseByTrainingId(Long trainingId) {
         if (trainingId == null) throw new RuntimeException("Usuário não pode ser vazio");
 
-        List<ExerciseEntity> exerciseEntity = exerciseRepository.findAllByTrainingId(trainingId);
+        List<ExerciseEntity> exerciseEntities = exerciseRepository.findAllByTrainingId(trainingId);
 
-        if (exerciseEntity.isEmpty()) throw new RuntimeException("Treino não encontrado");
+        if (exerciseEntities.isEmpty()) throw new RuntimeException("Treino não encontrado");
 
-        return  exerciseEntity;
+        List<TrainingExercicesDto> responseDtoList = new ArrayList<>();
+
+        for (ExerciseEntity exerciseEntity : exerciseEntities) {
+            responseDtoList.add(new TrainingExercicesDto(
+                    exerciseEntity.getId(),
+                    exerciseEntity.getName(),
+                    exerciseEntity.getTraining().getId(),
+                    exerciseEntity.getTraining().getDayOfWeek(),
+                    exerciseEntity.getDescription(),
+                    exerciseEntity.getRepetition(),
+                    exerciseEntity.getWeight(),
+                    exerciseEntity.getRepose()
+            ));
+        }
+        return  responseDtoList;
     }
 }
