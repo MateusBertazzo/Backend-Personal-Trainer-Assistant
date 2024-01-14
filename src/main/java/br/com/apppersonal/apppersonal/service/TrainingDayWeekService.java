@@ -53,7 +53,7 @@ public class TrainingDayWeekService {
     public List<ExerciseEntity> getExerciseByTrainingId(Long trainingId) {
         if (trainingId == null) throw new RuntimeException("Usuário não pode ser vazio");
 
-        List exerciseEntity = exerciseRepository.findAllByTrainingId(trainingId);
+        List<ExerciseEntity> exerciseEntity = exerciseRepository.findAllByTrainingId(trainingId);
 
         if (exerciseEntity.isEmpty()) throw new RuntimeException("Treino não encontrado");
 
