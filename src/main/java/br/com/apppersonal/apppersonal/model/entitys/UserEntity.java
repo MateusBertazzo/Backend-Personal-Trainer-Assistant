@@ -27,22 +27,6 @@ public class UserEntity implements UserDetails, GrantedAuthority {
 
     private Role role;
 
-//    @JsonIgnore
-//    @OneToOne(mappedBy = "user")
-//    private ProfileEntity profile;
-
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "user")
-//    private List<UserGaleryEntity> userGaleryEntity;
-
-//    @JsonIgnore
-//    @OneToOne(mappedBy = "user")
-//    private UserMetricsEntity userMetricsEntity;
-
-//    @JsonIgnore
-//    @OneToMany(mappedBy = "user")
-//    private List<TrainingEntity> trainingEntity;
-
     public UserEntity(Long id, String username, String email, String password, Role role) {
         this.id = id;
         this.username = username;
