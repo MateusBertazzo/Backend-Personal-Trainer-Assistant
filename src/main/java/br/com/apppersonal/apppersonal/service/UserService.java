@@ -41,7 +41,7 @@ public class UserService implements UserDetailsService {
             userEntity.setPassword(hashedPassword);
             userEntity.setEmail(userParameter.getEmail());
             userEntity.setUsername(userParameter.getUsername());
-            userEntity.setRole(Role.PERSONAL);
+            userEntity.setRole(Role.USER);
 
             UserEntity saveUser = userRepository.save(userEntity);
 
