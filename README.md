@@ -7,28 +7,28 @@ O Personal Trainer Assistant é uma aplicação web desenvolvida para auxiliar p
 
 ### Envio de Treinos Diários via WhatsApp:
 
-- Os personal trainers podem enviar os treinos diários para os alunos diretamente via WhatsApp.
 - Facilita a comunicação e o acompanhamento remoto.
 
   
 ### Histórico de Treinos:
 
-- Armazena o histórico completo de treinos de cada aluno.
 - Permite aos personal trainers acompanhar a progressão da carga e a evolução dos alunos ao longo do tempo.
+
 
 ### Sistema de Login e Cadastro:
 
 - Sistema de Login e Cadastro com Autenticação e Autorização, com Jwt para verificar se um Usuario possui um Token válido, sistema de proteção a rotas criticas onde apenas Admins conseguem acessar e também sistema de encriptação de senha, para melhor segurança com os dados do usuario
 
+
 ### Administração de Treinos:
 
-- Personal trainers com a Role de ADMIN têm permissões para cadastrar treinos diários para os alunos.
 - Garante um controle seguro e eficiente das atividades de treino.
 
 
 ### Galeria de Fotos:
 
-- Permite aos personal trainers visualizar fotos dos alunos para auxiliar na compreensão da evolução física.
+- Permite aos personals trainers visualizar fotos dos alunos para auxiliar na compreensão da evolução física.
+
 
 ## Tecnologias Utilizadas
 
