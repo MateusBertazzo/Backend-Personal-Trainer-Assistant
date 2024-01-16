@@ -18,7 +18,7 @@ O Personal Trainer Assistant é uma aplicação web desenvolvida para auxiliar p
 
 ### Sistema de Login e Cadastro:
 
-- Todos os usuários, incluindo personal trainers, precisam se cadastrar.
+- Sistema de Login e Cadastro com Autenticação e Autorização, com Jwt para verificar se um Usuario possui um Token válido, sistema de proteção a rotas criticas onde apenas Admins conseguem acessar e também sistema de encriptação de senha, para melhor segurança com os dados do usuario
 
 ### Administração de Treinos:
 
