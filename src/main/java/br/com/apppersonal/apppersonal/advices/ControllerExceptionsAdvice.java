@@ -37,4 +37,9 @@ public class ControllerExceptionsAdvice {
     public ResponseEntity<String> unauthorizedProfileUpdateExceptionHandler(UnauthorizedProfileUpdateException e) {
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
     }
+
+    @ExceptionHandler(NotFoundUserMetrics.class)
+    public ResponseEntity<String> notFoundUserMetricsExceptionHandler(NotFoundUserMetrics e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 }

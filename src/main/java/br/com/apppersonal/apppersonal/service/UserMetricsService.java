@@ -1,9 +1,13 @@
 package br.com.apppersonal.apppersonal.service;
 
+import br.com.apppersonal.apppersonal.exceptions.NotFoundUserMetrics;
+import br.com.apppersonal.apppersonal.exceptions.UnauthorizedProfileUpdateException;
 import br.com.apppersonal.apppersonal.model.Dto.UserMetricsDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.UserMetricsRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 
@@ -47,15 +51,15 @@ public class UserMetricsService {
     }
 
     public UserMetricsDto getUserMetricsByUserId(Long userId) {
+
         if (userId == null) {
             throw new IllegalArgumentException("Id do usuário não pode ser nulo");
         }
 
         UserMetricsEntity userMetrics = userMetricsRepository.findByUserId(userId);
 
-        System.out.println(userMetrics);
         if (userMetrics == null) {
-            throw new IllegalArgumentException("Usuário não encontrado");
+            throw new NotFoundUserMetrics();
         }
 
         return new UserMetricsDto(
