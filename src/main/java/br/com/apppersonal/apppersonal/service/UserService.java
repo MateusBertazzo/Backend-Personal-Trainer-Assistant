@@ -58,21 +58,6 @@ public class UserService implements UserDetailsService {
         }
     }
 
-//    public UserEntity loginUser(UserDto userDto) {
-//        if (userDto == null) throw new RuntimeException("Usuário não pode ser vazio");
-//
-//        UserEntity user = userRepository.findByEmail(userDto.getEmail());
-//        if(user == null) {
-//            throw new UserNotFoundException();
-//        }
-//
-//        if (!new BCryptPasswordEncoder().matches(userDto.getPassword(), user.getPassword())) {
-//            throw new PasswordIncorrectException();
-//        }
-//
-//        return user;
-//    }
-
     public UserEntity getUserById(Long id) {
         UserEntity user = userRepository.findById(id).orElse(null);
         if(user == null) {
@@ -91,5 +76,13 @@ public class UserService implements UserDetailsService {
         }
 
         return user;
+    }
+
+    public void deleteUser(Long id) {
+        if (id == null) throw new RuntimeException("Id não pode ser vazio");
+
+        UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
+        userRepository.delete(user);
     }
 }
