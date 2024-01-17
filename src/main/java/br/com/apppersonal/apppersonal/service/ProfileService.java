@@ -1,6 +1,7 @@
 package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.NotFoundProfileException;
+import br.com.apppersonal.apppersonal.exceptions.UnauthorizedProfileUpdateException;
 import br.com.apppersonal.apppersonal.exceptions.UpdateProfileException;
 import br.com.apppersonal.apppersonal.model.Dto.ProfileDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserProfileDto;
@@ -8,6 +9,8 @@ import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.ProfileRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,9 +26,17 @@ public class ProfileService {
     }
 
     public void updateProfile(Long id, ProfileDto profileDto) {
-        try{
+
+        try {
+            String authenticatedUsername = ((UserDetails) SecurityContextHolder.getContext()
+                    .getAuthentication().getPrincipal()).getUsername();
+
             ProfileEntity profileEntity = profileRepository.findById(id)
                     .orElseThrow(NotFoundProfileException::new);
+
+            if (!authenticatedUsername.equals(profileEntity.getUser().getUsername())) {
+                throw new UnauthorizedProfileUpdateException();
+            }
 
             profileEntity.setFoto(profileDto.getFoto());
             profileEntity.setNumeroTelefone(profileDto.getNumeroTelefone());

@@ -32,4 +32,9 @@ public class ControllerExceptionsAdvice {
     public ResponseEntity<String> updateProfileExceptionHandler(UpdateProfileException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
+    @ExceptionHandler(UnauthorizedProfileUpdateException.class)
+    public ResponseEntity<String> unauthorizedProfileUpdateExceptionHandler(UnauthorizedProfileUpdateException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
 }
