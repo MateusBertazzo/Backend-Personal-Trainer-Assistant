@@ -2,6 +2,7 @@ package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.NotFoundUserMetrics;
 import br.com.apppersonal.apppersonal.exceptions.UnauthorizedProfileUpdateException;
+import br.com.apppersonal.apppersonal.exceptions.UpdateUserMetricsException;
 import br.com.apppersonal.apppersonal.model.Dto.UserMetricsDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.UserMetricsRepository;
@@ -27,7 +28,7 @@ public class UserMetricsService {
         }
 
         UserMetricsEntity userMetrics = userMetricsRepository.findById(userMetricsEntity.getUser().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Usuário não encontrado"));
+                .orElseThrow(NotFoundUserMetrics::new);
 
         try {
             userMetrics.setDataStart(LocalDate.now());
@@ -45,7 +46,7 @@ public class UserMetricsService {
 
             userMetricsRepository.save(userMetrics);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Erro ao atualizar dados");
+            throw new UpdateUserMetricsException();
         }
 
     }

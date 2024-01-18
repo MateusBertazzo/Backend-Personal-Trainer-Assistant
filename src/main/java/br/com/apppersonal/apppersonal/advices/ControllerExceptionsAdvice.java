@@ -42,4 +42,9 @@ public class ControllerExceptionsAdvice {
     public ResponseEntity<String> notFoundUserMetricsExceptionHandler(NotFoundUserMetrics e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
+    @ExceptionHandler(UpdateUserMetricsException.class)
+    public ResponseEntity<String> updateUserMetricsExceptionHandler(UpdateUserMetricsException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 }
