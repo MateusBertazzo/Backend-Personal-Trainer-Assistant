@@ -1,6 +1,7 @@
 package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.NotFoundProfileException;
+import br.com.apppersonal.apppersonal.exceptions.ParameterNullException;
 import br.com.apppersonal.apppersonal.exceptions.UnauthorizedProfileUpdateException;
 import br.com.apppersonal.apppersonal.exceptions.UpdateProfileException;
 import br.com.apppersonal.apppersonal.model.Dto.ProfileDto;
@@ -26,6 +27,8 @@ public class ProfileService {
     }
 
     public void updateProfile(Long id, ProfileDto profileDto) {
+        if (id == null) throw new ParameterNullException();
+        if (profileDto == null) throw new ParameterNullException();
 
         try {
             String authenticatedUsername = ((UserDetails) SecurityContextHolder.getContext()
@@ -65,6 +68,10 @@ public class ProfileService {
 
 //    Converte um perfil para DTO
     public UserProfileDto convertToDTO(ProfileEntity profileEntity) {
+        if (profileEntity == null) {
+            throw new ParameterNullException();
+        }
+
         UserProfileDto profileDTO = new UserProfileDto();
         UserEntity userEntity = profileEntity.getUser();
 
@@ -83,6 +90,8 @@ public class ProfileService {
 
 //  Busca um perfil por ID
     public UserProfileDto getProfileById(Long id) {
+        if (id == null) throw new ParameterNullException();
+
         ProfileEntity profile = profileRepository.findById(id).orElseThrow(NotFoundProfileException::new);
 
         return convertToDTO(profile);
