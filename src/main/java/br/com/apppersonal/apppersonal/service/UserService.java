@@ -1,9 +1,6 @@
 package br.com.apppersonal.apppersonal.service;
 
-import br.com.apppersonal.apppersonal.exceptions.CreateUserErrorException;
-import br.com.apppersonal.apppersonal.exceptions.ParameterNullException;
-import br.com.apppersonal.apppersonal.exceptions.PasswordIncorrectException;
-import br.com.apppersonal.apppersonal.exceptions.UserNotFoundException;
+import br.com.apppersonal.apppersonal.exceptions.*;
 import br.com.apppersonal.apppersonal.model.Dto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
@@ -72,7 +69,7 @@ public class UserService implements UserDetailsService {
         UserDetails user = userRepository.findByUsername(username);
 
         if (user == null) {
-            throw new UserNotFoundException();
+            throw new UnauthorizedUserException();
         }
 
         return user;

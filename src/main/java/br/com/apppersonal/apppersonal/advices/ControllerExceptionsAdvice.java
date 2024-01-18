@@ -63,4 +63,8 @@ public class ControllerExceptionsAdvice {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
 
+    @ExceptionHandler(UnauthorizedUserException.class)
+    public ResponseEntity<String> unauthorizedUserExceptionHandler(UnauthorizedUserException e) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+    }
 }

@@ -21,14 +21,14 @@ public class UserGaleryController {
 
     @PostMapping("/{userId}/save")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('PERSONAL')")
+    @PreAuthorize("hasRole('PERSONAL') and hasRole('ADMIN')")
     public void saveFotoGalery(@PathVariable Long userId, @RequestBody String urlFoto) {
         userGaleryService.postFoto(userId, urlFoto);
     }
 
     @GetMapping("/get-fotos/{userId}")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('PERSONAL')")
+    @PreAuthorize("hasRole('PERSONAL') and hasRole('ADMIN')")
     public List<GaleryDto> getFotos(@PathVariable Long userId) {
       return userGaleryService.getFotosById(userId);
     }
