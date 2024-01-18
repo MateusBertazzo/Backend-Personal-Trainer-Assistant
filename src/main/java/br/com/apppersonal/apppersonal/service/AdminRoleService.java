@@ -1,5 +1,7 @@
 package br.com.apppersonal.apppersonal.service;
 
+import br.com.apppersonal.apppersonal.exceptions.ParameterNullException;
+import br.com.apppersonal.apppersonal.exceptions.UserNotFoundException;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.UserRepository;
 import br.com.apppersonal.apppersonal.security.Role;
@@ -20,12 +22,12 @@ public class AdminRoleService {
     }
 
     public void ChangeUserRole(Long id, Role newRole) {
-        if (id == null) throw new RuntimeException("Id não pode ser vazio");
-        if (newRole == null) throw new RuntimeException("Role não pode ser vazio");
+        if (id == null) throw new ParameterNullException();
+        if (newRole == null) throw new ParameterNullException();
 
         UserEntity user = userService.getUserById(id);
 
-        if (user == null) throw new RuntimeException("Usuário não encontrado");
+        if (user == null) throw new UserNotFoundException();
 
         user.setRole(newRole);
 
