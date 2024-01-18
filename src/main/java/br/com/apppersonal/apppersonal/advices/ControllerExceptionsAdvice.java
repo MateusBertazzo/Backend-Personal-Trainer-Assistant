@@ -57,4 +57,10 @@ public class ControllerExceptionsAdvice {
     public ResponseEntity<String> exercisesNotFoundHandler(ExercisesNotFound e) {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
+
+    @ExceptionHandler(UserGaleryException.class)
+    public ResponseEntity<String> userGaleryExceptionHandler(UserGaleryException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
+
 }

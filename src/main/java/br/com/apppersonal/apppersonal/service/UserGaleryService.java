@@ -1,5 +1,8 @@
 package br.com.apppersonal.apppersonal.service;
 
+import br.com.apppersonal.apppersonal.exceptions.ParameterNullException;
+import br.com.apppersonal.apppersonal.exceptions.UserGaleryException;
+import br.com.apppersonal.apppersonal.exceptions.UserNotFoundException;
 import br.com.apppersonal.apppersonal.model.Dto.GaleryDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserGaleryEntity;
@@ -24,11 +27,13 @@ public class UserGaleryService {
 
     public void postFoto(Long userId, String urlFoto) {
         if (userId == null || urlFoto == null) {
-            throw new IllegalArgumentException("Foto ou UserID não pode ser null");
+            throw new ParameterNullException();
         }
 
         try {
+
             UserEntity user = userService.getUserById(userId);
+
             UserGaleryEntity userGaleryEntity = new UserGaleryEntity();
             userGaleryEntity.setDataFoto(LocalDate.now());
             userGaleryEntity.setUrlFoto(urlFoto);
@@ -36,19 +41,19 @@ public class UserGaleryService {
 
             userGaleryRepository.save(userGaleryEntity);
         } catch (Exception e) {
-            throw new IllegalArgumentException("Erro ao salvar foto");
+            throw new UserGaleryException();
         }
     }
 
     public List<GaleryDto> getFotosById(Long userId) {
         if (userId == null) {
-            throw new IllegalArgumentException("Id do usuário não pode ser nulo");
+            throw new ParameterNullException();
         }
 
         List<UserGaleryEntity> userGalery = userGaleryRepository.findAllByUserId(userId);
 
         if (userGalery == null) {
-            throw new IllegalArgumentException("Usuário não encontrado");
+            throw new UserNotFoundException();
         }
 
         return userGalery.stream()
@@ -57,11 +62,13 @@ public class UserGaleryService {
     }
 
     public GaleryDto convertToDTO(UserGaleryEntity userGaleryEntity) {
+
         GaleryDto userGalleryDTO = new GaleryDto();
         userGalleryDTO.setId(userGaleryEntity.getId());
         userGalleryDTO.setUserId(userGaleryEntity.getUser().getId());
         userGalleryDTO.setUrlFoto(userGaleryEntity.getUrlFoto());
         userGalleryDTO.setDataFoto(userGaleryEntity.getDataFoto());
+
         return userGalleryDTO;
     }
 }
