@@ -20,14 +20,14 @@ public class UserMetricsController {
 
     @PutMapping("/update")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PreAuthorize("hasRole('PERSONAL')")
+    @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
     public void updateUserMetrics(@RequestBody UserMetricsEntity userMetricsEntity) {
         userMetricsService.updateUserMetrics(userMetricsEntity);
     }
 
     @GetMapping("/{userId}/get")
     @ResponseStatus(HttpStatus.OK)
-    @PreAuthorize("hasRole('PERSONAL')")
+    @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
     public UserMetricsDto getUserMetricsByUserId(@PathVariable Long userId) {
         return userMetricsService.getUserMetricsByUserId(userId);
     }
