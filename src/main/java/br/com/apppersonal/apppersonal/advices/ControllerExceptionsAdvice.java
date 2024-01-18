@@ -52,4 +52,9 @@ public class ControllerExceptionsAdvice {
     public ResponseEntity<String> parameterNullExceptionHandler(ParameterNullException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
+    @ExceptionHandler(ExercisesNotFound.class)
+    public ResponseEntity<String> exercisesNotFoundHandler(ExercisesNotFound e) {
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+    }
 }

@@ -1,5 +1,7 @@
 package br.com.apppersonal.apppersonal.service;
 
+import br.com.apppersonal.apppersonal.exceptions.ExercisesNotFound;
+import br.com.apppersonal.apppersonal.exceptions.ParameterNullException;
 import br.com.apppersonal.apppersonal.model.Dto.TrainingExercicesDto;
 import br.com.apppersonal.apppersonal.model.entitys.ExerciseEntity;
 import br.com.apppersonal.apppersonal.model.entitys.TrainingEntity;
@@ -54,11 +56,11 @@ public class TrainingDayWeekService {
     }
 
     public List<TrainingExercicesDto> getExerciseByTrainingId(Long trainingId) {
-        if (trainingId == null) throw new RuntimeException("Usuário não pode ser vazio");
+        if (trainingId == null) throw new ParameterNullException();
 
         List<ExerciseEntity> exerciseEntities = exerciseRepository.findAllByTrainingId(trainingId);
 
-        if (exerciseEntities.isEmpty()) throw new RuntimeException("Treino não encontrado");
+        if (exerciseEntities.isEmpty()) throw new ExercisesNotFound();
 
         List<TrainingExercicesDto> responseDtoList = new ArrayList<>();
 
@@ -74,6 +76,7 @@ public class TrainingDayWeekService {
                     exerciseEntity.getRepose()
             ));
         }
+
         return  responseDtoList;
     }
 }
