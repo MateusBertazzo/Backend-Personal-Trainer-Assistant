@@ -47,4 +47,9 @@ public class ControllerExceptionsAdvice {
     public ResponseEntity<String> updateUserMetricsExceptionHandler(UpdateUserMetricsException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
+    @ExceptionHandler(ParameterNullException.class)
+    public ResponseEntity<String> parameterNullExceptionHandler(ParameterNullException e) {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+    }
 }
