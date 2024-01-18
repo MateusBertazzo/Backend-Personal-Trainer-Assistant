@@ -1,6 +1,7 @@
 package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.CreateUserErrorException;
+import br.com.apppersonal.apppersonal.exceptions.ParameterNullException;
 import br.com.apppersonal.apppersonal.exceptions.PasswordIncorrectException;
 import br.com.apppersonal.apppersonal.exceptions.UserNotFoundException;
 import br.com.apppersonal.apppersonal.model.Dto.UserDto;
@@ -35,7 +36,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void createUser(UserEntity userParameter) {
-        if (userParameter == null) throw new RuntimeException("Usuário não pode ser vazio");
+        if (userParameter == null) throw new ParameterNullException();
 
         try {
             UserEntity userEntity = new UserEntity();
@@ -61,12 +62,9 @@ public class UserService implements UserDetailsService {
     }
 
     public UserEntity getUserById(Long id) {
-        UserEntity user = userRepository.findById(id).orElse(null);
-        if(user == null) {
-            throw new UserNotFoundException();
-        }
+        if (id == null) throw new ParameterNullException();
 
-        return user;
+        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
     }
 
     @Override
@@ -81,7 +79,7 @@ public class UserService implements UserDetailsService {
     }
 
     public void deleteUser(Long id) {
-        if (id == null) throw new RuntimeException("Id não pode ser vazio");
+        if (id == null) throw new ParameterNullException();
 
         UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
