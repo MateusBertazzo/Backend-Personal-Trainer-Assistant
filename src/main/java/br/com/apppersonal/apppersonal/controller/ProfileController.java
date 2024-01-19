@@ -21,6 +21,7 @@ public class ProfileController {
 
     @PutMapping("/{id}/update")
     @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PreAuthorize("hasRole('USER')")
     public void updateProfile(@PathVariable Long id, @RequestBody ProfileDto profileDto) {
         profileService.updateProfile(id, profileDto);
     }
