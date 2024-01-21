@@ -18,6 +18,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.UUID;
+
 @Service
 public class UserService implements UserDetailsService {
 
@@ -25,11 +27,15 @@ public class UserService implements UserDetailsService {
     private final ProfileRepository profileRepository;
     private final UserMetricsRepository userMetricsRepository;
 
+    private final EmailService emailService;
+
     @Autowired
-    public UserService(UserRepository userRepository, ProfileRepository profileRepository, UserMetricsRepository userMetricsRepository) {
+    public UserService(UserRepository userRepository, ProfileRepository profileRepository,
+                       UserMetricsRepository userMetricsRepository, EmailService emailService) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.userMetricsRepository = userMetricsRepository;
+        this.emailService = emailService;
     }
 
     public void createUser(UserEntity userParameter) {
@@ -81,5 +87,51 @@ public class UserService implements UserDetailsService {
         UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
         userRepository.delete(user);
+    }
+
+    public void resetPasswordRequest(String email) {
+        if (email == null || email.isEmpty()) {
+            throw new ParameterNullException();
+        }
+
+        UserEntity user = userRepository.findByEmail(email);
+        if (user == null) {
+            throw new UserNotFoundException();
+        }
+
+
+        String verificationCode = UUID.randomUUID().toString();
+
+//        Criar um campo na tabela UserEntity para armazenar o código de verificação
+//        user.setVerificationCode(verificationCode);
+        userRepository.save(user);
+
+
+        sendVerificationCodeByEmail(user.getEmail(), verificationCode);
+    }
+
+    public void resetPassword(String email, String verificationCode, String newPassword) {
+        if (email == null || email.isEmpty() || verificationCode == null || verificationCode.isEmpty() || newPassword == null || newPassword.isEmpty()) {
+            throw new ParameterNullException();
+        }
+
+        UserEntity user = userRepository.findByEmail(email);
+//        if (user == null || !verificationCode.equals(user.getVerificationCode())) {
+//            throw new InvalidVerificationCodeException();
+//        }
+
+
+        String hashedPassword = new BCryptPasswordEncoder().encode(newPassword);
+        user.setPassword(hashedPassword);
+//      Criar um campo na tabela UserEntity para armazenar o código de verificação
+//        user.setVerificationCode(null); // Limpar o código de verificação após a redefinição da senha
+        userRepository.save(user);
+    }
+
+    private void sendVerificationCodeByEmail(String email, String verificationCode) {
+        // Lógica para enviar o código de verificação por e-mail usando a classe EmailService
+        String subject = "Código de Verificação - Redefinição de Senha";
+        String message = "Seu código de verificação é: " + verificationCode;
+        emailService.sendEmail(email, subject, message);
     }
 }
