@@ -27,18 +27,21 @@ public class UserEntity implements UserDetails, GrantedAuthority {
 
     private Role role;
 
+    private String verificationCode;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private ProfileEntity profile;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserMetricsEntity userMetrics;
 
-    public UserEntity(Long id, String username, String email, String password, Role role) {
+    public UserEntity(Long id, String username, String email, String password, Role role, String verificationCode) {
         this.id = id;
         this.username = username;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.verificationCode = verificationCode;
     }
 
     public UserEntity() {

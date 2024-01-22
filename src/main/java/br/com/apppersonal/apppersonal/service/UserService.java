@@ -116,9 +116,9 @@ public class UserService implements UserDetailsService {
         }
 
         UserEntity user = userRepository.findByEmail(email);
-//        if (user == null || !verificationCode.equals(user.getVerificationCode())) {
-//            throw new InvalidVerificationCodeException();
-//        }
+        if (user == null || !verificationCode.equals(user.getVerificationCode())) {
+            throw new InvalidVerificationCodeException();
+        }
 
 
         String hashedPassword = new BCryptPasswordEncoder().encode(newPassword);
