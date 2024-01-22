@@ -5,9 +5,11 @@ import br.com.apppersonal.apppersonal.model.Dto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
+import br.com.apppersonal.apppersonal.model.entitys.VerificationCodeEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.ProfileRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.UserMetricsRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.UserRepository;
+import br.com.apppersonal.apppersonal.model.repositorys.VerificationCodeRepository;
 import br.com.apppersonal.apppersonal.security.Role;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -27,15 +29,19 @@ public class UserService implements UserDetailsService {
     private final ProfileRepository profileRepository;
     private final UserMetricsRepository userMetricsRepository;
 
+    private final VerificationCodeRepository verificationCodeRepository;
+
     private final EmailService emailService;
 
     @Autowired
     public UserService(UserRepository userRepository, ProfileRepository profileRepository,
-                       UserMetricsRepository userMetricsRepository, EmailService emailService) {
+                       UserMetricsRepository userMetricsRepository, EmailService emailService,
+                       VerificationCodeRepository verificationCodeRepository) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.userMetricsRepository = userMetricsRepository;
         this.emailService = emailService;
+        this.verificationCodeRepository = verificationCodeRepository;
     }
 
     public void createUser(UserEntity userParameter) {
@@ -53,12 +59,16 @@ public class UserService implements UserDetailsService {
 
             ProfileEntity profileEntity = new ProfileEntity();
             UserMetricsEntity userMetricsEntity = new UserMetricsEntity();
+            VerificationCodeEntity verificationCodeEntity = new VerificationCodeEntity();
 
+            verificationCodeEntity.setUser(saveUser);
             profileEntity.setUser(saveUser);
             userMetricsEntity.setUser(saveUser);
 
             profileRepository.save(profileEntity);
             userMetricsRepository.save(userMetricsEntity);
+            verificationCodeRepository.save(verificationCodeEntity);
+
         } catch (Exception e) {
             throw new CreateUserErrorException();
         }
@@ -90,22 +100,26 @@ public class UserService implements UserDetailsService {
     }
 
     public void resetPasswordRequest(String email) {
+
         if (email == null || email.isEmpty()) {
             throw new ParameterNullException();
         }
 
         UserEntity user = userRepository.findByEmail(email);
+
         if (user == null) {
             throw new UserNotFoundException();
         }
 
+        VerificationCodeEntity code = verificationCodeRepository.findById(user.getId())
+                .orElseThrow(InvalidVerificationCodeException::new);
+
 
         String verificationCode = UUID.randomUUID().toString();
 
-//        Criar um campo na tabela UserEntity para armazenar o código de verificação
-//        user.setVerificationCode(verificationCode);
-        userRepository.save(user);
+        code.setCode(verificationCode);
 
+        verificationCodeRepository.save(code);
 
         sendVerificationCodeByEmail(user.getEmail(), verificationCode);
     }
@@ -115,17 +129,17 @@ public class UserService implements UserDetailsService {
             throw new ParameterNullException();
         }
 
-        UserEntity user = userRepository.findByEmail(email);
-        if (user == null || !verificationCode.equals(user.getVerificationCode())) {
-            throw new InvalidVerificationCodeException();
-        }
+//        UserEntity user = userRepository.findByEmail(email);
+//        if (user == null || !verificationCode.equals(user.getVerificationCode())) {
+//            throw new InvalidVerificationCodeException();
+//        }
 
 
-        String hashedPassword = new BCryptPasswordEncoder().encode(newPassword);
-        user.setPassword(hashedPassword);
-//      Criar um campo na tabela UserEntity para armazenar o código de verificação
-//        user.setVerificationCode(null); // Limpar o código de verificação após a redefinição da senha
-        userRepository.save(user);
+//        String hashedPassword = new BCryptPasswordEncoder().encode(newPassword);
+//        user.setPassword(hashedPassword);
+////      Criar um campo na tabela UserEntity para armazenar o código de verificação
+//        user.setVerificationCode(null);
+//        userRepository.save(user);
     }
 
     private void sendVerificationCodeByEmail(String email, String verificationCode) {

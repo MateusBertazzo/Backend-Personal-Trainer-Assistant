@@ -64,4 +64,18 @@ public class UserController  {
     public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
+
+    @PostMapping("/request/forgot-password")
+    @ResponseStatus(HttpStatus.OK)
+    public void resetPasswordRequest(@RequestParam String email) {
+        userService.resetPasswordRequest(email);
+    }
+
+    @PostMapping("confirm/forgot-password")
+    @ResponseStatus(HttpStatus.OK)
+    public void resetPassword(@RequestParam String email,
+                              @RequestParam String verificationCode,
+                              @RequestParam String newPassword) {
+        userService.resetPassword(email, verificationCode, newPassword);
+    }
 }
