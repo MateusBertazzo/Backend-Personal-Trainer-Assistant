@@ -9,7 +9,10 @@ import br.com.apppersonal.apppersonal.model.Dto.UserProfileDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.ProfileRepository;
+import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -52,21 +55,27 @@ public class ProfileService {
         }
     }
 
-//    Busca todos os perfis
-    public List<UserProfileDto> getAllProfiles() {
+    public ResponseEntity<?> getAllProfiles() {
 
-        List<ProfileEntity> profileEntityList = profileRepository.findAll();
+        try {
+            List<ProfileEntity> profileEntityList = profileRepository.findAll();
 
-        if (profileEntityList.isEmpty()) {
-            throw new NotFoundProfileException();
+            if (profileEntityList.isEmpty()) {
+                throw new NotFoundProfileException();
+            }
+
+
+            var listProfile = profileEntityList.stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity.status(HttpStatus.OK).body(listProfile);
+
+        } catch (NotFoundProfileException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
-
-        return profileEntityList.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
     }
 
-//    Converte um perfil para DTO
     public UserProfileDto convertToDTO(ProfileEntity profileEntity) {
         if (profileEntity == null) {
             throw new ParameterNullException();
@@ -88,7 +97,6 @@ public class ProfileService {
         return profileDTO;
     }
 
-//  Busca um perfil por ID
     public UserProfileDto getProfileById(Long id) {
         if (id == null) throw new ParameterNullException();
 

@@ -2,9 +2,10 @@ package br.com.apppersonal.apppersonal.controller;
 
 import br.com.apppersonal.apppersonal.model.Dto.ProfileDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserProfileDto;
-import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.service.ProfileService;
+import br.com.apppersonal.apppersonal.utils.ApiResponse;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -15,8 +16,11 @@ import java.util.List;
 public class ProfileController {
     private final ProfileService profileService;
 
-    public ProfileController(ProfileService profileService) {
+    private final ApiResponse apiResponse;
+
+    public ProfileController(ProfileService profileService, ApiResponse apiResponse) {
         this.profileService = profileService;
+        this.apiResponse = apiResponse;
     }
 
     @PutMapping("/{id}/update")
@@ -27,10 +31,9 @@ public class ProfileController {
     }
 
     @GetMapping("/get-all")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('ADMIN')")
-    public List<UserProfileDto> getAllProfiles() {
-       return profileService.getAllProfiles();
+    public ResponseEntity<ApiResponse> getAllProfiles() {
+       return apiResponse.request(profileService.getAllProfiles());
     }
 
     @GetMapping("/get/{id}")
