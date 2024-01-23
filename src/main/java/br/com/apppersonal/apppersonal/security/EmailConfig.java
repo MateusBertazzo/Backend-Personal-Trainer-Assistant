@@ -15,8 +15,8 @@
 //        // Falta configurar o servidor de email aqui, tenho que criar uma conta de email ainda.
 //        javaMailSender.setHost("smtp.gmail.com");
 //        javaMailSender.setPort(587);
-//        javaMailSender.setUsername("trainerp940@gmail.com");
-//        javaMailSender.setPassword("jqvv nmfq bjbj mysw");
+//        javaMailSender.setUsername("");
+//        javaMailSender.setPassword("");
 //
 //        return javaMailSender;
 //    }
