@@ -1,25 +1,48 @@
 package br.com.apppersonal.apppersonal.service;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
+
 import org.springframework.stereotype.Service;
+import javax.mail.*;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 
 @Service
 public class EmailService {
-    private final JavaMailSender javaMailSender;
 
-    @Autowired
-    public EmailService(JavaMailSender javaMailSender) {
-        this.javaMailSender = javaMailSender;
+    private final String username = "trainerp940@gmail.com";
+    private final String password = "rbiu bxsk fddw wfky";
+
+    public void sendEmail(String to, String subject, String message) {
+
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", true);
+        props.put("mail.smtp.starttls.enable", true);
+        props.put("mail.smtp.host", "smtp.gmail.com");
+        props.put("mail.smtp.port", 587);
+
+        Session session = Session.getInstance(props,
+                new Authenticator() {
+                    @Override
+                    protected PasswordAuthentication getPasswordAuthentication() {
+                        return new PasswordAuthentication(username, password);
+                    }
+                });
+
+        try{
+
+            Message mimeMessage = new MimeMessage(session);
+            mimeMessage.setFrom(new InternetAddress(username));
+            mimeMessage.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
+            mimeMessage.setSubject(subject);
+            mimeMessage.setText(message);
+
+            Transport.send(mimeMessage);
+            System.out.println("Email enviado com sucesso!");
+
+        } catch (MessagingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public void sendEmail(String to, String subject, String text) {
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(to);
-        message.setSubject(subject);
-        message.setText(text);
-
-        javaMailSender.send(message);
-    }
 }

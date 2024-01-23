@@ -25,8 +25,7 @@ public class UserController  {
     @Autowired
     public UserController(UserService userService,
                           AuthenticationManager authenticationManager,
-                          TokenService tokenService
-    ) {
+                          TokenService tokenService) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
