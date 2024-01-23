@@ -114,14 +114,13 @@ public class UserService implements UserDetailsService {
         VerificationCodeEntity code = verificationCodeRepository.findById(user.getId())
                 .orElseThrow(InvalidVerificationCodeException::new);
 
-
         String verificationCode = UUID.randomUUID().toString();
 
         code.setCode(verificationCode);
 
         verificationCodeRepository.save(code);
 
-        sendVerificationCodeByEmail(user.getEmail(), verificationCode);
+        emailService.sendEmail(user.getEmail(),"Verificação de senha" ,verificationCode);
     }
 
     public void resetPassword(String email, String verificationCode, String newPassword) {
@@ -140,12 +139,5 @@ public class UserService implements UserDetailsService {
 ////      Criar um campo na tabela UserEntity para armazenar o código de verificação
 //        user.setVerificationCode(null);
 //        userRepository.save(user);
-    }
-
-    private void sendVerificationCodeByEmail(String email, String verificationCode) {
-        // Lógica para enviar o código de verificação por e-mail usando a classe EmailService
-        String subject = "Código de Verificação - Redefinição de Senha";
-        String message = "Seu código de verificação é: " + verificationCode;
-        emailService.sendEmail(email, subject, message);
     }
 }
