@@ -1,7 +1,10 @@
 package br.com.apppersonal.apppersonal.utils;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Data;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -12,6 +15,9 @@ public class ApiResponse {
     private boolean success;
     private String message;
     private Object response;
+
+    @JsonIgnore
+    private final ModelMapper modelMapper = new ModelMapper();
 
     public ApiResponse() {
     }
@@ -26,97 +32,103 @@ public class ApiResponse {
     }
 
     public ResponseEntity<ApiResponse> request(ResponseEntity<?> responseEntity) {
+        var body = responseEntity.getBody();
+        ApiResponse domain = modelMapper.map(body, ApiResponse.class);
+
         if (responseEntity.getStatusCode() == HttpStatus.OK) {
             return ResponseEntity
                     .status(HttpStatus.OK)
                     .body(
                             new ApiResponse(
-                                    true,
-                                    "Requisição realizada com sucesso",
-                                    responseEntity.getBody()
+                                    domain.isSuccess(),
+                                    domain.getMessage(),
+                                    domain.getResponse()
                             )
                     );
         }
+
         if (responseEntity.getStatusCode() == HttpStatus.CREATED) {
             return ResponseEntity
                     .status(HttpStatus.CREATED)
                     .body(
                             new ApiResponse(
-                                    true,
-                                    "Requisição realizada com sucesso",
-                                    responseEntity.getBody()
+                                    domain.isSuccess(),
+                                    domain.getMessage(),
+                                    domain.getResponse()
                             )
                     );
         }
+
         if (responseEntity.getStatusCode() == HttpStatus.NO_CONTENT) {
             return ResponseEntity
                     .status(HttpStatus.NO_CONTENT)
                     .body(
                             new ApiResponse(
-                                    true,
-                                    "Requisição realizada com sucesso"
+                                    domain.isSuccess(),
+                                    domain.getMessage()
                             )
                     );
         }
+
         if (responseEntity.getStatusCode() == HttpStatus.BAD_REQUEST) {
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(
                             new ApiResponse(
-                                    false,
-                                    "Erro na requisição: "
-                                            + responseEntity.getBody()
+                                    domain.isSuccess(),
+                                    "Erro na requisição: " + domain.getMessage()
                             )
                     );
         }
+
         if (responseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(
                             new ApiResponse(
-                                    false,
-                                    "Não autorizado: "
-                                            + responseEntity.getBody()
+                                    domain.isSuccess(),
+                                    "Não autorizado: " + domain.getMessage()
                             )
                     );
         }
+
         if (responseEntity.getStatusCode() == HttpStatus.FORBIDDEN) {
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body(
                             new ApiResponse(
-                                    false,
-                                    "Acesso proibido: "
-                                            + responseEntity.getBody()
+                                    domain.isSuccess(),
+                                    "Acesso proibido: " + domain.getMessage()
                             )
                     );
         }
+
         if (responseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(
                             new ApiResponse(
-                                    false,
-                                    "Recurso não encontrado: "
-                                            + responseEntity.getBody()
+                                    domain.isSuccess(),
+                                    "Recurso não encontrado: " + domain.getMessage()
                             )
                     );
         }
+
         if (responseEntity.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
                             new ApiResponse(
-                            false,
-                            "Erro interno do servidor: "
-                                    + responseEntity.getBody()
+                                    domain.isSuccess(),
+                                    "Erro interno do servidor: " + domain.getMessage()
                             )
                     );
         }
+
         return ResponseEntity.status(responseEntity.getStatusCode()).body(
                 new ApiResponse(
                         false,
-                        "Erro ao realizar requisição"
+                        "Erro ao realizar requisição (default)"
                 )
         );
     }

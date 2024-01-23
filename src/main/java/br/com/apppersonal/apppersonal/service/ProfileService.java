@@ -9,6 +9,7 @@ import br.com.apppersonal.apppersonal.model.Dto.UserProfileDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.ProfileRepository;
+import br.com.apppersonal.apppersonal.utils.ApiResponse;
 import org.apache.coyote.Response;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,7 +30,7 @@ public class ProfileService {
         this.profileRepository = profileRepository;
     }
 
-    public void updateProfile(Long id, ProfileDto profileDto) {
+    public ResponseEntity<?> updateProfile(Long id, ProfileDto profileDto) {
         if (id == null) throw new ParameterNullException();
         if (profileDto == null) throw new ParameterNullException();
 
@@ -50,8 +51,26 @@ public class ProfileService {
             profileEntity.setObjetivo(profileDto.getObjetivo());
 
             profileRepository.save(profileEntity);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Perfil atualizado com sucesso"
+                            )
+                    );
+
+
         } catch (UpdateProfileException e) {
-            throw new UpdateProfileException();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    "Erro ao atualizar perfil"
+                            )
+                    );
         }
     }
 
