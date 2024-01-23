@@ -1,6 +1,8 @@
 # Configurações de email
 email.username=seu_email@gmail.com
 email.password=sua_senha_secreta
+email.host=host
+email.port=000
 
 # Configurações do banco de dados
 spring.datasource.url=jdbc:mysql://localhost:3306/meu_banco_de_dados
