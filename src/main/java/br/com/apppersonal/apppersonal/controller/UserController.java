@@ -1,5 +1,6 @@
 package br.com.apppersonal.apppersonal.controller;
 
+import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.service.TokenService;
@@ -64,17 +65,16 @@ public class UserController  {
         userService.deleteUser(id);
     }
 
-    @PostMapping("/request/forgot-password")
-    @ResponseStatus(HttpStatus.OK)
-    public void resetPasswordRequest(@RequestParam String email) {
-        userService.resetPasswordRequest(email);
-    }
+//    @PostMapping("/request/forgot-password")
+//    @ResponseStatus(HttpStatus.OK)
+//    public void resetPasswordRequest(@RequestParam String email) {
+//        userService.resetPasswordRequest(email);
+//    }
 
-    @PostMapping("confirm/forgot-password")
+    @PostMapping("/forgot-password/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void resetPassword(@RequestParam String email,
-                              @RequestParam String verificationCode,
-                              @RequestParam String newPassword) {
-        userService.resetPassword(email, verificationCode, newPassword);
+    public void resetPassword(@RequestBody ResetPasswordDto resetPasswordDto,
+                              @PathVariable Long id) {
+        userService.resetPassword(resetPasswordDto, id);
     }
 }
