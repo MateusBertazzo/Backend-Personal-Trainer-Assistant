@@ -15,7 +15,6 @@ public class TokenService {
     @Value("${api.security.token.secret}")
     private String secret;
 
-
     /**
      * Generate a new token.
      **/

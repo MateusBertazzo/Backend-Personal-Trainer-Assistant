@@ -72,4 +72,9 @@ public class ControllerExceptionsAdvice {
     public ResponseEntity<String> invalidVerificationCodeExceptionHandler(InvalidVerificationCodeException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
+    @ExceptionHandler(PasswordNotMatchException.class)
+    public ResponseEntity<String> passwordNotMatchExceptionHandler(PasswordNotMatchException e) {
+        return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(e.getMessage());
+    }
 }
