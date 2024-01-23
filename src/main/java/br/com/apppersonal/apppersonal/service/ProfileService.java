@@ -68,7 +68,7 @@ public class ProfileService {
                     .body(
                             new ApiResponse(
                                     false,
-                                    "Erro ao atualizar perfil"
+                                    e.getMessage()
                             )
                     );
         }
@@ -88,14 +88,29 @@ public class ProfileService {
                     .map(this::convertToDTO)
                     .collect(Collectors.toList());
 
-            return ResponseEntity.status(HttpStatus.OK).body(listProfile);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Perfil atualizado com sucesso",
+                                    listProfile
+                            )
+                    );
 
         } catch (NotFoundProfileException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
         }
     }
 
-    public UserProfileDto convertToDTO(ProfileEntity profileEntity) {
+    private UserProfileDto convertToDTO(ProfileEntity profileEntity) {
         if (profileEntity == null) {
             throw new ParameterNullException();
         }
@@ -116,11 +131,33 @@ public class ProfileService {
         return profileDTO;
     }
 
-    public UserProfileDto getProfileById(Long id) {
-        if (id == null) throw new ParameterNullException();
+    public ResponseEntity<?> getProfileById(Long id) {
+        try {
+            if (id == null) throw new ParameterNullException("Identificar do usuário não informado");
 
-        ProfileEntity profile = profileRepository.findById(id).orElseThrow(NotFoundProfileException::new);
+            ProfileEntity profile = profileRepository.findById(id).orElseThrow(NotFoundProfileException::new);
 
-        return convertToDTO(profile);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Perfil atualizado com sucesso",
+                                    convertToDTO(profile)
+                            )
+                    );
+
+        } catch (ParameterNullException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
+        }
+
+
     }
 }

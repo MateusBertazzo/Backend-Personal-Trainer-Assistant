@@ -26,7 +26,6 @@ public class ProfileController {
     @PutMapping("/{id}/update")
     @PreAuthorize("hasRole('USER') or hasRole('PERSONAL') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> updateProfile(@PathVariable Long id, @RequestBody ProfileDto profileDto) {
-
         return apiResponse.request(profileService.updateProfile(id, profileDto));
     }
 
@@ -37,9 +36,8 @@ public class ProfileController {
     }
 
     @GetMapping("/get/{id}")
-    @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
-    public UserProfileDto getProfileById(@PathVariable Long id) {
-        return profileService.getProfileById(id);
+    public ResponseEntity<ApiResponse> getProfileById(@PathVariable Long id) {
+        return apiResponse.request(profileService.getProfileById(id));
     }
 }
