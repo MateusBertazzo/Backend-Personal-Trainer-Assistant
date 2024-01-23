@@ -10,7 +10,10 @@ import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.ProfileRepository;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.transaction.Transactional;
 import org.apache.coyote.Response;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +27,9 @@ import java.util.stream.Collectors;
 @Service
 public class ProfileService {
     private final ProfileRepository profileRepository;
+
+    @JsonIgnore
+    private final ModelMapper modelMapper = new ModelMapper();
 
     @Autowired
     public ProfileService(ProfileRepository profileRepository) {
@@ -61,9 +67,8 @@ public class ProfileService {
                             )
                     );
 
-
         } catch (UpdateProfileException e) {
-            return ResponseEntity
+              return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
                             new ApiResponse(

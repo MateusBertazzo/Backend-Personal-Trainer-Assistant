@@ -4,6 +4,7 @@ import br.com.apppersonal.apppersonal.model.Dto.ProfileDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserProfileDto;
 import br.com.apppersonal.apppersonal.service.ProfileService;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;

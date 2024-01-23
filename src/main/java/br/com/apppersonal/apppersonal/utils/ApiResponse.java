@@ -3,11 +3,13 @@ package br.com.apppersonal.apppersonal.utils;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import jakarta.transaction.Transactional;
 import lombok.Data;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 
 @Data
 @Service
@@ -31,6 +33,7 @@ public class ApiResponse {
         this.message = message;
     }
 
+    @Transactional
     public ResponseEntity<ApiResponse> request(ResponseEntity<?> responseEntity) {
         var body = responseEntity.getBody();
         ApiResponse domain = modelMapper.map(body, ApiResponse.class);
@@ -115,6 +118,7 @@ public class ApiResponse {
         }
 
         if (responseEntity.getStatusCode() == HttpStatus.INTERNAL_SERVER_ERROR) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(

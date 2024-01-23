@@ -4,6 +4,7 @@ import br.com.apppersonal.apppersonal.model.Dto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.service.TokenService;
 import br.com.apppersonal.apppersonal.service.UserService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
