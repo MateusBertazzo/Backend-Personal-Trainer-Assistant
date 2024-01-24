@@ -8,6 +8,9 @@ import br.com.apppersonal.apppersonal.model.entitys.TrainingEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.ExerciseRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.TrainingRepository;
+import br.com.apppersonal.apppersonal.utils.ApiResponse;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -29,7 +32,7 @@ public class TrainingDayWeekService {
         this.exerciseRepository = exerciseRepository;
     }
 
-    public void createTrainingDayWeek(Long userId, String dayOfWeek, List<ExerciseEntity> exerciseEntityList) {
+    public ResponseEntity<?> createTrainingDayWeek(Long userId, String dayOfWeek, List<ExerciseEntity> exerciseEntityList) {
         if (exerciseEntityList.isEmpty()) throw new RuntimeException("Exercício não pode ser vazio");
         if (dayOfWeek.isEmpty()) throw new RuntimeException("Dia da semana não pode ser vazio");
         if (userId == null) throw new RuntimeException("Usuário não pode ser vazio");
@@ -49,34 +52,68 @@ public class TrainingDayWeekService {
 
             exerciseRepository.saveAll(exerciseEntityList);
 
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Treino criado com sucesso"
+                            )
+                    );
+
         } catch (Exception e) {
-            throw new RuntimeException("Erro ao criar treino");
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
         }
 
     }
 
-    public List<TrainingExercicesDto> getExerciseByTrainingId(Long trainingId) {
-        if (trainingId == null) throw new ParameterNullException();
+    public ResponseEntity<?> getExerciseByTrainingId(Long trainingId) {
+        try{
+            if (trainingId == null) throw new ParameterNullException();
 
-        List<ExerciseEntity> exerciseEntities = exerciseRepository.findAllByTrainingId(trainingId);
+            List<ExerciseEntity> exerciseEntities = exerciseRepository.findAllByTrainingId(trainingId);
 
-        if (exerciseEntities.isEmpty()) throw new ExercisesNotFound();
+            if (exerciseEntities.isEmpty()) throw new ExercisesNotFound();
 
-        List<TrainingExercicesDto> responseDtoList = new ArrayList<>();
+            List<TrainingExercicesDto> responseDtoList = new ArrayList<>();
 
-        for (ExerciseEntity exerciseEntity : exerciseEntities) {
-            responseDtoList.add(new TrainingExercicesDto(
-                    exerciseEntity.getId(),
-                    exerciseEntity.getName(),
-                    exerciseEntity.getTraining().getId(),
-                    exerciseEntity.getTraining().getDayOfWeek(),
-                    exerciseEntity.getDescription(),
-                    exerciseEntity.getRepetition(),
-                    exerciseEntity.getWeight(),
-                    exerciseEntity.getRepose()
-            ));
+            for (ExerciseEntity exerciseEntity : exerciseEntities) {
+                responseDtoList.add(new TrainingExercicesDto(
+                        exerciseEntity.getId(),
+                        exerciseEntity.getName(),
+                        exerciseEntity.getTraining().getId(),
+                        exerciseEntity.getTraining().getDayOfWeek(),
+                        exerciseEntity.getDescription(),
+                        exerciseEntity.getRepetition(),
+                        exerciseEntity.getWeight(),
+                        exerciseEntity.getRepose()
+                ));
+            }
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Exercícios encontrados com sucesso",
+                                    responseDtoList
+                            )
+                    );
+        } catch (Exception e)  {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
         }
-
-        return  responseDtoList;
     }
 }

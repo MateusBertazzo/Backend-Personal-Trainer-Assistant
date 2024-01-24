@@ -9,7 +9,14 @@ import br.com.apppersonal.apppersonal.model.Dto.UserProfileDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.ProfileRepository;
+import br.com.apppersonal.apppersonal.utils.ApiResponse;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.transaction.Transactional;
+import org.apache.coyote.Response;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -21,12 +28,15 @@ import java.util.stream.Collectors;
 public class ProfileService {
     private final ProfileRepository profileRepository;
 
+    @JsonIgnore
+    private final ModelMapper modelMapper = new ModelMapper();
+
     @Autowired
     public ProfileService(ProfileRepository profileRepository) {
         this.profileRepository = profileRepository;
     }
 
-    public void updateProfile(Long id, ProfileDto profileDto) {
+    public ResponseEntity<?> updateProfile(Long id, ProfileDto profileDto) {
         if (id == null) throw new ParameterNullException();
         if (profileDto == null) throw new ParameterNullException();
 
@@ -47,27 +57,65 @@ public class ProfileService {
             profileEntity.setObjetivo(profileDto.getObjetivo());
 
             profileRepository.save(profileEntity);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Perfil atualizado com sucesso"
+                            )
+                    );
+
         } catch (UpdateProfileException e) {
-            throw new UpdateProfileException();
+              return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
         }
     }
 
-//    Busca todos os perfis
-    public List<UserProfileDto> getAllProfiles() {
+    public ResponseEntity<?> getAllProfiles() {
 
-        List<ProfileEntity> profileEntityList = profileRepository.findAll();
+        try {
+            List<ProfileEntity> profileEntityList = profileRepository.findAll();
 
-        if (profileEntityList.isEmpty()) {
-            throw new NotFoundProfileException();
+            if (profileEntityList.isEmpty()) {
+                throw new NotFoundProfileException();
+            }
+
+
+            var listProfile = profileEntityList.stream()
+                    .map(this::convertToDTO)
+                    .collect(Collectors.toList());
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Lista de perfis retornada com sucesso",
+                                    listProfile
+                            )
+                    );
+
+        } catch (NotFoundProfileException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
         }
-
-        return profileEntityList.stream()
-                .map(this::convertToDTO)
-                .collect(Collectors.toList());
     }
 
-//    Converte um perfil para DTO
-    public UserProfileDto convertToDTO(ProfileEntity profileEntity) {
+    private UserProfileDto convertToDTO(ProfileEntity profileEntity) {
         if (profileEntity == null) {
             throw new ParameterNullException();
         }
@@ -88,12 +136,33 @@ public class ProfileService {
         return profileDTO;
     }
 
-//  Busca um perfil por ID
-    public UserProfileDto getProfileById(Long id) {
-        if (id == null) throw new ParameterNullException();
+    public ResponseEntity<?> getProfileById(Long id) {
+        try {
+            if (id == null) throw new ParameterNullException("Identificar do usuário não informado");
 
-        ProfileEntity profile = profileRepository.findById(id).orElseThrow(NotFoundProfileException::new);
+            ProfileEntity profile = profileRepository.findById(id).orElseThrow(NotFoundProfileException::new);
 
-        return convertToDTO(profile);
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Perfil retornado com sucesso",
+                                    convertToDTO(profile)
+                            )
+                    );
+
+        } catch (ParameterNullException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
+        }
+
+
     }
 }

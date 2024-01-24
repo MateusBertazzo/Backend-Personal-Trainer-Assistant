@@ -6,7 +6,10 @@ import br.com.apppersonal.apppersonal.exceptions.UpdateUserMetricsException;
 import br.com.apppersonal.apppersonal.model.Dto.UserMetricsDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.UserMetricsRepository;
+import br.com.apppersonal.apppersonal.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 
@@ -20,7 +23,7 @@ public class UserMetricsService {
         this.userMetricsRepository = userMetricsRepository;
     }
 
-    public void updateUserMetrics(UserMetricsEntity userMetricsEntity) {
+    public ResponseEntity<?> updateUserMetrics(UserMetricsEntity userMetricsEntity) {
         if (userMetricsEntity == null ) {
             throw new ParameterNullException();
         }
@@ -43,42 +46,75 @@ public class UserMetricsService {
             userMetrics.setPanturrilhaDireita(userMetricsEntity.getPanturrilhaDireita());
 
             userMetricsRepository.save(userMetrics);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Medidas atualizados com sucesso!"
+                            )
+                    );
         } catch (Exception e) {
-            throw new UpdateUserMetricsException();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
         }
-
     }
 
-    public UserMetricsDto getUserMetricsByUserId(Long userId) {
+    public ResponseEntity<?> getUserMetricsByUserId(Long userId) {
+        try {
+            if (userId == null) {
+                throw new ParameterNullException();
+            }
 
-        if (userId == null) {
-            throw new ParameterNullException();
+            UserMetricsEntity userMetrics = userMetricsRepository.findByUserId(userId);
+
+            if (userMetrics == null) {
+                throw new NotFoundUserMetrics();
+            }
+
+            var metrics = new UserMetricsDto(
+                    userMetrics.getId(),
+                    userMetrics.getUser().getId(),
+                    userMetrics.getUser().getRole(),
+                    userMetrics.getDataStart(),
+                    userMetrics.getWeight(),
+                    userMetrics.getHeight(),
+                    userMetrics.getAge(),
+                    userMetrics.getTronco(),
+                    userMetrics.getQuadril(),
+                    userMetrics.getBracoEsquerdo(),
+                    userMetrics.getBracoDireito(),
+                    userMetrics.getPernaEsquerda(),
+                    userMetrics.getPernaDireita(),
+                    userMetrics.getPanturrilhaEsquerda(),
+                    userMetrics.getPanturrilhaDireita()
+            );
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Medidas retornadas com sucesso!",
+                                    metrics
+                            )
+                    );
+        }   catch (Exception e) {
+                    return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
         }
-
-        UserMetricsEntity userMetrics = userMetricsRepository.findByUserId(userId);
-
-        if (userMetrics == null) {
-            throw new NotFoundUserMetrics();
-        }
-
-        return new UserMetricsDto(
-                userMetrics.getId(),
-                userMetrics.getUser().getId(),
-                userMetrics.getUser().getRole(),
-                userMetrics.getDataStart(),
-                userMetrics.getWeight(),
-                userMetrics.getHeight(),
-                userMetrics.getAge(),
-                userMetrics.getTronco(),
-                userMetrics.getQuadril(),
-                userMetrics.getBracoEsquerdo(),
-                userMetrics.getBracoDireito(),
-                userMetrics.getPernaEsquerda(),
-                userMetrics.getPernaDireita(),
-                userMetrics.getPanturrilhaEsquerda(),
-                userMetrics.getPanturrilhaDireita()
-        );
     }
-
-
 }
