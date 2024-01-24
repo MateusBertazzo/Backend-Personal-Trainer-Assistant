@@ -1,7 +1,6 @@
 package br.com.apppersonal.apppersonal.model.entitys;
 
 import br.com.apppersonal.apppersonal.security.Role;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -14,10 +13,8 @@ import java.util.List;
 @Data
 @Entity
 @Table(name = "users")
-public class UserEntity implements UserDetails, GrantedAuthority {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class UserEntity extends BaseEntity implements UserDetails, GrantedAuthority  {
+
     private String username;
     @Column(unique = true)
     private String email;
@@ -36,8 +33,7 @@ public class UserEntity implements UserDetails, GrantedAuthority {
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private VerificationCodeEntity verificationCode;
 
-    public UserEntity(Long id, String username, String email, String password, Role role) {
-        this.id = id;
+    public UserEntity(String username, String email, String password, Role role) {
         this.username = username;
         this.email = email;
         this.password = password;

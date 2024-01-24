@@ -5,6 +5,7 @@ import br.com.apppersonal.apppersonal.model.Dto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.service.TokenService;
 import br.com.apppersonal.apppersonal.service.UserService;
+import br.com.apppersonal.apppersonal.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,19 +24,23 @@ public class UserController  {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
+    private final ApiResponse apiResponse;
+
     @Autowired
     public UserController(UserService userService,
                           AuthenticationManager authenticationManager,
-                          TokenService tokenService) {
+                          TokenService tokenService,
+                          ApiResponse apiResponse) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
+        this.apiResponse = apiResponse;
     }
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createUser(@RequestBody UserEntity userEntity) {
-         userService.createUser(userEntity);
+    public ResponseEntity<ApiResponse> createUser(@RequestBody UserEntity userEntity) {
+        return apiResponse.request(userService.createUser(userEntity));
     }
 
     @PostMapping("/auth/login")
@@ -51,18 +56,37 @@ public class UserController  {
 
             String token = tokenService.generateToken(userDetails);
 
-            return ResponseEntity.status(HttpStatus.OK).body(token);
+            return apiResponse.request(
+                    ResponseEntity
+                            .status(HttpStatus.OK)
+                            .body(
+                                    new ApiResponse(
+                                            true,
+                                            "Usuário logado com sucesso!",
+                                            token
+                                    )
+                            )
+            );
 
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+            return apiResponse.request(
+                    ResponseEntity
+                            .status(HttpStatus.UNAUTHORIZED)
+                            .body(
+                                    new ApiResponse(
+                                            false,
+                                            "Usuário ou senha inválidos"
+                                    )
+                            )
+            );
         }
     }
 
     @DeleteMapping("/delete-user/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ADMIN')")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
+    public ResponseEntity<ApiResponse> deleteUser(@PathVariable Long id) {
+        return apiResponse.request(userService.deleteUser(id));
     }
 
 //    @PostMapping("/request/forgot-password")
@@ -72,9 +96,11 @@ public class UserController  {
 //    }
 
     @PostMapping("/forgot-password/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public void resetPassword(@RequestBody ResetPasswordDto resetPasswordDto,
-                              @PathVariable Long id) {
-        userService.resetPassword(resetPasswordDto, id);
+    public ResponseEntity<ApiResponse> resetPassword(
+            @RequestBody ResetPasswordDto resetPasswordDto,
+            @PathVariable Long id
+    )
+    {
+        return apiResponse.request(userService.resetPassword(resetPasswordDto, id));
     }
 }
