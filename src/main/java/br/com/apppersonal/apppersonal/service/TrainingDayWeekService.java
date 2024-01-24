@@ -101,7 +101,7 @@ public class TrainingDayWeekService {
                     .body(
                             new ApiResponse(
                                     true,
-                                    "Treino criado com sucesso",
+                                    "Exercícios encontrados com sucesso",
                                     responseDtoList
                             )
                     );
