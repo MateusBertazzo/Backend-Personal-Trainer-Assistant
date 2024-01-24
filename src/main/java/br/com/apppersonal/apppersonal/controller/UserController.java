@@ -4,6 +4,7 @@ import br.com.apppersonal.apppersonal.model.Dto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.service.TokenService;
 import br.com.apppersonal.apppersonal.service.UserService;
+import br.com.apppersonal.apppersonal.utils.ApiResponse;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,20 +24,24 @@ public class UserController  {
     private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
 
+    private final ApiResponse apiResponse;
+
     @Autowired
     public UserController(UserService userService,
                           AuthenticationManager authenticationManager,
-                          TokenService tokenService
+                          TokenService tokenService,
+                          ApiResponse apiResponse
     ) {
         this.userService = userService;
         this.authenticationManager = authenticationManager;
         this.tokenService = tokenService;
+        this.apiResponse = apiResponse;
     }
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public void createUser(@RequestBody UserEntity userEntity) {
-         userService.createUser(userEntity);
+    public ResponseEntity<ApiResponse> createUser(@RequestBody UserEntity userEntity) {
+       return apiResponse.request(userService.createUser(userEntity));
     }
 
     @PostMapping("/auth/login")

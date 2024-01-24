@@ -11,7 +11,10 @@ import br.com.apppersonal.apppersonal.model.repositorys.UserMetricsRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.UserRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.VerificationCodeRepository;
 import br.com.apppersonal.apppersonal.security.Role;
+import br.com.apppersonal.apppersonal.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -44,7 +47,7 @@ public class UserService implements UserDetailsService {
         this.verificationCodeRepository = verificationCodeRepository;
     }
 
-    public void createUser(UserEntity userParameter) {
+    public ResponseEntity<?> createUser(UserEntity userParameter) {
         if (userParameter == null) throw new ParameterNullException();
 
         try {
@@ -69,15 +72,36 @@ public class UserService implements UserDetailsService {
             userMetricsRepository.save(userMetricsEntity);
             verificationCodeRepository.save(verificationCodeEntity);
 
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Usuário criado com sucesso"
+                            )
+                    );
+
         } catch (Exception e) {
-            throw new CreateUserErrorException();
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
         }
     }
 
     public UserEntity getUserById(Long id) {
-        if (id == null) throw new ParameterNullException();
+        try {
+            if (id == null) throw new ParameterNullException();
 
-        return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+            return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
+        } catch (ParameterNullException e) {
+            throw new ParameterNullException();
+        }
     }
 
     @Override
@@ -91,12 +115,33 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
-    public void deleteUser(Long id) {
-        if (id == null) throw new ParameterNullException();
+    public ResponseEntity<?> deleteUser(Long id) {
+        try {
+            if (id == null) throw new ParameterNullException();
 
-        UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+            UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
 
-        userRepository.delete(user);
+            userRepository.delete(user);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Usuário deletado com sucesso"
+                            )
+                    );
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
+        }
+
     }
 
     public void resetPasswordRequest(String email) {
