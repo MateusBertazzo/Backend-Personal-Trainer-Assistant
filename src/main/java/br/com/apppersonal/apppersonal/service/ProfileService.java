@@ -98,7 +98,7 @@ public class ProfileService {
                     .body(
                             new ApiResponse(
                                     true,
-                                    "Perfil atualizado com sucesso",
+                                    "Lista de perfis retornada com sucesso",
                                     listProfile
                             )
                     );
@@ -147,7 +147,7 @@ public class ProfileService {
                     .body(
                             new ApiResponse(
                                     true,
-                                    "Perfil atualizado com sucesso",
+                                    "Perfil retornado com sucesso",
                                     convertToDTO(profile)
                             )
                     );
