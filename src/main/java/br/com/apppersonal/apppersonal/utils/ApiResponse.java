@@ -74,6 +74,7 @@ public class ApiResponse {
         }
 
         if (responseEntity.getStatusCode() == HttpStatus.BAD_REQUEST) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity
                     .status(HttpStatus.BAD_REQUEST)
                     .body(
@@ -85,6 +86,7 @@ public class ApiResponse {
         }
 
         if (responseEntity.getStatusCode() == HttpStatus.UNAUTHORIZED) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
                     .body(
@@ -96,6 +98,7 @@ public class ApiResponse {
         }
 
         if (responseEntity.getStatusCode() == HttpStatus.FORBIDDEN) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity
                     .status(HttpStatus.FORBIDDEN)
                     .body(
@@ -107,6 +110,7 @@ public class ApiResponse {
         }
 
         if (responseEntity.getStatusCode() == HttpStatus.NOT_FOUND) {
+            TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
             return ResponseEntity
                     .status(HttpStatus.NOT_FOUND)
                     .body(
