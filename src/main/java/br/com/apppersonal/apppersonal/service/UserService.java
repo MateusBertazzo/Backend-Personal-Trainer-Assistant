@@ -142,33 +142,53 @@ public class UserService implements UserDetailsService {
         }
 
     }
-    public void resetPassword(ResetPasswordDto resetPasswordDto, Long id) {
-        if (resetPasswordDto.getNewPassword() == null || resetPasswordDto.getOldPassword() == null) {
-            throw new ParameterNullException();
+    public ResponseEntity<?> resetPassword(ResetPasswordDto resetPasswordDto, Long id) {
+        try {
+            if (resetPasswordDto.getNewPassword() == null || resetPasswordDto.getOldPassword() == null) {
+                throw new ParameterNullException();
+            }
+
+            String authenticatedUsername = ((UserDetails) SecurityContextHolder.getContext()
+                    .getAuthentication().getPrincipal()).getUsername();
+
+            UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+
+            if (!authenticatedUsername.equals(user.getUsername())) {
+                throw new UnauthorizedUserException();
+            }
+
+            BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+            if (!passwordEncoder.matches(resetPasswordDto.getOldPassword(), user.getPassword())) {
+                throw new UnauthorizedUserException();
+            }
+
+            if (!resetPasswordDto.getNewPassword().equals(resetPasswordDto.getConfirmPassword())) {
+                throw new PasswordNotMatchException();
+            }
+
+            String hashedNewPassword = new BCryptPasswordEncoder().encode(resetPasswordDto.getNewPassword());
+            user.setPassword(hashedNewPassword);
+
+            userRepository.save(user);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Senha alterada com sucesso"
+                            )
+                    );
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
         }
-
-        String authenticatedUsername = ((UserDetails) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal()).getUsername();
-
-        UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
-
-        if (!authenticatedUsername.equals(user.getUsername())) {
-            throw new UnauthorizedUserException();
-        }
-
-        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
-
-        if (!passwordEncoder.matches(resetPasswordDto.getOldPassword(), user.getPassword())) {
-            throw new UnauthorizedUserException();
-        }
-
-        if (!resetPasswordDto.getNewPassword().equals(resetPasswordDto.getConfirmPassword())) {
-            throw new PasswordNotMatchException();
-        }
-
-        String hashedNewPassword = new BCryptPasswordEncoder().encode(resetPasswordDto.getNewPassword());
-        user.setPassword(hashedNewPassword);
-
-        userRepository.save(user);
     }
 }
