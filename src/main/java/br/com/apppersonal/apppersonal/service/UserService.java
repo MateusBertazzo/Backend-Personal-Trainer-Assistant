@@ -154,7 +154,9 @@ public class UserService implements UserDetailsService {
             String authenticatedUsername = ((UserDetails) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal()).getUsername();
 
-            UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+            UserEntity user = userRepository.findByIdAndNotDeleted(id);
+
+            if (user == null) throw new UserNotFoundException();
 
             if (!authenticatedUsername.equals(user.getUsername())) {
                 throw new UnauthorizedUserException();
