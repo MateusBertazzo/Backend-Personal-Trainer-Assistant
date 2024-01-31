@@ -8,10 +8,7 @@ import java.time.LocalDate;
 @Data
 @Entity
 @Table(name = "user_galery")
-public class UserGaleryEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class UserGaleryEntity extends BaseEntity{
 
     @Column(name = "url_foto")
     private String urlFoto;
@@ -23,8 +20,7 @@ public class UserGaleryEntity {
     @Column(name = "data_foto")
     private LocalDate dataFoto;
 
-    public UserGaleryEntity(Long id, String urlFoto, UserEntity user, LocalDate dataFoto) {
-        this.id = id;
+    public UserGaleryEntity(String urlFoto, UserEntity user, LocalDate dataFoto) {
         this.urlFoto = urlFoto;
         this.user = user;
         this.dataFoto = dataFoto;

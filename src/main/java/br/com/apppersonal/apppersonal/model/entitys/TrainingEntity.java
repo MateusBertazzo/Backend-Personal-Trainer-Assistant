@@ -9,10 +9,7 @@ import java.util.List;
 @Entity
 @Data
 @Table(name = "training")
-public class TrainingEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class TrainingEntity extends BaseEntity{
 
     @JsonIgnore
     @OneToMany(mappedBy = "training")
@@ -22,12 +19,12 @@ public class TrainingEntity {
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
+
     @Column(name = "day_of_week")
     private String dayOfWeek;
 
     public TrainingEntity() {}
-    public TrainingEntity(Long id, UserEntity user, String dayOfWeek) {
-        this.id = id;
+    public TrainingEntity(UserEntity user, String dayOfWeek) {
         this.user = user;
         this.dayOfWeek = dayOfWeek;
     }

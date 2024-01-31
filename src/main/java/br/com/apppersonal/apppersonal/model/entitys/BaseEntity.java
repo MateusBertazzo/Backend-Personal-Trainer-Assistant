@@ -11,6 +11,6 @@ public class BaseEntity {
     private Long id;
 
 
-    private Boolean deleted;
+    private Boolean deleted = false;
 
 }

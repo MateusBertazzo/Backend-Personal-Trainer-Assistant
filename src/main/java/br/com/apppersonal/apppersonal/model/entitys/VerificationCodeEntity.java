@@ -6,17 +6,13 @@ import lombok.Data;
 @Data
 @Entity
 @Table(name = "verification_codes")
-public class VerificationCodeEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class VerificationCodeEntity extends BaseEntity{
     private String code;
     @OneToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    public VerificationCodeEntity(Long id, String code, UserEntity user) {
-        this.id = id;
+    public VerificationCodeEntity(String code, UserEntity user) {
         this.code = code;
         this.user = user;
     }
