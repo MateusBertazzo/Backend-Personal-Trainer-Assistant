@@ -75,12 +75,19 @@ public class TrainingDayWeekService {
     }
 
     public ResponseEntity<?> getExerciseByTrainingId(Long trainingId) {
-        try{
+        try {
             if (trainingId == null) throw new ParameterNullException();
+
+            // verificar se o treino não está deletado
+
+            Boolean isTrue = trainingRepository.isDeletedTraining(trainingId);
+
+            if (!isTrue) throw new ExercisesNotFound("Treino não encontrado");
 
             List<ExerciseEntity> exerciseEntities = exerciseRepository.findAllByTrainingId(trainingId);
 
-            if (exerciseEntities.isEmpty()) throw new ExercisesNotFound();
+            if (exerciseEntities.isEmpty()) throw new ExercisesNotFound("Exercícios não encontrados");
+
 
             List<TrainingExercicesDto> responseDtoList = new ArrayList<>();
 
@@ -103,6 +110,15 @@ public class TrainingDayWeekService {
                                     true,
                                     "Exercícios encontrados com sucesso",
                                     responseDtoList
+                            )
+                    );
+        } catch (ExercisesNotFound e)  {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
                             )
                     );
         } catch (Exception e)  {
