@@ -6,10 +6,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "exercises")
-public class ExerciseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ExerciseEntity extends BaseEntity {
 
     private String name;
 
@@ -27,13 +24,15 @@ public class ExerciseEntity {
 
     public ExerciseEntity() {}
 
-    public ExerciseEntity(Long id, String name,
-                          TrainingEntity training,
-                          String description,
-                          int repetition,
-                          double weight,
-                          int repose) {
-        this.id = id;
+    public ExerciseEntity(
+            String name,
+            TrainingEntity training,
+            String description,
+            int repetition,
+            double weight,
+            int repose
+    )
+    {
         this.name = name;
         this.training = training;
         this.description = description;

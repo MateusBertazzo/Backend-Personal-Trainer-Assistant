@@ -7,11 +7,7 @@ import java.time.LocalDate;
 @Entity
 @Data
 @Table(name = "user_metrics")
-public class UserMetricsEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class UserMetricsEntity extends BaseEntity{
     @OneToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
@@ -37,13 +33,13 @@ public class UserMetricsEntity {
 
     public UserMetricsEntity() {}
 
-    public UserMetricsEntity(Long id, UserEntity user, LocalDate dataStart, Double weight,
-                             Double height, Integer age, Double tronco, Double quadril,
-                             Double bracoEsquerdo,
-                             Double bracoDireito, Double pernaEsquerda, Double pernaDireita,
-                             Double panturrilhaEsquerda, Double panturrilhaDireita) {
-
-        this.id = id;
+    public UserMetricsEntity(
+            UserEntity user, LocalDate dataStart, Double weight,
+            Double height, Integer age, Double tronco, Double quadril,
+            Double bracoEsquerdo,
+            Double bracoDireito, Double pernaEsquerda, Double pernaDireita,
+            Double panturrilhaEsquerda, Double panturrilhaDireita)
+    {
         this.user = user;
         this.dataStart = dataStart;
         this.weight = weight;

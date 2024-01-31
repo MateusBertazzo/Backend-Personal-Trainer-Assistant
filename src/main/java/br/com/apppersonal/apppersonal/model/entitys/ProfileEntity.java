@@ -7,11 +7,7 @@ import lombok.Data;
 @Entity
 @Data
 @Table(name = "profiles")
-public class ProfileEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
+public class ProfileEntity extends BaseEntity{
 
     @OneToOne
     @JoinColumn(name = "user_id")
@@ -26,8 +22,7 @@ public class ProfileEntity {
 
     private String objetivo;
 
-    public ProfileEntity(Long id, UserEntity user, String foto, String numeroTelefone, String observacao, String objetivo) {
-        this.id = id;
+    public ProfileEntity(UserEntity user, String foto, String numeroTelefone, String observacao, String objetivo) {
         this.user = user;
         this.foto = foto;
         this.numeroTelefone = numeroTelefone;
