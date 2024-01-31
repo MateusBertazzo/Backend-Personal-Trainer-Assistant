@@ -47,6 +47,8 @@ public class ProfileService {
             ProfileEntity profileEntity = profileRepository.findById(id)
                     .orElseThrow(NotFoundProfileException::new);
 
+            if (profileEntity.getUser().getDeleted()) throw new UpdateProfileException();
+
             if (!authenticatedUsername.equals(profileEntity.getUser().getUsername())) {
                 throw new UnauthorizedProfileUpdateException();
             }
