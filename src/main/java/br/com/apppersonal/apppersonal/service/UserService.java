@@ -97,7 +97,11 @@ public class UserService implements UserDetailsService {
         try {
             if (id == null) throw new ParameterNullException();
 
-            return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+            UserEntity user =  userRepository.findByIdAndNotDeleted(id);
+
+            if (user == null) throw new UserNotFoundException();
+
+            return user;
 
         } catch (ParameterNullException e) {
             throw new ParameterNullException();
