@@ -14,6 +14,7 @@ import br.com.apppersonal.apppersonal.model.repositorys.VerificationCodeReposito
 import br.com.apppersonal.apppersonal.security.Role;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -96,7 +97,11 @@ public class UserService implements UserDetailsService {
         try {
             if (id == null) throw new ParameterNullException();
 
-            return userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+            UserEntity user =  userRepository.findByIdAndNotDeleted(id);
+
+            if (user == null) throw new UserNotFoundException();
+
+            return user;
 
         } catch (ParameterNullException e) {
             throw new ParameterNullException();
@@ -118,9 +123,22 @@ public class UserService implements UserDetailsService {
         try {
             if (id == null) throw new ParameterNullException();
 
-            UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+            UserEntity user = userRepository.findByIdAndNotDeleted(id);
 
-            userRepository.delete(user);
+
+            if (user == null) throw new UserNotFoundException();
+
+            user.getProfile().setDeleted(true);
+            user.getUserMetrics().setDeleted(true);
+            user.getVerificationCode().setDeleted(true);
+            user.getTraining().forEach(training -> training.setDeleted(true));
+            user.getTraining().forEach(training ->
+                    training.getExercise()
+                                    .forEach(exercise -> exercise.setDeleted(true)));
+            user.setDeleted(true);
+
+
+            userRepository.save(user);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -151,7 +169,9 @@ public class UserService implements UserDetailsService {
             String authenticatedUsername = ((UserDetails) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal()).getUsername();
 
-            UserEntity user = userRepository.findById(id).orElseThrow(UserNotFoundException::new);
+            UserEntity user = userRepository.findByIdAndNotDeleted(id);
+
+            if (user == null) throw new UserNotFoundException();
 
             if (!authenticatedUsername.equals(user.getUsername())) {
                 throw new UnauthorizedUserException();

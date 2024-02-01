@@ -1,5 +1,6 @@
 package br.com.apppersonal.apppersonal.controller;
 
+import br.com.apppersonal.apppersonal.exceptions.UnauthorizedUserException;
 import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
@@ -52,6 +53,10 @@ public class UserController  {
 
             Authentication authentication = authenticationManager.authenticate(authenticationToken);
 
+            var principal =  (UserEntity) authentication.getPrincipal();
+
+            if (principal.getDeleted()) throw new Exception("Usuário Deletado");
+
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
             String token = tokenService.generateToken(userDetails);
@@ -75,7 +80,7 @@ public class UserController  {
                             .body(
                                     new ApiResponse(
                                             false,
-                                            "Usuário ou senha inválidos"
+                                            e.getMessage()
                                     )
                             )
             );

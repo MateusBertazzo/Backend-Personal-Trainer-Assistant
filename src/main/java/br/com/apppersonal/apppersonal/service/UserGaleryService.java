@@ -67,13 +67,14 @@ public class UserGaleryService {
     public ResponseEntity<?> getFotosById(Long userId) {
 
         try {
+
             if (userId == null) {
                 throw new ParameterNullException();
             }
 
             List<UserGaleryEntity> userGalery = userGaleryRepository.findAllByUserId(userId);
 
-            if (userGalery == null) {
+            if (userGalery.isEmpty()) {
                 throw new UserNotFoundException();
             }
 

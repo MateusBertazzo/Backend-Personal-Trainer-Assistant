@@ -14,7 +14,7 @@ import java.util.List;
 @Entity
 @Table(name = "users")
 public class UserEntity extends BaseEntity implements UserDetails, GrantedAuthority  {
-
+    @Column(unique = true)
     private String username;
     @Column(unique = true)
     private String email;
@@ -32,6 +32,9 @@ public class UserEntity extends BaseEntity implements UserDetails, GrantedAuthor
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private VerificationCodeEntity verificationCode;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<TrainingEntity> training;
 
     public UserEntity(String username, String email, String password, Role role) {
         this.username = username;

@@ -44,8 +44,11 @@ public class ProfileService {
             String authenticatedUsername = ((UserDetails) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal()).getUsername();
 
-            ProfileEntity profileEntity = profileRepository.findById(id)
-                    .orElseThrow(NotFoundProfileException::new);
+            ProfileEntity profileEntity = profileRepository.findByIdAndNotDeleted(id);
+
+            if (profileEntity == null) throw new NotFoundProfileException();
+
+            if (profileEntity.getUser().getDeleted()) throw new UpdateProfileException("Usuário deletado");
 
             if (!authenticatedUsername.equals(profileEntity.getUser().getUsername())) {
                 throw new UnauthorizedProfileUpdateException();
@@ -82,7 +85,7 @@ public class ProfileService {
     public ResponseEntity<?> getAllProfiles() {
 
         try {
-            List<ProfileEntity> profileEntityList = profileRepository.findAll();
+            List<ProfileEntity> profileEntityList = profileRepository.findAllNotDeleted();
 
             if (profileEntityList.isEmpty()) {
                 throw new NotFoundProfileException();
@@ -140,7 +143,9 @@ public class ProfileService {
         try {
             if (id == null) throw new ParameterNullException("Identificar do usuário não informado");
 
-            ProfileEntity profile = profileRepository.findById(id).orElseThrow(NotFoundProfileException::new);
+            ProfileEntity profile = profileRepository.findByIdAndNotDeleted(id);
+
+            if (profile == null) throw new NotFoundProfileException("Perfil Deletado");
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -161,8 +166,15 @@ public class ProfileService {
                                     e.getMessage()
                             )
                     );
+        }  catch (NotFoundProfileException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
         }
-
-
     }
 }
