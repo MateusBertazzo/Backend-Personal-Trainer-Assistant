@@ -2,6 +2,7 @@ package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.ExercisesNotFound;
 import br.com.apppersonal.apppersonal.exceptions.ParameterNullException;
+import br.com.apppersonal.apppersonal.model.Dto.CreateTrainingDto;
 import br.com.apppersonal.apppersonal.model.Dto.TrainingExercicesDto;
 import br.com.apppersonal.apppersonal.model.entitys.ExerciseEntity;
 import br.com.apppersonal.apppersonal.model.entitys.TrainingEntity;
@@ -13,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -32,25 +34,26 @@ public class TrainingDayWeekService {
         this.exerciseRepository = exerciseRepository;
     }
 
-    public ResponseEntity<?> createTrainingDayWeek(Long userId, String dayOfWeek, List<ExerciseEntity> exerciseEntityList) {
-        if (exerciseEntityList.isEmpty()) throw new RuntimeException("Exercício não pode ser vazio");
-        if (dayOfWeek.isEmpty()) throw new RuntimeException("Dia da semana não pode ser vazio");
-        if (userId == null) throw new RuntimeException("Usuário não pode ser vazio");
-
-        UserEntity user = userService.getUserById(userId);
-
-        if (user == null) throw new RuntimeException("Usuário não encontrado");
-
+    public ResponseEntity<?> createTrainingDayWeek(CreateTrainingDto createTrainingDto) {
         try {
+
+            if (createTrainingDto.getDayOfWeek() == null) throw new ParameterNullException("Exercício não pode ser vazio");
+            if (createTrainingDto.getExerciseEntityList() == null) throw new ParameterNullException("Exercício não pode ser vazio");
+            if (createTrainingDto.getUserId() == null) throw new ParameterNullException("Exercício não pode ser vazio");
+
+            UserEntity user = userService.getUserById(createTrainingDto.getUserId());
+
+            if (user == null) throw new ParameterNullException("Usuário não encontrado");
+
             TrainingEntity trainingEntity = new TrainingEntity();
             trainingEntity.setUser(user);
-            trainingEntity.setDayOfWeek(dayOfWeek);
+            trainingEntity.setDayOfWeek(createTrainingDto.getDayOfWeek());
 
-            exerciseEntityList.forEach(exercise -> exercise.setTraining(trainingEntity));
+            createTrainingDto.getExerciseEntityList().forEach(exercise -> exercise.setTraining(trainingEntity));
 
             trainingRepository.save(trainingEntity);
 
-            exerciseRepository.saveAll(exerciseEntityList);
+            exerciseRepository.saveAll(createTrainingDto.getExerciseEntityList());
 
             return ResponseEntity
                     .status(HttpStatus.OK)

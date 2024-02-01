@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -21,10 +22,10 @@ public class TrainingEntity extends BaseEntity{
 
 
     @Column(name = "day_of_week")
-    private String dayOfWeek;
+    private LocalDate dayOfWeek;
 
     public TrainingEntity() {}
-    public TrainingEntity(UserEntity user, String dayOfWeek) {
+    public TrainingEntity(UserEntity user, LocalDate dayOfWeek) {
         this.user = user;
         this.dayOfWeek = dayOfWeek;
     }

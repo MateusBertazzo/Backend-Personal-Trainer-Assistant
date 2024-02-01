@@ -1,5 +1,6 @@
 package br.com.apppersonal.apppersonal.controller;
 
+import br.com.apppersonal.apppersonal.model.Dto.CreateTrainingDto;
 import br.com.apppersonal.apppersonal.model.Dto.TrainingExercicesDto;
 import br.com.apppersonal.apppersonal.model.entitys.ExerciseEntity;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
@@ -9,6 +10,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import br.com.apppersonal.apppersonal.service.TrainingDayWeekService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -23,13 +25,10 @@ public class TrainingDayWeekController {
         this.apiResponse = apiResponse;
     }
 
-    @PostMapping("/create/{userId}")
+    @PostMapping("/create/")
     @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
-    public ResponseEntity<ApiResponse> createTrainingDayWeek(@PathVariable Long userId,
-                                                @RequestParam String dayOfWeek,
-                                                @RequestBody List<ExerciseEntity> exerciseEntity) {
-       return apiResponse.request
-               (trainingDayWeekService.createTrainingDayWeek(userId, dayOfWeek, exerciseEntity));
+    public ResponseEntity<ApiResponse> createTrainingDayWeek(@RequestBody CreateTrainingDto createTrainingDto) {
+       return apiResponse.request(trainingDayWeekService.createTrainingDayWeek(createTrainingDto));
     }
 
     @GetMapping("/get/{trainingId}")

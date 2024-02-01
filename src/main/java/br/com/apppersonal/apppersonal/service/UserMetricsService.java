@@ -28,10 +28,15 @@ public class UserMetricsService {
             throw new ParameterNullException();
         }
 
-        UserMetricsEntity userMetrics = userMetricsRepository.findById(userMetricsEntity.getUser().getId())
-                .orElseThrow(NotFoundUserMetrics::new);
 
         try {
+            UserMetricsEntity userMetrics = userMetricsRepository.findById(userMetricsEntity.getUser().getId())
+                    .orElseThrow(NotFoundUserMetrics::new);
+
+            if (userMetrics.getUser().getDeleted()) {
+                throw new UpdateUserMetricsException("Usuário deletado");
+            }
+
             userMetrics.setDataStart(LocalDate.now());
             userMetrics.setWeight(userMetricsEntity.getWeight());
             userMetrics.setHeight(userMetricsEntity.getHeight());
@@ -55,7 +60,16 @@ public class UserMetricsService {
                                     "Medidas atualizados com sucesso!"
                             )
                     );
-        } catch (Exception e) {
+        } catch (UpdateUserMetricsException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
+        }  catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(

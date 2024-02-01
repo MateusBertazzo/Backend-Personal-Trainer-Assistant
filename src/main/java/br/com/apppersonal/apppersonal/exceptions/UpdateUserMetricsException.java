@@ -4,4 +4,8 @@ public class UpdateUserMetricsException extends RuntimeException {
     public UpdateUserMetricsException() {
         super("Error updating data");
     }
+
+    public UpdateUserMetricsException(String message) {
+        super(message);
+    }
 }
