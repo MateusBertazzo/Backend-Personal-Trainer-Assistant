@@ -4,9 +4,11 @@ import br.com.apppersonal.apppersonal.model.entitys.TrainingEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public interface TrainingRepository extends JpaRepository<TrainingEntity, Long> {
     List<TrainingEntity> findAllByUser(UserEntity user);
 
