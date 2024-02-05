@@ -69,7 +69,7 @@ public class UserController  {
             additionalData.put("role", principal.getRole().ordinal());
             additionalData.put("userId", principal.getId());
 
-            String token = tokenService.generateToken(additionalData);
+            String token = tokenService.generateToken(userDetails, additionalData);
 
             return apiResponse.request(
                     ResponseEntity

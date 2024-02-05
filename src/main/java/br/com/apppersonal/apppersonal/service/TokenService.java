@@ -19,12 +19,12 @@ public class TokenService {
     /**
      * Generate a new token.
      **/
-    public String generateToken(Map<String, Object> additionalData) {
+    public String generateToken(UserDetails userDetails, Map<String, Object> additionalData) {
         Algorithm algorithm = Algorithm.HMAC256(secret);
 
         return JWT.create()
                 .withIssuer("app-personal")
-                // .withSubject(userDetails.getUsername())
+                .withSubject(userDetails.getUsername())
                 .withPayload(additionalData)
                 .withExpiresAt(Date.from(generateExpirationDate()))
                 .sign(algorithm);
