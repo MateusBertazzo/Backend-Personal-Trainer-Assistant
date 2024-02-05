@@ -1,6 +1,5 @@
 package br.com.apppersonal.apppersonal.controller;
 
-import br.com.apppersonal.apppersonal.exceptions.UnauthorizedUserException;
 import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserCreateDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserDto;
@@ -8,6 +7,10 @@ import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.service.TokenService;
 import br.com.apppersonal.apppersonal.service.UserService;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -60,7 +63,13 @@ public class UserController  {
 
             UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
-            String token = tokenService.generateToken(userDetails);
+            Map<String, Object> additionalData = new HashMap<>();
+            additionalData.put("username", userDetails.getUsername());
+            additionalData.put("email", principal.getEmail());
+            additionalData.put("role", principal.getRole().ordinal());
+            additionalData.put("userId", principal.getId());
+
+            String token = tokenService.generateToken(additionalData);
 
             return apiResponse.request(
                     ResponseEntity
