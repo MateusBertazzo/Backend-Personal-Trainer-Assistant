@@ -2,6 +2,7 @@ package br.com.apppersonal.apppersonal.controller;
 
 import br.com.apppersonal.apppersonal.exceptions.UnauthorizedUserException;
 import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordDto;
+import br.com.apppersonal.apppersonal.model.Dto.UserCreateDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.service.TokenService;
@@ -40,8 +41,8 @@ public class UserController  {
 
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<ApiResponse> createUser(@RequestBody UserEntity userEntity) {
-        return apiResponse.request(userService.createUser(userEntity));
+    public ResponseEntity<ApiResponse> createUser(@RequestBody UserCreateDto userCreateDto) {
+        return apiResponse.request(userService.createUser(userCreateDto));
     }
 
     @PostMapping("/auth/login")

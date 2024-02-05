@@ -2,6 +2,7 @@ package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.*;
 import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordDto;
+import br.com.apppersonal.apppersonal.model.Dto.UserCreateDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
@@ -47,15 +48,22 @@ public class UserService implements UserDetailsService {
         this.verificationCodeRepository = verificationCodeRepository;
     }
 
-    public ResponseEntity<?> createUser(UserEntity userParameter) {
-        if (userParameter == null) throw new ParameterNullException();
+    public ResponseEntity<?> createUser(UserCreateDto userParameterDto) {
 
         try {
+
+            if (userParameterDto == null) throw new ParameterNullException();
+
+//            Verifico se a senha passada é igual a confirmação de senha
+            if (!userParameterDto.getPassword().equals(userParameterDto.getConfirmPassword())) {
+               throw new PasswordNotMatchException();
+            }
+
             UserEntity userEntity = new UserEntity();
-            String hashedPassword = new BCryptPasswordEncoder().encode(userParameter.getPassword());
+            String hashedPassword = new BCryptPasswordEncoder().encode(userParameterDto.getPassword());
             userEntity.setPassword(hashedPassword);
-            userEntity.setEmail(userParameter.getEmail());
-            userEntity.setUsername(userParameter.getUsername());
+            userEntity.setEmail(userParameterDto.getEmail());
+            userEntity.setUsername(userParameterDto.getUsername());
             userEntity.setRole(Role.USER);
 
             UserEntity saveUser = userRepository.save(userEntity);
@@ -81,7 +89,17 @@ public class UserService implements UserDetailsService {
                             )
                     );
 
-        } catch (Exception e) {
+        } catch (ParameterNullException e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
+        }
+        catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
