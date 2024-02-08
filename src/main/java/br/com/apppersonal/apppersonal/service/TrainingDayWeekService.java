@@ -2,6 +2,7 @@ package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.ExercisesNotFound;
 import br.com.apppersonal.apppersonal.exceptions.ParameterNullException;
+import br.com.apppersonal.apppersonal.exceptions.UserNotFoundException;
 import br.com.apppersonal.apppersonal.model.Dto.CreateTrainingDto;
 import br.com.apppersonal.apppersonal.model.Dto.TrainingExercicesDto;
 import br.com.apppersonal.apppersonal.model.entitys.ExerciseEntity;
@@ -37,13 +38,13 @@ public class TrainingDayWeekService {
     public ResponseEntity<?> createTrainingDayWeek(CreateTrainingDto createTrainingDto) {
         try {
 
-            if (createTrainingDto.getDayOfWeek() == null) throw new ParameterNullException("Exercício não pode ser vazio");
-            if (createTrainingDto.getExerciseEntityList() == null) throw new ParameterNullException("Exercício não pode ser vazio");
-            if (createTrainingDto.getUserId() == null) throw new ParameterNullException("Exercício não pode ser vazio");
+            if (createTrainingDto.getDayOfWeek() == null) throw new ParameterNullException("Dia da semana não pode ser vazio");
+            if (createTrainingDto.getExerciseEntityList() == null) throw new ParameterNullException("Exercícios não podem ser vazios");
+            if (createTrainingDto.getUserId() == null) throw new ParameterNullException("Usuário não pode ser vazio");
 
             UserEntity user = userService.getUserById(createTrainingDto.getUserId());
 
-            if (user == null) throw new ParameterNullException("Usuário não encontrado");
+            if (user == null) throw new UserNotFoundException("Usuário não encontrado");
 
             TrainingEntity trainingEntity = new TrainingEntity();
             trainingEntity.setUser(user);
@@ -79,7 +80,7 @@ public class TrainingDayWeekService {
 
     public ResponseEntity<?> getExerciseByTrainingId(Long trainingId) {
         try {
-            if (trainingId == null) throw new ParameterNullException();
+            if (trainingId == null) throw new ParameterNullException("Identificador do treino não informado");
 
             // verificar se o treino não está deletado
 
