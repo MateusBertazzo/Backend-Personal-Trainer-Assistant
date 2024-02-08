@@ -37,21 +37,21 @@ public class ProfileService {
     }
 
     public ResponseEntity<?> updateProfile(Long id, ProfileDto profileDto) {
-        if (id == null) throw new ParameterNullException();
-        if (profileDto == null) throw new ParameterNullException();
-
         try {
+            if (id == null) throw new UpdateProfileException("Identificador do perfil não informado");
+            if (profileDto == null) throw new UpdateProfileException("Dados do perfil não informados");
+
             String authenticatedUsername = ((UserDetails) SecurityContextHolder.getContext()
                     .getAuthentication().getPrincipal()).getUsername();
 
             ProfileEntity profileEntity = profileRepository.findByIdAndNotDeleted(id);
 
-            if (profileEntity == null) throw new NotFoundProfileException();
+            if (profileEntity == null) throw new UpdateProfileException("Perfil não encontrado");
 
             if (profileEntity.getUser().getDeleted()) throw new UpdateProfileException("Usuário deletado");
 
             if (!authenticatedUsername.equals(profileEntity.getUser().getUsername())) {
-                throw new UnauthorizedProfileUpdateException();
+                throw new UpdateProfileException("Usuário não autorizado a atualizar este perfil");
             }
 
             profileEntity.setFoto(profileDto.getFoto());
@@ -88,7 +88,7 @@ public class ProfileService {
             List<ProfileEntity> profileEntityList = profileRepository.findAllNotDeleted();
 
             if (profileEntityList.isEmpty()) {
-                throw new NotFoundProfileException();
+                throw new NotFoundProfileException("Nenhum perfil encontrado");
             }
 
 
@@ -120,7 +120,7 @@ public class ProfileService {
 
     private UserProfileDto convertToDTO(ProfileEntity profileEntity) {
         if (profileEntity == null) {
-            throw new ParameterNullException();
+            throw new ParameterNullException("Perfil não informado");
         }
 
         UserProfileDto profileDTO = new UserProfileDto();
@@ -145,7 +145,7 @@ public class ProfileService {
 
             ProfileEntity profile = profileRepository.findByIdAndNotDeleted(id);
 
-            if (profile == null) throw new NotFoundProfileException("Perfil Deletado");
+            if (profile == null) throw new NotFoundProfileException("Perfil não encontrado");
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -157,16 +157,7 @@ public class ProfileService {
                             )
                     );
 
-        } catch (ParameterNullException e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(
-                            new ApiResponse(
-                                    false,
-                                    e.getMessage()
-                            )
-                    );
-        }  catch (NotFoundProfileException e) {
+        } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(

@@ -29,11 +29,10 @@ public class UserGaleryService {
     }
 
     public ResponseEntity<?> postFoto(Long userId, String urlFoto) {
-        if (userId == null || urlFoto == null) {
-            throw new ParameterNullException();
-        }
-
         try {
+            if (userId == null || urlFoto == null) {
+                throw new ParameterNullException("Parâmetros não informados");
+            }
 
             UserEntity user = userService.getUserById(userId);
 
@@ -65,17 +64,16 @@ public class UserGaleryService {
     }
 
     public ResponseEntity<?> getFotosById(Long userId) {
-
         try {
 
             if (userId == null) {
-                throw new ParameterNullException();
+                throw new ParameterNullException("Usuário não informado");
             }
 
             List<UserGaleryEntity> userGalery = userGaleryRepository.findAllByUserId(userId);
 
             if (userGalery.isEmpty()) {
-                throw new UserNotFoundException();
+                throw new UserNotFoundException("Fotos não encontradas para o usuário informado");
             }
 
             var responseGalery = userGalery.stream()

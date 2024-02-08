@@ -43,11 +43,6 @@ public class ControllerExceptionsAdvice {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
     }
 
-    @ExceptionHandler(UpdateUserMetricsException.class)
-    public ResponseEntity<String> updateUserMetricsExceptionHandler(UpdateUserMetricsException e) {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-    }
-
     @ExceptionHandler(ParameterNullException.class)
     public ResponseEntity<String> parameterNullExceptionHandler(ParameterNullException e) {
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());

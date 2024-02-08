@@ -2,7 +2,6 @@ package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.NotFoundUserMetrics;
 import br.com.apppersonal.apppersonal.exceptions.ParameterNullException;
-import br.com.apppersonal.apppersonal.exceptions.UpdateUserMetricsException;
 import br.com.apppersonal.apppersonal.model.Dto.UserMetricsDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.UserMetricsRepository;
@@ -24,17 +23,17 @@ public class UserMetricsService {
     }
 
     public ResponseEntity<?> updateUserMetrics(UserMetricsEntity userMetricsEntity) {
-        if (userMetricsEntity == null ) {
-            throw new ParameterNullException();
-        }
-
-
         try {
+
+            if (userMetricsEntity == null ) {
+                throw new ParameterNullException("Parâmetros não informados");
+            }
+
             UserMetricsEntity userMetrics = userMetricsRepository.findById(userMetricsEntity.getUser().getId())
                     .orElseThrow(NotFoundUserMetrics::new);
 
             if (userMetrics.getUser().getDeleted()) {
-                throw new UpdateUserMetricsException("Usuário deletado");
+                throw new NotFoundUserMetrics("Usuário deletado");
             }
 
             userMetrics.setDataStart(LocalDate.now());
@@ -60,7 +59,7 @@ public class UserMetricsService {
                                     "Medidas atualizados com sucesso!"
                             )
                     );
-        } catch (UpdateUserMetricsException e) {
+        } catch (NotFoundUserMetrics e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
@@ -84,13 +83,13 @@ public class UserMetricsService {
     public ResponseEntity<?> getUserMetricsByUserId(Long userId) {
         try {
             if (userId == null) {
-                throw new ParameterNullException();
+                throw new ParameterNullException("Usuário não informado");
             }
 
             UserMetricsEntity userMetrics = userMetricsRepository.findByUserId(userId);
 
             if (userMetrics == null) {
-                throw new NotFoundUserMetrics();
+                throw new NotFoundUserMetrics("Medidas não encontradas para este usuario");
             }
 
             var metrics = new UserMetricsDto(
