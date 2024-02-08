@@ -52,11 +52,11 @@ public class UserService implements UserDetailsService {
 
         try {
 
-            if (userParameterDto == null) throw new ParameterNullException();
+            if (userParameterDto == null) throw new ParameterNullException("Parâmetros não informados");
 
 //            Verifico se a senha passada é igual a confirmação de senha
             if (!userParameterDto.getPassword().equals(userParameterDto.getConfirmPassword())) {
-               throw new PasswordNotMatchException();
+               throw new PasswordNotMatchException("Senhas não conferem");
             }
 
             UserEntity userEntity = new UserEntity();
@@ -89,17 +89,7 @@ public class UserService implements UserDetailsService {
                             )
                     );
 
-        } catch (ParameterNullException e) {
-            return ResponseEntity
-                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(
-                            new ApiResponse(
-                                    false,
-                                    e.getMessage()
-                            )
-                    );
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
@@ -113,16 +103,16 @@ public class UserService implements UserDetailsService {
 
     public UserEntity getUserById(Long id) {
         try {
-            if (id == null) throw new ParameterNullException();
+            if (id == null) throw new ParameterNullException("Identificador do usuário não informado");
 
             UserEntity user =  userRepository.findByIdAndNotDeleted(id);
 
-            if (user == null) throw new UserNotFoundException();
+            if (user == null) throw new UserNotFoundException("Usuário não encontrado");
 
             return user;
 
-        } catch (ParameterNullException e) {
-            throw new ParameterNullException();
+        } catch (Exception e) {
+            throw new UserNotFoundException(e.getMessage());
         }
     }
 
@@ -139,12 +129,12 @@ public class UserService implements UserDetailsService {
 
     public ResponseEntity<?> deleteUser(Long id) {
         try {
-            if (id == null) throw new ParameterNullException();
+            if (id == null) throw new ParameterNullException("Identificador do usuário não informado");
 
             UserEntity user = userRepository.findByIdAndNotDeleted(id);
 
 
-            if (user == null) throw new UserNotFoundException();
+            if (user == null) throw new UserNotFoundException("Usuário não encontrado");
 
             user.getProfile().setDeleted(true);
             user.getUserMetrics().setDeleted(true);
@@ -181,7 +171,7 @@ public class UserService implements UserDetailsService {
     public ResponseEntity<?> resetPassword(ResetPasswordDto resetPasswordDto, Long id) {
         try {
             if (resetPasswordDto.getNewPassword() == null || resetPasswordDto.getOldPassword() == null) {
-                throw new ParameterNullException();
+                throw new ParameterNullException("Parâmetros não informados");
             }
 
             String authenticatedUsername = ((UserDetails) SecurityContextHolder.getContext()
@@ -189,22 +179,26 @@ public class UserService implements UserDetailsService {
 
             UserEntity user = userRepository.findByIdAndNotDeleted(id);
 
-            if (user == null) throw new UserNotFoundException();
+            if (user == null) throw new UserNotFoundException("Usuário não encontrado");
 
+            // Verifico se o usuário autenticado é o mesmo que está tentando alterar a senha
             if (!authenticatedUsername.equals(user.getUsername())) {
-                throw new UnauthorizedUserException();
+                throw new UnauthorizedUserException("Usuário não autorizado a alterar a senha");
             }
 
             BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
+            // Verifico se a senha antiga é igual a senha cadastrada no banco
             if (!passwordEncoder.matches(resetPasswordDto.getOldPassword(), user.getPassword())) {
-                throw new UnauthorizedUserException();
+                throw new UnauthorizedUserException("Senha incorreta");
             }
 
+            // Verifico se a nova senha é igual a confirmação de senha
             if (!resetPasswordDto.getNewPassword().equals(resetPasswordDto.getConfirmPassword())) {
-                throw new PasswordNotMatchException();
+                throw new PasswordNotMatchException("Senhas não conferem");
             }
 
+            // Criptografo a nova senha e salvo no banco
             String hashedNewPassword = new BCryptPasswordEncoder().encode(resetPasswordDto.getNewPassword());
             user.setPassword(hashedNewPassword);
 
