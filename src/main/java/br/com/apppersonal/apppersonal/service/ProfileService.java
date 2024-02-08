@@ -88,7 +88,7 @@ public class ProfileService {
             List<ProfileEntity> profileEntityList = profileRepository.findAllNotDeleted();
 
             if (profileEntityList.isEmpty()) {
-                throw new NotFoundProfileException();
+                throw new NotFoundProfileException("Nenhum perfil encontrado");
             }
 
 
@@ -120,7 +120,7 @@ public class ProfileService {
 
     private UserProfileDto convertToDTO(ProfileEntity profileEntity) {
         if (profileEntity == null) {
-            throw new ParameterNullException();
+            throw new ParameterNullException("Perfil não informado");
         }
 
         UserProfileDto profileDTO = new UserProfileDto();
