@@ -24,6 +24,9 @@ public class UserEntity extends BaseEntity implements UserDetails, GrantedAuthor
 
     private Role role;
 
+    @Column(name = "personal_trainer_id")
+    private Long personalTrainerId;
+
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private ProfileEntity profile;
 
