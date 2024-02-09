@@ -29,7 +29,7 @@ public class PersonalService {
                 throw new UserNotFoundException("Usuário não encontrado");
             }
 
-            aluno.setPersonalTrainerId(personalId);
+            aluno.setPersonalTrainerId(personalId); // Associa o usuário ao personal trainer
             userRepository.save(aluno);
 
             return ResponseEntity
@@ -38,6 +38,38 @@ public class PersonalService {
                             new ApiResponse(
                                     true,
                                     "Usuário associado com sucesso ao personal trainer"
+                            )
+                    );
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
+        }
+    }
+    public ResponseEntity<?> dissociateUserFromPersonal(Long userId) {
+        try {
+            if (userId == null) throw new ParameterNullException("Identificador do usuário não informado");
+
+            UserEntity aluno = userRepository.findByIdAndRole(userId, Role.USER);
+
+            if (aluno == null) {
+                throw new UserNotFoundException("Usuário não encontrado");
+            }
+
+            aluno.setPersonalTrainerId(null); // Remove a associação com o personal trainer
+            userRepository.save(aluno);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Usuário dissociado com sucesso do personal trainer"
                             )
                     );
         } catch (Exception e) {

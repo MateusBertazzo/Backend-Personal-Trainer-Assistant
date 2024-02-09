@@ -26,4 +26,10 @@ public class PersonalController {
     public ResponseEntity<ApiResponse> associateUserWithPersonal(@PathVariable Long userId, @PathVariable Long personalId) {
         return apiResponse.request(personalService.associateUserWithPersonal(userId, personalId));
     }
+
+    @PostMapping("/{userId}/dissociate-user")
+    @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> dissociateUserFromPersonal(@PathVariable Long userId) {
+        return apiResponse.request(personalService.dissociateUserFromPersonal(userId));
+    }
 }
