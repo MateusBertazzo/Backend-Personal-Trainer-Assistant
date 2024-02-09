@@ -1,6 +1,7 @@
 package br.com.apppersonal.apppersonal.model.entitys;
 
 import br.com.apppersonal.apppersonal.security.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -23,7 +24,7 @@ public class UserEntity extends BaseEntity implements UserDetails, GrantedAuthor
     private String password;
 
     private Role role;
-
+    @JsonIgnore
     @Column(name = "personal_trainer_id")
     private Long personalTrainerId;
 

@@ -2,18 +2,24 @@ package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.ParameterNullException;
 import br.com.apppersonal.apppersonal.exceptions.UserNotFoundException;
+import br.com.apppersonal.apppersonal.model.Dto.UserPersonalDto;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.UserRepository;
 import br.com.apppersonal.apppersonal.security.Role;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class PersonalService {
     private UserRepository userRepository;
 
+    @Autowired
     public PersonalService(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
@@ -23,14 +29,14 @@ public class PersonalService {
             if (userId == null) throw new ParameterNullException("Identificador do usuário não informado");
             if (personalId == null) throw new ParameterNullException("Identificador do personal trainer não informado");
 
-            UserEntity aluno = userRepository.findByIdAndRole(userId, Role.USER);
+            UserEntity students = userRepository.findByIdAndRole(userId, Role.USER);
 
-            if (aluno == null) {
+            if (students == null) {
                 throw new UserNotFoundException("Usuário não encontrado");
             }
 
-            aluno.setPersonalTrainerId(personalId); // Associa o usuário ao personal trainer
-            userRepository.save(aluno);
+            students.setPersonalTrainerId(personalId); // Associa o usuário ao personal trainer
+            userRepository.save(students);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -55,14 +61,14 @@ public class PersonalService {
         try {
             if (userId == null) throw new ParameterNullException("Identificador do usuário não informado");
 
-            UserEntity aluno = userRepository.findByIdAndRole(userId, Role.USER);
+            UserEntity students = userRepository.findByIdAndRole(userId, Role.USER);
 
-            if (aluno == null) {
+            if (students == null) {
                 throw new UserNotFoundException("Usuário não encontrado");
             }
 
-            aluno.setPersonalTrainerId(null); // Remove a associação com o personal trainer
-            userRepository.save(aluno);
+            students.setPersonalTrainerId(null); // Remove a associação com o personal trainer
+            userRepository.save(students);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -74,6 +80,48 @@ public class PersonalService {
                     );
         } catch (Exception e) {
             return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
+        }
+    }
+
+    public ResponseEntity<?> listStudentsByPersonal(Long personalId) {
+        try {
+            if (personalId == null) throw new ParameterNullException("Identificador do personal trainer não informado");
+
+            // busca por todos users com role USER e que tenham o personal trainer id associado
+            List<UserEntity> students = userRepository.findByRoleAndPersonalTrainerId(Role.USER, personalId);
+
+            if (students.isEmpty()) {
+                throw new UserNotFoundException("Nenhum aluno encontrado");
+            }
+
+            List<UserPersonalDto> listStudents = students.stream().map(
+                    student -> new UserPersonalDto(
+                            student.getId(),
+                            student.getUsername(),
+                            student.getEmail(),
+                            student.getRole(),
+                            student.getProfile().getNumeroTelefone()
+                    )
+            ).collect(Collectors.toList());
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Lista de alunos retornada com sucesso",
+                                    listStudents
+                            )
+                    );
+        }   catch (Exception e) {
+                return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
                             new ApiResponse(

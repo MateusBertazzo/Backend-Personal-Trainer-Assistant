@@ -32,4 +32,10 @@ public class PersonalController {
     public ResponseEntity<ApiResponse> dissociateUserFromPersonal(@PathVariable Long userId) {
         return apiResponse.request(personalService.dissociateUserFromPersonal(userId));
     }
+
+    @GetMapping("/get-all/students-by-personal/{personalId}")
+    @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse> getAllStudentsByPersonal(@PathVariable Long personalId) {
+        return apiResponse.request(personalService.listStudentsByPersonal(personalId));
+    }
 }
