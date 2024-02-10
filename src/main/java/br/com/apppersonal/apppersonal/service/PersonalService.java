@@ -24,18 +24,25 @@ public class PersonalService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Método para asssociação de um personal trainer a um aluno
+     *
+     * @param  Long userId
+     * @param  Long personalId
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> associateUserWithPersonal(Long userId, Long personalId) {
         try {
             if (userId == null) throw new ParameterNullException("Identificador do usuário não informado");
+
             if (personalId == null) throw new ParameterNullException("Identificador do personal trainer não informado");
 
             UserEntity students = userRepository.findByIdAndRole(userId, Role.USER);
 
-            if (students == null) {
-                throw new UserNotFoundException("Usuário não encontrado");
-            }
+            if (students == null) throw new UserNotFoundException("Usuário não encontrado");
 
-            students.setPersonalTrainerId(personalId); // Associa o usuário ao personal trainer
+            // Associa o usuário ao personal trainer
+            students.setPersonalTrainerId(personalId);
             userRepository.save(students);
 
             return ResponseEntity
@@ -57,17 +64,23 @@ public class PersonalService {
                     );
         }
     }
+
+    /**
+     * Método para desassociação de um personal trainer a um aluno
+     *
+     * @param  Long userId
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> dissociateUserFromPersonal(Long userId) {
         try {
             if (userId == null) throw new ParameterNullException("Identificador do usuário não informado");
 
             UserEntity students = userRepository.findByIdAndRole(userId, Role.USER);
 
-            if (students == null) {
-                throw new UserNotFoundException("Usuário não encontrado");
-            }
+            if (students == null) throw new UserNotFoundException("Usuário não encontrado");
 
-            students.setPersonalTrainerId(null); // Remove a associação com o personal trainer
+            // Remove a associação com o personal trainer
+            students.setPersonalTrainerId(null);
             userRepository.save(students);
 
             return ResponseEntity
@@ -90,6 +103,13 @@ public class PersonalService {
         }
     }
 
+    /**
+     * Método para listar alunos associados a um personal trainer
+     *
+     * @param  Long personalId
+     * @return  ResponseEntity
+     */
+
     public ResponseEntity<?> listStudentsByPersonal(Long personalId) {
         try {
             if (personalId == null) throw new ParameterNullException("Identificador do personal trainer não informado");
@@ -97,19 +117,21 @@ public class PersonalService {
             // busca por todos users com role USER e que tenham o personal trainer id associado
             List<UserEntity> students = userRepository.findByRoleAndPersonalTrainerId(Role.USER, personalId);
 
-            if (students.isEmpty()) {
-                throw new UserNotFoundException("Nenhum aluno encontrado");
-            }
+            if (students.isEmpty()) throw new UserNotFoundException("Nenhum aluno encontrado");
 
-            List<UserPersonalDto> listStudents = students.stream().map(
-                    student -> new UserPersonalDto(
-                            student.getId(),
-                            student.getUsername(),
-                            student.getEmail(),
-                            student.getRole(),
-                            student.getProfile().getNumeroTelefone()
-                    )
-            ).collect(Collectors.toList());
+            List<UserPersonalDto> listStudents =
+                    students
+                            .stream()
+                            .map(
+                                    student -> new UserPersonalDto(
+                                            student.getId(),
+                                            student.getUsername(),
+                                            student.getEmail(),
+                                            student.getRole(),
+                                            student.getProfile().getNumeroTelefone()
+                                    )
+                            )
+                            .collect(Collectors.toList());
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -120,8 +142,8 @@ public class PersonalService {
                                     listStudents
                             )
                     );
-        }   catch (Exception e) {
-                return ResponseEntity
+        } catch (Exception e) {
+            return ResponseEntity
                     .status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(
                             new ApiResponse(
