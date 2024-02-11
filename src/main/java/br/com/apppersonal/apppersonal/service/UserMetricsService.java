@@ -22,19 +22,22 @@ public class UserMetricsService {
         this.userMetricsRepository = userMetricsRepository;
     }
 
+    /**
+     * Método para atualizar as medidas do usuário
+     *
+     * @param   UserMetricsEntity userMetricsEntity
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> updateUserMetrics(UserMetricsEntity userMetricsEntity) {
         try {
 
-            if (userMetricsEntity == null ) {
-                throw new ParameterNullException("Parâmetros não informados");
-            }
+            if (userMetricsEntity == null ) throw new ParameterNullException("Parâmetros não informados");
 
+            // busco o usuario pelo id
             UserMetricsEntity userMetrics = userMetricsRepository.findById(userMetricsEntity.getUser().getId())
                     .orElseThrow(NotFoundUserMetrics::new);
-
-            if (userMetrics.getUser().getDeleted()) {
-                throw new NotFoundUserMetrics("Usuário deletado");
-            }
+            // verifico se o usuario foi deletado
+            if (userMetrics.getUser().getDeleted()) throw new NotFoundUserMetrics("Usuário deletado");
 
             userMetrics.setDataStart(LocalDate.now());
             userMetrics.setWeight(userMetricsEntity.getWeight());
@@ -80,17 +83,19 @@ public class UserMetricsService {
         }
     }
 
+    /**
+     * Método para retornar as medidas do usuário pelo id
+     *
+     * @param   Long userId
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> getUserMetricsByUserId(Long userId) {
         try {
-            if (userId == null) {
-                throw new ParameterNullException("Usuário não informado");
-            }
+            if (userId == null) throw new ParameterNullException("Usuário não informado");
 
             UserMetricsEntity userMetrics = userMetricsRepository.findByUserId(userId);
 
-            if (userMetrics == null) {
-                throw new NotFoundUserMetrics("Medidas não encontradas para este usuario");
-            }
+            if (userMetrics == null) throw new NotFoundUserMetrics("Medidas não encontradas para este usuario");
 
             var metrics = new UserMetricsDto(
                     userMetrics.getId(),
