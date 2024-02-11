@@ -28,11 +28,18 @@ public class UserGaleryService {
         this.userService = userService;
     }
 
+    /**
+     * Método para salvar a foto do usuário
+     *
+     * @param   Long userId
+     * @param   String urlFoto
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> postFoto(Long userId, String urlFoto) {
+
         try {
-            if (userId == null || urlFoto == null) {
-                throw new ParameterNullException("Parâmetros não informados");
-            }
+
+            if (userId == null || urlFoto == null) throw new ParameterNullException("Parâmetros não informados");
 
             UserEntity user = userService.getUserById(userId);
 
@@ -63,22 +70,24 @@ public class UserGaleryService {
         }
     }
 
+    /**
+     * Método para buscar as fotos do usuário pelo id
+     *
+     * @param   Long userId
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> getFotosById(Long userId) {
         try {
-
-            if (userId == null) {
-                throw new ParameterNullException("Usuário não informado");
-            }
+            if (userId == null) throw new ParameterNullException("Usuário não informado");
 
             List<UserGaleryEntity> userGalery = userGaleryRepository.findAllByUserId(userId);
 
-            if (userGalery.isEmpty()) {
-                throw new UserNotFoundException("Fotos não encontradas para o usuário informado");
-            }
+            if (userGalery.isEmpty()) throw new UserNotFoundException("Fotos não encontradas para o usuário informado");
 
-            var responseGalery = userGalery.stream()
-                    .map(this::convertToDTO)
-                    .collect(Collectors.toList());
+            var responseGalery = userGalery
+                    .stream()
+                        .map(this::convertToDTO)
+                        .collect(Collectors.toList());
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -101,6 +110,12 @@ public class UserGaleryService {
         }
     }
 
+    /**
+     * Método para converter uma entidade de galeria de usuário (UserGaleryEntity) em um objeto de transferência de dados de galeria de usuário (GaleryDto).
+     *
+     * @param   UserGaleryEntity userGaleryEntity
+     * @return  GaleryDto
+     */
     public GaleryDto convertToDTO(UserGaleryEntity userGaleryEntity) {
 
         GaleryDto userGalleryDTO = new GaleryDto();
