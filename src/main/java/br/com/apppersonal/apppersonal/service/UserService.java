@@ -48,13 +48,19 @@ public class UserService implements UserDetailsService {
         this.verificationCodeRepository = verificationCodeRepository;
     }
 
+    /**
+     * Método para criar um usuário
+     *
+     * @param   UserCreateDto userParameterDto
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> createUser(UserCreateDto userParameterDto) {
 
         try {
 
             if (userParameterDto == null) throw new ParameterNullException("Parâmetros não informados");
 
-//            Verifico se a senha passada é igual a confirmação de senha
+            //Verifico se a senha passada é igual a confirmação de senha
             if (!userParameterDto.getPassword().equals(userParameterDto.getConfirmPassword())) {
                throw new PasswordNotMatchException("Senhas não conferem");
             }
@@ -101,6 +107,12 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    /**
+     * Método para buscar o usuário pelo id
+     *
+     * @param   Long id
+     * @return  UserEntity
+     */
     public UserEntity getUserById(Long id) {
         try {
             if (id == null) throw new ParameterNullException("Identificador do usuário não informado");
@@ -127,6 +139,12 @@ public class UserService implements UserDetailsService {
         return user;
     }
 
+/**
+     * Método para deletar usuario
+     *
+     * @param   Long id
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> deleteUser(Long id) {
         try {
             if (id == null) throw new ParameterNullException("Identificador do usuário não informado");
@@ -139,12 +157,14 @@ public class UserService implements UserDetailsService {
             user.getProfile().setDeleted(true);
             user.getUserMetrics().setDeleted(true);
             user.getVerificationCode().setDeleted(true);
-            user.getTraining().forEach(training -> training.setDeleted(true));
-            user.getTraining().forEach(training ->
-                    training.getExercise()
-                                    .forEach(exercise -> exercise.setDeleted(true)));
-            user.setDeleted(true);
 
+            user.getTraining()
+                    .forEach(training -> training.setDeleted(true));
+
+            user.getTraining()
+                    .forEach(training -> training.getExercise().forEach(exercise -> exercise.setDeleted(true)));
+
+            user.setDeleted(true);
 
             userRepository.save(user);
 
@@ -168,8 +188,17 @@ public class UserService implements UserDetailsService {
         }
 
     }
+
+    /**
+     * Método para resetar a senha do usuário
+     *
+     * @param   ResetPasswordDto resetPasswordDto
+     * @param   Long id
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> resetPassword(ResetPasswordDto resetPasswordDto, Long id) {
         try {
+
             if (resetPasswordDto.getNewPassword() == null || resetPasswordDto.getOldPassword() == null) {
                 throw new ParameterNullException("Parâmetros não informados");
             }
