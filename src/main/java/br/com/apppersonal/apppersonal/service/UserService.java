@@ -1,9 +1,9 @@
 package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.*;
+import br.com.apppersonal.apppersonal.model.Dto.EmailRequestDto;
 import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserCreateDto;
-import br.com.apppersonal.apppersonal.model.Dto.UserDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
@@ -15,10 +15,8 @@ import br.com.apppersonal.apppersonal.model.repositorys.VerificationCodeReposito
 import br.com.apppersonal.apppersonal.security.Role;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,6 +24,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.util.Base64;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -35,17 +34,19 @@ public class UserService implements UserDetailsService {
     private final UserRepository userRepository;
     private final ProfileRepository profileRepository;
     private final UserMetricsRepository userMetricsRepository;
-
     private final VerificationCodeRepository verificationCodeRepository;
+    private final EmailService emailService;
 
     @Autowired
     public UserService(UserRepository userRepository, ProfileRepository profileRepository,
                        UserMetricsRepository userMetricsRepository,
-                       VerificationCodeRepository verificationCodeRepository) {
+                       VerificationCodeRepository verificationCodeRepository,
+                       EmailService emailService) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.userMetricsRepository = userMetricsRepository;
         this.verificationCodeRepository = verificationCodeRepository;
+        this.emailService = emailService;
     }
 
     /**
@@ -239,6 +240,53 @@ public class UserService implements UserDetailsService {
                             new ApiResponse(
                                     true,
                                     "Senha alterada com sucesso"
+                            )
+                    );
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
+        }
+    }
+
+    public ResponseEntity<?> resetPasswordForgotRequest(String email) {
+        try {
+
+            if (email == null) throw new ParameterNullException("Email não informado");
+
+            UserEntity user = userRepository.findByEmail(email);
+
+            if (user == null) throw new UserNotFoundException("Usuário não encontrado");
+
+            String generatedCode = UUID.randomUUID().toString();
+
+            user.getVerificationCode().setCode(generatedCode);
+
+            verificationCodeRepository.save(user.getVerificationCode());
+
+            String json = "{\"email\": \"" + user.getEmail() + "\", \"uuid\": \"" + UUID.randomUUID() + "\"}";
+
+            String base64Encoded = Base64.getEncoder().encodeToString(json.getBytes());
+
+            EmailRequestDto emailRequest = new EmailRequestDto();
+
+            emailRequest.setTo(user.getEmail());
+            emailRequest.setSubject("Recuperação de senha");
+            emailRequest.setText("Clique aqui para redefinir sua senha: http://localhost:3000/reset-password?param=" + base64Encoded);
+
+            emailService.sendEmail(emailRequest);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Código de verificação enviado para o email"
                             )
                     );
         } catch (Exception e) {
