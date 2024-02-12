@@ -27,17 +27,24 @@ public class AdminRoleService {
         this.userRepository = userRepository;
     }
 
+    /**
+     * Método para alterar a role do usuário
+     *
+     * @param   Long id
+     * @param   Role newRole
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> ChangeUserRole(Long id, Role newRole) {
         try {
-            if (id == null) throw new ParameterNullException();
-            if (newRole == null) throw new ParameterNullException();
+            if (id == null) throw new ParameterNullException("Identificador do usuário não informado");
+
+            if (newRole == null) throw new ParameterNullException("Nova role não informada");
 
             UserEntity user = userService.getUserById(id);
 
-            if (user == null) throw new UserNotFoundException();
+            if (user == null) throw new UserNotFoundException("Usuário não encontrado");
 
             user.setRole(newRole);
-
             userRepository.save(user);
 
             return ResponseEntity

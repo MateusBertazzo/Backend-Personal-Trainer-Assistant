@@ -36,9 +36,17 @@ public class ProfileService {
         this.profileRepository = profileRepository;
     }
 
+    /**
+     * Método para atualizar o perfil do usuário
+     *
+     * @param   Long id
+     * @param   ProfileDto profileDto
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> updateProfile(Long id, ProfileDto profileDto) {
         try {
             if (id == null) throw new UpdateProfileException("Identificador do perfil não informado");
+
             if (profileDto == null) throw new UpdateProfileException("Dados do perfil não informados");
 
             String authenticatedUsername = ((UserDetails) SecurityContextHolder.getContext()
@@ -82,6 +90,11 @@ public class ProfileService {
         }
     }
 
+    /**
+     * Método para retornar todos os perfis
+     *
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> getAllProfiles() {
 
         try {
@@ -118,10 +131,14 @@ public class ProfileService {
         }
     }
 
+    /**
+     * Método para converter uma entidade de perfil (ProfileEntity) em um objeto de transferência de dados de perfil (UserProfileDto).
+     *
+     * @param   ProfileEntity profileEntity
+     * @return  ResponseEntity
+     */
     private UserProfileDto convertToDTO(ProfileEntity profileEntity) {
-        if (profileEntity == null) {
-            throw new ParameterNullException("Perfil não informado");
-        }
+        if (profileEntity == null) throw new ParameterNullException("Perfil não informado");
 
         UserProfileDto profileDTO = new UserProfileDto();
         UserEntity userEntity = profileEntity.getUser();
@@ -139,6 +156,12 @@ public class ProfileService {
         return profileDTO;
     }
 
+    /**
+     * Método para retornar o perfil do usuário pelo id
+     *
+     * @param   Long id
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> getProfileById(Long id) {
         try {
             if (id == null) throw new ParameterNullException("Identificar do usuário não informado");

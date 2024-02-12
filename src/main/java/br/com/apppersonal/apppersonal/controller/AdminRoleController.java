@@ -24,18 +24,36 @@ public class AdminRoleController {
         this.apiResponse = apiResponse;
     }
 
+    /**
+     * Método para alterar a role do usuário para admin
+     *
+     * @param   Long id
+     * @return  ResponseEntity
+     */
     @PostMapping("/change-role/admin/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ApiResponse> changeRoleAdmin(@PathVariable Long id) {
        return apiResponse.request(adminRoleService.ChangeUserRole(id, Role.ADMIN));
     }
 
+    /**
+     * Método para alterar a role do usuário para personal
+     *
+     * @param   Long id
+     * @return  ResponseEntity
+     */
     @PostMapping("/change-role/personal/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ApiResponse> changeRolePersonal(@PathVariable Long id) {
        return apiResponse.request(adminRoleService.ChangeUserRole(id, Role.PERSONAL));
     }
 
+    /**
+     * Método para alterar a role do usuário para user
+     *
+     * @param   Long id
+     * @return  ResponseEntity
+     */
     @PostMapping("/change-role/user/{id}")
     @ResponseStatus(HttpStatus.OK)
     public ResponseEntity<ApiResponse> changeRoleUser(@PathVariable Long id) {
