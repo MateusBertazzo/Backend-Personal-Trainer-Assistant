@@ -3,6 +3,7 @@ package br.com.apppersonal.apppersonal.service;
 import br.com.apppersonal.apppersonal.exceptions.*;
 import br.com.apppersonal.apppersonal.model.Dto.EmailRequestDto;
 import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordDto;
+import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordForgotDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserCreateDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
@@ -254,7 +255,13 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    public ResponseEntity<?> resetPasswordForgotRequest(String email) {
+    /**
+     * Método para enviar email de recuperação de senha
+     *
+     * @param   String email
+     * @return  ResponseEntity
+     */
+    public ResponseEntity<?> sendEmailForgotPasswordRequest(String email) {
         try {
 
             if (email == null) throw new ParameterNullException("Email não informado");
@@ -263,22 +270,28 @@ public class UserService implements UserDetailsService {
 
             if (user == null) throw new UserNotFoundException("Usuário não encontrado");
 
+            // Gero um código de verificação
             String generatedCode = UUID.randomUUID().toString();
 
+            // Salvo o código de verificação no banco
             user.getVerificationCode().setCode(generatedCode);
 
             verificationCodeRepository.save(user.getVerificationCode());
 
+            // Gero um Json com o email do usuário e o código de verificação
             String json = "{\"email\": \"" + user.getEmail() + "\", \"uuid\": \"" + UUID.randomUUID() + "\"}";
 
+            // Codifico o Json em Base64
             String base64Encoded = Base64.getEncoder().encodeToString(json.getBytes());
 
             EmailRequestDto emailRequest = new EmailRequestDto();
 
+            // Configuro o email
             emailRequest.setTo(user.getEmail());
             emailRequest.setSubject("Recuperação de senha");
             emailRequest.setText("Clique aqui para redefinir sua senha: http://localhost:3000/reset-password?param=" + base64Encoded);
 
+            // Envio o email
             emailService.sendEmail(emailRequest);
 
             return ResponseEntity
@@ -287,6 +300,58 @@ public class UserService implements UserDetailsService {
                             new ApiResponse(
                                     true,
                                     "Código de verificação enviado para o email"
+                            )
+                    );
+        } catch (Exception e) {
+            return ResponseEntity
+                    .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(
+                            new ApiResponse(
+                                    false,
+                                    e.getMessage()
+                            )
+                    );
+        }
+    }
+
+    public ResponseEntity<?> resetPasswordForgot(ResetPasswordForgotDto resetPasswordForgotDto) {
+        try {
+
+            if (resetPasswordForgotDto.getEmail() == null) throw new ParameterNullException("Email não informado");
+
+            if (resetPasswordForgotDto.getNewPassword() == null) throw new ParameterNullException("Senha não informada");
+
+            if (resetPasswordForgotDto.getConfirmPassword() == null) throw new ParameterNullException("Confirmação de senha não informada");
+
+            if (resetPasswordForgotDto.getCode() == null) throw new ParameterNullException("Código de verificação não informado");
+
+            UserEntity user = userRepository.findByEmail(resetPasswordForgotDto.getEmail());
+
+            if (user == null) throw new UserNotFoundException("Usuário não encontrado");
+
+            // Verifico se a nova senha é igual a confirmação de senha
+            if (!resetPasswordForgotDto.getNewPassword().equals(resetPasswordForgotDto.getConfirmPassword())) {
+                throw new PasswordNotMatchException("Senhas não conferem");
+            }
+
+            // verifico se o código de verificação é igual ao código salvo no banco
+            if (!user.getVerificationCode().getCode().equals(resetPasswordForgotDto.getCode())) {
+                throw new UnauthorizedUserException("Código de verificação inválido");
+            }
+
+            String hashedNewPassword = new BCryptPasswordEncoder().encode(resetPasswordForgotDto.getNewPassword());
+
+            user.setPassword(hashedNewPassword);
+            user.getVerificationCode().setCode(null);
+            verificationCodeRepository.save(user.getVerificationCode());
+            userRepository.save(user);
+
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(
+                            new ApiResponse(
+                                    true,
+                                    "Senha alterada com sucesso"
                             )
                     );
         } catch (Exception e) {

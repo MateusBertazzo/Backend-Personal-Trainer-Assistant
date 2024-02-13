@@ -1,7 +1,7 @@
 package br.com.apppersonal.apppersonal.controller;
 
 import br.com.apppersonal.apppersonal.model.Dto.EmailRequestDto;
-import br.com.apppersonal.apppersonal.service.EmailService;
+import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordForgotDto;
 import br.com.apppersonal.apppersonal.service.UserService;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +22,13 @@ public class EmailController {
         this.apiResponse = apiResponse;
     }
 
-    @PostMapping("/send")
-    public void sendEmail(@RequestBody EmailRequestDto emailRequest) {
-        apiResponse.request(userService.resetPasswordForgotRequest(emailRequest.getTo()));
+    @PostMapping("/send-email")
+    public void resetPasswordForgotRequest(@RequestBody EmailRequestDto emailRequest) {
+        apiResponse.request(userService.sendEmailForgotPasswordRequest(emailRequest.getTo()));
+    }
+
+    @PostMapping("/reset-password")
+    public void resetPasswordForgot(@RequestBody ResetPasswordForgotDto resetPasswordForgotDto) {
+        apiResponse.request(userService.resetPasswordForgot(resetPasswordForgotDto));
     }
 }
