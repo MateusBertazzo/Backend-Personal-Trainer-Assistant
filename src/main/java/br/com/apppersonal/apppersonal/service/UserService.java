@@ -314,6 +314,12 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    /**
+     * Método para resetar a senha do usuário no caso de ele ter esquecido a senha antiga
+     *
+     * @param   ResetPasswordForgotDto resetPasswordForgotDto (email, newPassword, confirmPassword, code)
+     * @return  ResponseEntity
+     */
     public ResponseEntity<?> resetPasswordForgot(ResetPasswordForgotDto resetPasswordForgotDto) {
         try {
 
@@ -339,10 +345,15 @@ public class UserService implements UserDetailsService {
                 throw new UnauthorizedUserException("Código de verificação inválido");
             }
 
+            // Criptografo a nova senha
             String hashedNewPassword = new BCryptPasswordEncoder().encode(resetPasswordForgotDto.getNewPassword());
 
+            // Salvo a nova senha no banco
             user.setPassword(hashedNewPassword);
+
+            // Limpo o código de verificação para ser de uso único
             user.getVerificationCode().setCode(null);
+
             verificationCodeRepository.save(user.getVerificationCode());
             userRepository.save(user);
 
