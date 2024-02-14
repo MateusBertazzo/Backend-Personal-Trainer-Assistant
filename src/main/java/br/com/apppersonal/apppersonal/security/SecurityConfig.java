@@ -38,6 +38,8 @@ public class SecurityConfig {
                             .requestMatchers(HttpMethod.POST, "/users/auth/login").permitAll()
                             .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/v3/**").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/email/send-email").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/email/reset-password").permitAll()
                             .anyRequest().authenticated()
             )
             .addFilterBefore(

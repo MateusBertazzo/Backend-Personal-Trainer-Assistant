@@ -300,7 +300,7 @@ public class UserService implements UserDetailsService {
             // Configuro o email
             emailRequest.setTo(user.getEmail());
             emailRequest.setSubject("Recuperação de senha");
-            emailRequest.setText("Clique aqui para redefinir sua senha: http://localhost:3000/email/reset-password?param=" + base64Encoded);
+            emailRequest.setText("Clique aqui para redefinir sua senha: http://localhost:3000/reset-password?param=" + base64Encoded);
 
             // Envio o email
             emailService.sendEmail(emailRequest);
@@ -333,7 +333,6 @@ public class UserService implements UserDetailsService {
      */
     public ResponseEntity<?> resetPasswordForgot(ResetPasswordForgotDto resetPasswordForgotDto) {
         try {
-
             if (resetPasswordForgotDto.getEmail() == null) throw new ParameterNullException("Email não informado");
 
             if (resetPasswordForgotDto.getNewPassword() == null) throw new ParameterNullException("Senha não informada");
@@ -366,7 +365,7 @@ public class UserService implements UserDetailsService {
             Instant now = new Date().toInstant();
 
             // comparo se o timesTamp do token foi criado a + de 10 minutos e retorna um boolean
-            Boolean isExpiredToken = createdAt.plus(Duration.ofMinutes(1)).isBefore(now);
+            Boolean isExpiredToken = createdAt.plus(Duration.ofMinutes(10)).isBefore(now);
 
             // faço a verificação se o token está expirado, caso for true é porque o token expirou
             if (isExpiredToken) {
