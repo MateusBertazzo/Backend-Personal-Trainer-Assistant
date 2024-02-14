@@ -1,18 +1,32 @@
 package br.com.apppersonal.apppersonal.service;
 
+import br.com.apppersonal.apppersonal.model.Dto.TimesTampAndEmailDto;
+import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
+import br.com.apppersonal.apppersonal.utils.Base64Code;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import lombok.SneakyThrows;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.token.KeyBasedPersistenceTokenService;
+import org.springframework.security.core.token.SecureRandomFactoryBean;
+import org.springframework.security.core.token.Token;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
 
 @Service
 public class TokenService {
+    private final Base64Code base64Code;
+
+    public TokenService(Base64Code base64Code) {
+        this.base64Code = base64Code;
+    }
+
     @Value("${api.security.token.secret}")
     private String secret;
 
@@ -51,5 +65,22 @@ public class TokenService {
                 .build()
                 .verify(token)
                 .getSubject();
+    }
+
+    @SneakyThrows
+    public String generateTokenToResetPassword(String email, String password) {
+        KeyBasedPersistenceTokenService tokenService = new KeyBasedPersistenceTokenService();
+
+        tokenService.setServerSecret(password);
+        tokenService.setServerInteger(3);
+        tokenService.setSecureRandom(new SecureRandomFactoryBean().getObject());
+
+        Token token = tokenService.allocateToken(email);
+
+        return token.getKey();
+    }
+
+    public String decodeTokenToResetPassword(String token) {
+        return base64Code.decode(token);
     }
 }

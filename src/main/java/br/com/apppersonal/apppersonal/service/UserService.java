@@ -15,6 +15,7 @@ import br.com.apppersonal.apppersonal.model.repositorys.UserRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.VerificationCodeRepository;
 import br.com.apppersonal.apppersonal.security.Role;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
+import br.com.apppersonal.apppersonal.utils.Base64Code;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +26,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Base64;
-import java.util.Objects;
-import java.util.UUID;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.util.Date;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -37,17 +39,26 @@ public class UserService implements UserDetailsService {
     private final UserMetricsRepository userMetricsRepository;
     private final VerificationCodeRepository verificationCodeRepository;
     private final EmailService emailService;
+    private final TokenService tokenService;
+    private final Base64Code base64Code;
 
     @Autowired
-    public UserService(UserRepository userRepository, ProfileRepository profileRepository,
-                       UserMetricsRepository userMetricsRepository,
-                       VerificationCodeRepository verificationCodeRepository,
-                       EmailService emailService) {
+    public UserService(
+            UserRepository userRepository,
+            ProfileRepository profileRepository,
+            UserMetricsRepository userMetricsRepository,
+            VerificationCodeRepository verificationCodeRepository,
+            EmailService emailService,
+            TokenService tokenService,
+            Base64Code base64Code
+    ) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.userMetricsRepository = userMetricsRepository;
         this.verificationCodeRepository = verificationCodeRepository;
         this.emailService = emailService;
+        this.tokenService = tokenService;
+        this.base64Code = base64Code;
     }
 
     /**
@@ -271,7 +282,7 @@ public class UserService implements UserDetailsService {
             if (user == null) throw new UserNotFoundException("Usuário não encontrado");
 
             // Gero um código de verificação
-            String generatedCode = UUID.randomUUID().toString();
+            String generatedCode = tokenService.generateTokenToResetPassword(user.getEmail(), user.getPassword());
 
             // Salvo o código de verificação no banco
             user.getVerificationCode().setCode(generatedCode);
@@ -279,10 +290,10 @@ public class UserService implements UserDetailsService {
             verificationCodeRepository.save(user.getVerificationCode());
 
             // Gero um Json com o email do usuário e o código de verificação
-            String json = "{\"email\": \"" + user.getEmail() + "\", \"uuid\": \"" + UUID.randomUUID() + "\"}";
+            String tokenJson = "{\"email\": \"" + user.getEmail() + "\", \"code\": \"" + generatedCode + "\"}";
 
             // Codifico o Json em Base64
-            String base64Encoded = Base64.getEncoder().encodeToString(json.getBytes());
+            String base64Encoded = base64Code.encode(tokenJson);
 
             EmailRequestDto emailRequest = new EmailRequestDto();
 
@@ -331,18 +342,38 @@ public class UserService implements UserDetailsService {
 
             if (resetPasswordForgotDto.getCode() == null) throw new ParameterNullException("Código de verificação não informado");
 
-            UserEntity user = userRepository.findByEmail(resetPasswordForgotDto.getEmail());
-
-            if (user == null) throw new UserNotFoundException("Usuário não encontrado");
-
             // Verifico se a nova senha é igual a confirmação de senha
             if (!resetPasswordForgotDto.getNewPassword().equals(resetPasswordForgotDto.getConfirmPassword())) {
                 throw new PasswordNotMatchException("Senhas não conferem");
             }
 
-            // verifico se o código de verificação é igual ao código salvo no banco
-            if (!user.getVerificationCode().getCode().equals(resetPasswordForgotDto.getCode())) {
+            UserEntity user = userRepository.findByEmail(resetPasswordForgotDto.getEmail());
+
+            if (user == null) throw new UserNotFoundException("Usuário não encontrado");
+
+            // pego o verificaionCode do usuário que está no banco
+            String domainToken = tokenService.decodeTokenToResetPassword(user.getVerificationCode().getCode());
+
+            String clientToken = tokenService.decodeTokenToResetPassword(resetPasswordForgotDto.getCode());
+
+            if (!domainToken.equals(clientToken)) {
                 throw new UnauthorizedUserException("Código de verificação inválido");
+            }
+            // pega o index 0 do token que é o timesTamp e converte para um date instant
+            Instant createdAt = new Date(Long.parseLong(domainToken.split(":")[0])).toInstant();
+
+            // pego o date atual
+            Instant now = new Date().toInstant();
+
+            // comparo se o timesTamp do token foi criado a + de 10 minutos e retorna um boolean
+            Boolean isExpiredToken = createdAt.plus(Duration.ofMinutes(1)).isBefore(now);
+
+            // faço a verificação se o token está expirado, caso for true é porque o token expirou
+            if (isExpiredToken) {
+                user.getVerificationCode().setCode(null);
+                verificationCodeRepository.save(user.getVerificationCode());
+
+                throw new UnauthorizedUserException("Código de verificação expirado");
             }
 
             // Criptografo a nova senha

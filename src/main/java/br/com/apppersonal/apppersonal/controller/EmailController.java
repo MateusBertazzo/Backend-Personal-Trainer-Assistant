@@ -4,6 +4,7 @@ import br.com.apppersonal.apppersonal.model.Dto.EmailRequestDto;
 import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordForgotDto;
 import br.com.apppersonal.apppersonal.service.UserService;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,6 +19,7 @@ public class EmailController {
 
     private final ApiResponse apiResponse;
 
+    @Autowired
     public EmailController(UserService userService, ApiResponse apiResponse) {
         this.userService = userService;
         this.apiResponse = apiResponse;
