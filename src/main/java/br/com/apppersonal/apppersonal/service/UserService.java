@@ -146,7 +146,8 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        // muda metodo de consulta no banco de acordo com login se for username busca por username se for email busca por email
+        // muda metodo de consulta no banco de acordo com login
+        // se for username busca por username se for email busca por email
         UserDetails user;
         if (username.contains("@")) {
             user = userRepository.findByEmail(username);
