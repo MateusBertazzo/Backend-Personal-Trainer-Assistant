@@ -10,9 +10,12 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    // busca users por email e que não estejam deletados
     @Query("select u from UserEntity u where u.email = ?1 and u.deleted = false")
     UserEntity findByEmail(String email);
 
+    // busca users por username e que não estejam deletados
+    @Query("select u from UserEntity u where u.username = ?1 and u.deleted = false")
     UserEntity findByUsername(String username);
 
     // busca users por id e que não estejam deletados
