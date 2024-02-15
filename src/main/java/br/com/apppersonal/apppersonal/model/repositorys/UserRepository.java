@@ -10,6 +10,7 @@ import java.util.List;
 
 @Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
+    @Query("select u from UserEntity u where u.email = ?1 and u.deleted = false")
     UserEntity findByEmail(String email);
 
     UserEntity findByUsername(String username);

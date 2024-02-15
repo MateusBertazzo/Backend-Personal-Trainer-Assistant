@@ -34,8 +34,8 @@ public class UserEntity extends BaseEntity implements UserDetails, GrantedAuthor
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private UserMetricsEntity userMetrics;
 
-    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private VerificationCodeEntity verificationCode;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<VerificationCodeEntity> verificationCode;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<TrainingEntity> training;

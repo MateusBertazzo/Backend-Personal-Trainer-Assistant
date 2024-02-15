@@ -15,6 +15,7 @@ import br.com.apppersonal.apppersonal.model.repositorys.UserRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.VerificationCodeRepository;
 import br.com.apppersonal.apppersonal.security.Role;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
+import br.com.apppersonal.apppersonal.utils.Base64Code;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,9 +26,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Base64;
-import java.util.Objects;
-import java.util.UUID;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.Date;
 
 @Service
 public class UserService implements UserDetailsService {
@@ -37,17 +38,26 @@ public class UserService implements UserDetailsService {
     private final UserMetricsRepository userMetricsRepository;
     private final VerificationCodeRepository verificationCodeRepository;
     private final EmailService emailService;
+    private final TokenService tokenService;
+    private final Base64Code base64Code;
 
     @Autowired
-    public UserService(UserRepository userRepository, ProfileRepository profileRepository,
-                       UserMetricsRepository userMetricsRepository,
-                       VerificationCodeRepository verificationCodeRepository,
-                       EmailService emailService) {
+    public UserService(
+            UserRepository userRepository,
+            ProfileRepository profileRepository,
+            UserMetricsRepository userMetricsRepository,
+            VerificationCodeRepository verificationCodeRepository,
+            EmailService emailService,
+            TokenService tokenService,
+            Base64Code base64Code
+    ) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
         this.userMetricsRepository = userMetricsRepository;
         this.verificationCodeRepository = verificationCodeRepository;
         this.emailService = emailService;
+        this.tokenService = tokenService;
+        this.base64Code = base64Code;
     }
 
     /**
@@ -78,15 +88,12 @@ public class UserService implements UserDetailsService {
 
             ProfileEntity profileEntity = new ProfileEntity();
             UserMetricsEntity userMetricsEntity = new UserMetricsEntity();
-            VerificationCodeEntity verificationCodeEntity = new VerificationCodeEntity();
 
-            verificationCodeEntity.setUser(saveUser);
             profileEntity.setUser(saveUser);
             userMetricsEntity.setUser(saveUser);
 
             profileRepository.save(profileEntity);
             userMetricsRepository.save(userMetricsEntity);
-            verificationCodeRepository.save(verificationCodeEntity);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -153,12 +160,10 @@ public class UserService implements UserDetailsService {
 
             UserEntity user = userRepository.findByIdAndNotDeleted(id);
 
-
             if (user == null) throw new UserNotFoundException("Usuário não encontrado");
 
             user.getProfile().setDeleted(true);
             user.getUserMetrics().setDeleted(true);
-            user.getVerificationCode().setDeleted(true);
 
             user.getTraining()
                     .forEach(training -> training.setDeleted(true));
@@ -270,26 +275,36 @@ public class UserService implements UserDetailsService {
 
             if (user == null) throw new UserNotFoundException("Usuário não encontrado");
 
+            VerificationCodeEntity verificationCodeEntity = verificationCodeRepository.findByUserId(user.getId());
+            
+            // Verificamos se já existe um código de verificação enviado.
+            // Caso exista, devemos criar um código novo de verificação.
+            if(verificationCodeEntity != null){
+                verificationCodeEntity.setDeleted(true);
+                verificationCodeRepository.save(verificationCodeEntity);
+            }
+
             // Gero um código de verificação
-            String generatedCode = UUID.randomUUID().toString();
+            String generatedCode = tokenService.generateTokenToResetPassword(user.getEmail(), user.getPassword());
 
             // Salvo o código de verificação no banco
-            user.getVerificationCode().setCode(generatedCode);
-
-            verificationCodeRepository.save(user.getVerificationCode());
+            VerificationCodeEntity newVerificationCodeEntity = new VerificationCodeEntity();
+            newVerificationCodeEntity.setUser(user);
+            newVerificationCodeEntity.setCode(generatedCode);
+            verificationCodeRepository.save(newVerificationCodeEntity);
 
             // Gero um Json com o email do usuário e o código de verificação
-            String json = "{\"email\": \"" + user.getEmail() + "\", \"uuid\": \"" + UUID.randomUUID() + "\"}";
+            String tokenJson = "{\"email\": \"" + user.getEmail() + "\", \"code\": \"" + generatedCode + "\"}";
 
             // Codifico o Json em Base64
-            String base64Encoded = Base64.getEncoder().encodeToString(json.getBytes());
+            String base64Encoded = base64Code.encode(tokenJson);
 
             EmailRequestDto emailRequest = new EmailRequestDto();
 
             // Configuro o email
             emailRequest.setTo(user.getEmail());
             emailRequest.setSubject("Recuperação de senha");
-            emailRequest.setText("Clique aqui para redefinir sua senha: http://localhost:3000/email/reset-password?param=" + base64Encoded);
+            emailRequest.setText("Clique aqui para redefinir sua senha: http://localhost:3000/reset-password?param=" + base64Encoded);
 
             // Envio o email
             emailService.sendEmail(emailRequest);
@@ -322,7 +337,6 @@ public class UserService implements UserDetailsService {
      */
     public ResponseEntity<?> resetPasswordForgot(ResetPasswordForgotDto resetPasswordForgotDto) {
         try {
-
             if (resetPasswordForgotDto.getEmail() == null) throw new ParameterNullException("Email não informado");
 
             if (resetPasswordForgotDto.getNewPassword() == null) throw new ParameterNullException("Senha não informada");
@@ -331,18 +345,45 @@ public class UserService implements UserDetailsService {
 
             if (resetPasswordForgotDto.getCode() == null) throw new ParameterNullException("Código de verificação não informado");
 
-            UserEntity user = userRepository.findByEmail(resetPasswordForgotDto.getEmail());
-
-            if (user == null) throw new UserNotFoundException("Usuário não encontrado");
-
             // Verifico se a nova senha é igual a confirmação de senha
             if (!resetPasswordForgotDto.getNewPassword().equals(resetPasswordForgotDto.getConfirmPassword())) {
                 throw new PasswordNotMatchException("Senhas não conferem");
             }
 
-            // verifico se o código de verificação é igual ao código salvo no banco
-            if (!user.getVerificationCode().getCode().equals(resetPasswordForgotDto.getCode())) {
+            UserEntity user = userRepository.findByEmail(resetPasswordForgotDto.getEmail());
+
+            if (user == null) throw new UserNotFoundException("Usuário não encontrado");
+
+            VerificationCodeEntity verificationCodeEntity = verificationCodeRepository.findByUserId(user.getId());
+            
+            if(verificationCodeEntity == null) throw new UnauthorizedUserException("Código de verificação não encontrado.");
+            
+            // pego o verificaionCode do usuário que está no banco
+            String domainToken = base64Code.decode(verificationCodeEntity.getCode());
+
+            // pego o verificaionCode do usuário que está no corpo da requisição
+            String clientToken = base64Code.decode(resetPasswordForgotDto.getCode());
+
+            // faço a verificação se o token do corpo da requisição é igual ao token do banco
+            if (!domainToken.equals(clientToken)) {
                 throw new UnauthorizedUserException("Código de verificação inválido");
+            }
+
+            // pega o index 0 do token que é o timesTamp e converte para um date instant
+            Instant createdAt = new Date(Long.parseLong(domainToken.split(":")[0])).toInstant();
+
+            // pego o date atual
+            Instant now = new Date().toInstant();
+
+            // comparo se o timesTamp do token foi criado a + de 10 minutos e retorna um boolean
+            Boolean isExpiredToken = createdAt.plus(Duration.ofMinutes(10)).isBefore(now);
+
+            // faço a verificação se o token está expirado, caso for true é porque o token expirou
+            if (isExpiredToken) {
+                verificationCodeEntity.setDeleted(true);
+                verificationCodeRepository.save(verificationCodeEntity);
+
+                throw new UnauthorizedUserException("Código de verificação expirado");
             }
 
             // Criptografo a nova senha
@@ -351,11 +392,10 @@ public class UserService implements UserDetailsService {
             // Salvo a nova senha no banco
             user.setPassword(hashedNewPassword);
 
-            // Limpo o código de verificação para ser de uso único
-            user.getVerificationCode().setCode(null);
-
-            verificationCodeRepository.save(user.getVerificationCode());
             userRepository.save(user);
+
+            verificationCodeEntity.setDeleted(true);
+            verificationCodeRepository.save(verificationCodeEntity);
 
             return ResponseEntity
                     .status(HttpStatus.OK)

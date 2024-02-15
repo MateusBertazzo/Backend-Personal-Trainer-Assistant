@@ -36,6 +36,8 @@ public class SecurityConfig {
                     authorize -> authorize
                             .requestMatchers(HttpMethod.POST, "/users/sign-up").permitAll()
                             .requestMatchers(HttpMethod.POST, "/users/auth/login").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/email/send-email").permitAll()
+                            .requestMatchers(HttpMethod.POST, "/email/reset-password").permitAll()
                             .requestMatchers(HttpMethod.GET, "/swagger-ui/**").permitAll()
                             .requestMatchers(HttpMethod.GET, "/v3/**").permitAll()
                             .anyRequest().authenticated()
