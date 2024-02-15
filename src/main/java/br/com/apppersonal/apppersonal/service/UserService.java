@@ -353,11 +353,14 @@ public class UserService implements UserDetailsService {
             // pego o verificaionCode do usuário que está no banco
             String domainToken = tokenService.decodeTokenToResetPassword(user.getVerificationCode().getCode());
 
+            // pego o verificaionCode do usuário que está no corpo da requisição
             String clientToken = tokenService.decodeTokenToResetPassword(resetPasswordForgotDto.getCode());
 
+            // faço a verificação se o token do corpo da requisição é igual ao token do banco
             if (!domainToken.equals(clientToken)) {
                 throw new UnauthorizedUserException("Código de verificação inválido");
             }
+
             // pega o index 0 do token que é o timesTamp e converte para um date instant
             Instant createdAt = new Date(Long.parseLong(domainToken.split(":")[0])).toInstant();
 
