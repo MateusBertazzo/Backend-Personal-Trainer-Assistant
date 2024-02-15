@@ -157,7 +157,7 @@ public class UserService implements UserDetailsService {
 
         // Verifica se o usuário foi encontrado
         if (user == null) {
-            throw new UnauthorizedUserException();
+            throw new UnauthorizedUserException("Usuário não encontrado");
         }
 
         return user;
