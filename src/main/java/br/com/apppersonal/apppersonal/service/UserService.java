@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
 import java.util.Date;
 
 @Service
@@ -89,15 +88,12 @@ public class UserService implements UserDetailsService {
 
             ProfileEntity profileEntity = new ProfileEntity();
             UserMetricsEntity userMetricsEntity = new UserMetricsEntity();
-            VerificationCodeEntity verificationCodeEntity = new VerificationCodeEntity();
 
-            verificationCodeEntity.setUser(saveUser);
             profileEntity.setUser(saveUser);
             userMetricsEntity.setUser(saveUser);
 
             profileRepository.save(profileEntity);
             userMetricsRepository.save(userMetricsEntity);
-            verificationCodeRepository.save(verificationCodeEntity);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
@@ -164,12 +160,10 @@ public class UserService implements UserDetailsService {
 
             UserEntity user = userRepository.findByIdAndNotDeleted(id);
 
-
             if (user == null) throw new UserNotFoundException("Usuário não encontrado");
 
             user.getProfile().setDeleted(true);
             user.getUserMetrics().setDeleted(true);
-            user.getVerificationCode().setDeleted(true);
 
             user.getTraining()
                     .forEach(training -> training.setDeleted(true));
@@ -281,13 +275,23 @@ public class UserService implements UserDetailsService {
 
             if (user == null) throw new UserNotFoundException("Usuário não encontrado");
 
+            VerificationCodeEntity verificationCodeEntity = verificationCodeRepository.findByUserId(user.getId());
+            
+            // Verificamos se já existe um código de verificação enviado.
+            // Caso exista, devemos criar um código novo de verificação.
+            if(verificationCodeEntity != null){
+                verificationCodeEntity.setDeleted(true);
+                verificationCodeRepository.save(verificationCodeEntity);
+            }
+
             // Gero um código de verificação
             String generatedCode = tokenService.generateTokenToResetPassword(user.getEmail(), user.getPassword());
 
             // Salvo o código de verificação no banco
-            user.getVerificationCode().setCode(generatedCode);
-
-            verificationCodeRepository.save(user.getVerificationCode());
+            VerificationCodeEntity newVerificationCodeEntity = new VerificationCodeEntity();
+            newVerificationCodeEntity.setUser(user);
+            newVerificationCodeEntity.setCode(generatedCode);
+            verificationCodeRepository.save(newVerificationCodeEntity);
 
             // Gero um Json com o email do usuário e o código de verificação
             String tokenJson = "{\"email\": \"" + user.getEmail() + "\", \"code\": \"" + generatedCode + "\"}";
@@ -350,11 +354,15 @@ public class UserService implements UserDetailsService {
 
             if (user == null) throw new UserNotFoundException("Usuário não encontrado");
 
+            VerificationCodeEntity verificationCodeEntity = verificationCodeRepository.findByUserId(user.getId());
+            
+            if(verificationCodeEntity == null) throw new UnauthorizedUserException("Código de verificação não encontrado.");
+            
             // pego o verificaionCode do usuário que está no banco
-            String domainToken = tokenService.decodeTokenToResetPassword(user.getVerificationCode().getCode());
+            String domainToken = base64Code.decode(verificationCodeEntity.getCode());
 
             // pego o verificaionCode do usuário que está no corpo da requisição
-            String clientToken = tokenService.decodeTokenToResetPassword(resetPasswordForgotDto.getCode());
+            String clientToken = base64Code.decode(resetPasswordForgotDto.getCode());
 
             // faço a verificação se o token do corpo da requisição é igual ao token do banco
             if (!domainToken.equals(clientToken)) {
@@ -372,8 +380,8 @@ public class UserService implements UserDetailsService {
 
             // faço a verificação se o token está expirado, caso for true é porque o token expirou
             if (isExpiredToken) {
-                user.getVerificationCode().setCode(null);
-                verificationCodeRepository.save(user.getVerificationCode());
+                verificationCodeEntity.setDeleted(true);
+                verificationCodeRepository.save(verificationCodeEntity);
 
                 throw new UnauthorizedUserException("Código de verificação expirado");
             }
@@ -384,11 +392,10 @@ public class UserService implements UserDetailsService {
             // Salvo a nova senha no banco
             user.setPassword(hashedNewPassword);
 
-            // Limpo o código de verificação para ser de uso único
-            user.getVerificationCode().setCode(null);
-
-            verificationCodeRepository.save(user.getVerificationCode());
             userRepository.save(user);
+
+            verificationCodeEntity.setDeleted(true);
+            verificationCodeRepository.save(verificationCodeEntity);
 
             return ResponseEntity
                     .status(HttpStatus.OK)

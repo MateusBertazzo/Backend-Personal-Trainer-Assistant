@@ -79,8 +79,4 @@ public class TokenService {
 
         return token.getKey();
     }
-
-    public String decodeTokenToResetPassword(String token) {
-        return base64Code.decode(token);
-    }
 }

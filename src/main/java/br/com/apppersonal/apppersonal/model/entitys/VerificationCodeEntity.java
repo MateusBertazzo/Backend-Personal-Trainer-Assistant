@@ -11,7 +11,8 @@ public class VerificationCodeEntity extends BaseEntity{
 
     @Column(length = 1000)
     private String code;
-    @OneToOne
+
+    @ManyToOne
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
