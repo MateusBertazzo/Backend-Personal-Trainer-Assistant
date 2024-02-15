@@ -104,12 +104,6 @@ public class UserController  {
         return apiResponse.request(userService.deleteUser(id));
     }
 
-//    @PostMapping("/request/forgot-password")
-//    @ResponseStatus(HttpStatus.OK)
-//    public void resetPasswordRequest(@RequestParam String email) {
-//        userService.resetPasswordRequest(email);
-//    }
-
     @PostMapping("/forgot-password/{id}")
     public ResponseEntity<ApiResponse> resetPassword(
             @RequestBody ResetPasswordDto resetPasswordDto,

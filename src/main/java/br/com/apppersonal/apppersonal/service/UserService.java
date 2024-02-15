@@ -137,12 +137,27 @@ public class UserService implements UserDetailsService {
         }
     }
 
+    /**
+     * Método para buscar o usuário pelo username
+     *
+     * @param   String username
+     * @return  UserEntity
+     */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        UserDetails user = userRepository.findByUsername(username);
 
+        // muda metodo de consulta no banco de acordo com login
+        // se for username busca por username se for email busca por email
+        UserDetails user;
+        if (username.contains("@")) {
+            user = userRepository.findByEmail(username);
+        } else {
+            user = userRepository.findByUsername(username);
+        }
+
+        // Verifica se o usuário foi encontrado
         if (user == null) {
-            throw new UnauthorizedUserException();
+            throw new UnauthorizedUserException("Usuário não encontrado");
         }
 
         return user;
