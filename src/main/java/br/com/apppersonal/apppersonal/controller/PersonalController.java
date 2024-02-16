@@ -21,18 +21,37 @@ public class PersonalController {
         this.apiResponse = apiResponse;
     }
 
+    /**
+     * Método para associar um usuário a um personal
+     *
+     * @param   Long userId
+     * @param   Long personalId
+     * @return  ResponseEntity
+     */
     @PostMapping("/{personalId}/associate-user/{userId}")
     @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> associateUserWithPersonal(@PathVariable Long userId, @PathVariable Long personalId) {
         return apiResponse.request(personalService.associateUserWithPersonal(userId, personalId));
     }
 
+    /**
+     * Método para desassociar um usuário de um personal
+     *
+     * @param   Long userId
+     * @return  ResponseEntity
+     */
     @PostMapping("/{userId}/dissociate-user")
     @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> dissociateUserFromPersonal(@PathVariable Long userId) {
         return apiResponse.request(personalService.dissociateUserFromPersonal(userId));
     }
 
+    /**
+     * Método para listar todos os alunos associados a um personal
+     *
+     * @param   Long personalId
+     * @return  ResponseEntity
+     */
     @GetMapping("/get-all/students-by-personal/{personalId}")
     @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> getAllStudentsByPersonal(@PathVariable Long personalId) {
