@@ -23,12 +23,24 @@ public class UserMetricsController {
         this.apiResponse = apiResponse;
     }
 
+    /**
+     * Método para atualizar medidas do usuário
+     *
+     * @param   UserMetricsDto userMetricsDto
+     * @return  ResponseEntity
+     */
     @PutMapping("/update")
     @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> updateUserMetrics(@RequestBody UserMetricsEntity userMetricsEntity) {
         return apiResponse.request(userMetricsService.updateUserMetrics(userMetricsEntity));
     }
 
+    /**
+     * Método para listar todas as medidas do usuário por id
+     *
+     * @param   Long userId
+     * @return  ResponseEntity
+     */
     @GetMapping("/{userId}/get")
     @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> getUserMetricsByUserId(@PathVariable Long userId) {
