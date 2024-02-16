@@ -42,12 +42,24 @@ public class UserController  {
         this.apiResponse = apiResponse;
     }
 
+    /**
+     * Método para criar um usuário
+     *
+     * @param   UserCreateDto userCreateDto
+     * @return  ResponseEntity
+     */
     @PostMapping("/sign-up")
     @ResponseStatus(HttpStatus.CREATED)
     public ResponseEntity<ApiResponse> createUser(@RequestBody UserCreateDto userCreateDto) {
         return apiResponse.request(userService.createUser(userCreateDto));
     }
 
+    /**
+     * Método para fazer login
+     *
+     * @param   UserDto userDto
+     * @return  ResponseEntity
+     */
     @PostMapping("/auth/login")
     public ResponseEntity<?> login(@RequestBody UserDto userDto) {
         try {
@@ -97,6 +109,12 @@ public class UserController  {
         }
     }
 
+    /**
+     * Método para deletar um usuário
+     *
+     * @param   Long id
+     * @return  ResponseEntity
+     */
     @DeleteMapping("/delete-user/{id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @PreAuthorize("hasRole('ADMIN')")
@@ -104,7 +122,13 @@ public class UserController  {
         return apiResponse.request(userService.deleteUser(id));
     }
 
-    @PostMapping("/forgot-password/{id}")
+    /**
+     * Método para mudar senha do usuario(em casos onde o usuario quer mudar a senha antiga)
+     *
+     * @param   ResetPasswordDto resetPasswordDto
+     * @return  ResponseEntity
+     */
+    @PostMapping("/update-password/{id}")
     public ResponseEntity<ApiResponse> resetPassword(
             @RequestBody ResetPasswordDto resetPasswordDto,
             @PathVariable Long id

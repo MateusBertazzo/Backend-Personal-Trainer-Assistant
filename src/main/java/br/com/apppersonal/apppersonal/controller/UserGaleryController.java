@@ -24,6 +24,13 @@ public class UserGaleryController {
         this.apiResponse = apiResponse;
     }
 
+    /**
+     * Método para salvar uma foto na galeria
+     *
+     * @param   Long userId
+     * @param   String urlFoto
+     * @return  ResponseEntity
+     */
     @PostMapping("/{userId}/save")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
@@ -31,6 +38,12 @@ public class UserGaleryController {
         return apiResponse.request(userGaleryService.postFoto(userId, urlFoto));
     }
 
+    /**
+     * Método para capturar uma foto por id
+     *
+     * @param   Long userId
+     * @return  ResponseEntity
+     */
     @GetMapping("/get-fotos/{userId}")
     @ResponseStatus(HttpStatus.OK)
     @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")

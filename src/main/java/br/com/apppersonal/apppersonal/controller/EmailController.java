@@ -24,12 +24,23 @@ public class EmailController {
         this.userService = userService;
         this.apiResponse = apiResponse;
     }
-
+    /**
+     * Método para enviar email de recuperação de senha
+     *
+     * @param   EmailRequestDto emailRequest
+     * @return  ResponseEntity
+     */
     @PostMapping("/send-email")
     public ResponseEntity<ApiResponse> resetPasswordForgotRequest(@RequestBody EmailRequestDto emailRequest) {
        return apiResponse.request(userService.sendEmailForgotPasswordRequest(emailRequest.getTo()));
     }
 
+    /**
+     * Método para resetar a senha do usuário
+     *
+     * @param   ResetPasswordForgotDto resetPasswordForgotDto
+     * @return  ResponseEntity
+     */
     @PostMapping("/reset-password")
     public ResponseEntity<ApiResponse> resetPasswordForgot(@RequestBody ResetPasswordForgotDto resetPasswordForgotDto) {
        return apiResponse.request(userService.resetPasswordForgot(resetPasswordForgotDto));

@@ -24,18 +24,36 @@ public class ProfileController {
         this.apiResponse = apiResponse;
     }
 
+    /**
+     * Método para atualizar um perfil
+     *
+     * @param   ProfileDto profileDto
+     * @param   Long userId
+     * @return  ResponseEntity
+     */
     @PutMapping("/{id}/update")
     @PreAuthorize("hasRole('USER') or hasRole('PERSONAL') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> updateProfile(@PathVariable Long id, @RequestBody ProfileDto profileDto) {
         return apiResponse.request(profileService.updateProfile(id, profileDto));
     }
 
+    /**
+     * Método para listar todos os perfis
+     *
+     * @return  ResponseEntity
+     */
     @GetMapping("/get-all")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> getAllProfiles() {
        return apiResponse.request(profileService.getAllProfiles());
     }
 
+    /**
+     * Método para listar um perfil por id
+     *
+     * @param   Long personalId
+     * @return  ResponseEntity
+     */
     @GetMapping("/get/{id}")
     @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> getProfileById(@PathVariable Long id) {
