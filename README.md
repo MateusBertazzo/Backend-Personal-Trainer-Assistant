@@ -1,34 +1,7 @@
 # Personal Trainer Assistant
 
 
-O Personal Trainer Assistant é uma aplicação web desenvolvida para auxiliar personal trainers no controle e acompanhamento dos treinos de seus alunos. A plataforma oferece funcionalidades como o envio de treinos diários via WhatsApp, consulta do histórico de treinos, sistema de login e cadastro, administração de treinos e uma galeria de fotos para visualizar a evolução dos alunos também possui um Perfil de cada aluno, onde o mesmo pode realizar o cadastro com suas informações.
-
-## Funcionalidades
-
-### Envio de Treinos Diários via WhatsApp:
-
-- Facilita a comunicação e o acompanhamento remoto.
-
-  
-### Histórico de Treinos:
-
-- Permite aos personal trainers acompanhar a progressão da carga e a evolução dos alunos ao longo do tempo.
-
-
-### Sistema de Login e Cadastro:
-
-- Sistema de Login e Cadastro com Autenticação e Autorização, com Jwt para verificar se um Usuario possui um Token válido, sistema de proteção a rotas criticas onde apenas Admins conseguem acessar e também sistema de encriptação de senha, para melhor segurança com os dados do usuario
-
-
-### Administração de Treinos:
-
-- Garante um controle seguro e eficiente das atividades de treino.
-
-
-### Galeria de Fotos:
-
-- Permite aos personals trainers visualizar fotos dos alunos para auxiliar na compreensão da evolução física.
-
+O Personal Trainer Assistant é uma aplicação web desenvolvida para auxiliar personal trainer no controle e acompanhamento dos treinos de seus alunos. A plataforma oferece funcionalidades como o envio de treinos diários via WhatsApp, consulta do histórico de treinos, sistema de login e cadastro com autorização e autenticação, também possui o chamado Role based acess control a fim de controler rotas criticas a apenas pessoas que tem a autorização necessaria para acessar a rota em especifico, administração de treinos e uma galeria de fotos para visualizar a evolução dos alunos também possui um Perfil de cada aluno, onde o mesmo pode realizar o cadastro com suas informações, e um perfil de personal para o profissional conseguir se auto promover, um personal consegue também adicionar um usuario como seu aluno.
 
 ## Tecnologias Utilizadas
 
