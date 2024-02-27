@@ -144,6 +144,7 @@ public class ProfileService {
         UserEntity userEntity = profileEntity.getUser();
 
         profileDTO.setId(profileEntity.getId());
+        profileDTO.setPersonalId(profileEntity.getUser().getPersonalTrainerId());
         profileDTO.setUserId(userEntity.getId());
         profileDTO.setUsername(userEntity.getUsername());
         profileDTO.setEmail(userEntity.getEmail());
