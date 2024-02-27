@@ -43,7 +43,7 @@ public class ProfileController {
      * @return  ResponseEntity
      */
     @GetMapping("/get-all")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('PERSONAL')")
     public ResponseEntity<ApiResponse> getAllProfiles() {
        return apiResponse.request(profileService.getAllProfiles());
     }

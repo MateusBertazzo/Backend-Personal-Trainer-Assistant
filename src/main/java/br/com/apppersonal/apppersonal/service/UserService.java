@@ -319,7 +319,7 @@ public class UserService implements UserDetailsService {
             // Configuro o email
             emailRequest.setTo(user.getEmail());
             emailRequest.setSubject("Recuperação de senha");
-            emailRequest.setText("Clique aqui para redefinir sua senha: http://localhost:3000/reset-password?param=" + base64Encoded);
+            emailRequest.setText("Clique aqui para redefinir sua senha: http://localhost:3000/resetPassword?param=" + base64Encoded);
 
             // Envio o email
             emailService.sendEmail(emailRequest);
