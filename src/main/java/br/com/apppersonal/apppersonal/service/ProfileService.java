@@ -7,6 +7,7 @@ import br.com.apppersonal.apppersonal.model.Dto.ProfileDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserProfileDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
+import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.ProfileRepository;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -150,6 +151,7 @@ public class ProfileService {
         profileDTO.setNumeroTelefone(profileEntity.getPhoneNumber());
         profileDTO.setObservacao(profileEntity.getObservation());
         profileDTO.setObjetivo(profileEntity.getGoal());
+        profileDTO.setUserMetrics(profileEntity.getUser().getUserMetrics());
 
         return profileDTO;
     }
