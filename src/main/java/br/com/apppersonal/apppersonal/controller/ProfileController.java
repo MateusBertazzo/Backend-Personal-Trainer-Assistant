@@ -49,7 +49,7 @@ public class ProfileController {
     }
 
     /**
-     * Método para listar um perfil por id
+     * Método para listar um perfil por id (UserProfileEntity e UserMetricsEntity)
      *
      * @param   Long personalId
      * @return  ResponseEntity
@@ -57,6 +57,6 @@ public class ProfileController {
     @GetMapping("/get/{id}")
     @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> getProfileById(@PathVariable Long id) {
-        return apiResponse.request(profileService.getProfileById(id));
+        return apiResponse.request(profileService.getProfileAndMetricsById(id));
     }
 }

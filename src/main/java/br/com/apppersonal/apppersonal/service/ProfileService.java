@@ -157,6 +157,12 @@ public class ProfileService {
         return profileDTO;
     }
 
+    /**
+     * Método para converter uma entidade de métricas do usuário (UserMetricsEntity) em um objeto de transferência de dados de métricas do usuário (UserMetricsDto).
+     *
+     * @param   UserMetricsEntity metricsEntity
+     * @return  ResponseEntity
+     */
     private UserMetricsDto convertMetricsToDTO(UserMetricsEntity metricsEntity) {
         if (metricsEntity == null) {
             throw new ParameterNullException("Métricas não informadas");
@@ -181,12 +187,12 @@ public class ProfileService {
     }
 
     /**
-     * Método para retornar o perfil do usuário pelo id
+     * Método para retornar o perfil do usuário juntamente com suas metricas(UserMetricsEntity) pelo id
      *
      * @param   Long id
      * @return  ResponseEntity
      */
-    public ResponseEntity<?> getProfileById(Long id) {
+    public ResponseEntity<?> getProfileAndMetricsById(Long id) {
         try {
             if (id == null) throw new ParameterNullException("Identificar do usuário não informado");
 
