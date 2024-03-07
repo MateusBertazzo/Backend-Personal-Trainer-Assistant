@@ -128,7 +128,7 @@ public class PersonalService {
                                             student.getUsername(),
                                             student.getEmail(),
                                             student.getRole(),
-                                            student.getProfile().getNumeroTelefone()
+                                            student.getProfile().getPhoneNumber()
                                     )
                             )
                             .collect(Collectors.toList());

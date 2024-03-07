@@ -3,37 +3,37 @@ package br.com.apppersonal.apppersonal.model.Dto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 
 public class ProfileDto {
-    private String foto;
+    private String photo;
 
-    private String numeroTelefone;
+    private String phoneNumber;
 
-    private String observacao;
+    private String observation;
 
-    private String objetivo;
+    private String goal;
 
     public ProfileDto(ProfileDto profileDto) {
-        this.foto = profileDto.getFoto();
-        this.numeroTelefone = profileDto.getNumeroTelefone();
-        this.observacao = profileDto.getObservacao();
-        this.objetivo = profileDto.getObjetivo();
+        this.photo = profileDto.getPhoto();
+        this.phoneNumber = profileDto.getPhoneNumber();
+        this.observation = profileDto.getObservation();
+        this.goal = profileDto.getGoal();
     }
 
     public ProfileDto() {}
 
     // Getters
-    public String getFoto() {
-        return foto;
+    public String getPhoto() {
+        return photo;
     }
 
-    public String getNumeroTelefone() {
-        return numeroTelefone;
+    public String getPhoneNumber() {
+        return phoneNumber;
     }
 
-    public String getObservacao() {
-        return observacao;
+    public String getObservation() {
+        return observation;
     }
 
-    public String getObjetivo() {
-        return objetivo;
+    public String getGoal() {
+        return goal;
     }
 }

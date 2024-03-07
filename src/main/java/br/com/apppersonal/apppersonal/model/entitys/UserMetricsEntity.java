@@ -16,42 +16,42 @@ public class UserMetricsEntity extends BaseEntity{
     private Double weight;
     private Double height;
     private Integer age;
-    private Double tronco;
-    private Double quadril;
-    @Column(name = "braco_esquerda")
-    private Double bracoEsquerdo;
-    @Column(name = "braco_direito")
-    private Double bracoDireito;
-    @Column(name = "perna_esquerdo")
-    private Double pernaEsquerda;
-    @Column(name = "perna_direita")
-    private Double pernaDireita;
-    @Column(name = "panturrilha_esquerda")
-    private Double panturrilhaEsquerda;
-    @Column(name = "panturrilha_direita")
-    private Double panturrilhaDireita;
+    private Double torso;
+    private Double hip;
+    @Column(name = "left_arm")
+    private Double leftArm;
+    @Column(name = "right_arm")
+    private Double rightArm;
+    @Column(name = "left_leg")
+    private Double leftLeg;
+    @Column(name = "right_leg")
+    private Double rightLeg;
+    @Column(name = "left_calf")
+    private Double leftCalf;
+    @Column(name = "right_calf")
+    private Double rightCalf;
 
     public UserMetricsEntity() {}
 
     public UserMetricsEntity(
             UserEntity user, LocalDate dataStart, Double weight,
-            Double height, Integer age, Double tronco, Double quadril,
-            Double bracoEsquerdo,
-            Double bracoDireito, Double pernaEsquerda, Double pernaDireita,
-            Double panturrilhaEsquerda, Double panturrilhaDireita)
+            Double height, Integer age, Double torso, Double hip,
+            Double leftArm,
+            Double rightArm, Double leftLeg, Double rightLeg,
+            Double leftCalf, Double rightCalf)
     {
         this.user = user;
         this.dataStart = dataStart;
         this.weight = weight;
         this.height = height;
         this.age = age;
-        this.tronco = tronco;
-        this.quadril = quadril;
-        this.bracoEsquerdo = bracoEsquerdo;
-        this.bracoDireito = bracoDireito;
-        this.pernaEsquerda = pernaEsquerda;
-        this.pernaDireita = pernaDireita;
-        this.panturrilhaEsquerda = panturrilhaEsquerda;
-        this.panturrilhaDireita = panturrilhaDireita;
+        this.torso = torso;
+        this.hip = hip;
+        this.leftArm = leftArm;
+        this.rightArm = rightArm;
+        this.leftLeg = leftLeg;
+        this.rightLeg = rightLeg;
+        this.leftCalf = leftCalf;
+        this.rightCalf = rightCalf;
     }
 }
