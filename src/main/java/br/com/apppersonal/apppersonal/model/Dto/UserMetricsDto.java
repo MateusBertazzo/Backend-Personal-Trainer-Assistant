@@ -9,32 +9,33 @@ import java.time.LocalDate;
 @Data
 public class UserMetricsDto {
     private Long id;
+
     private Long userId;
 
     private Role role;
 
     private LocalDate dataStart;
-    
+
     private Double weight;
-    
+
     private Double height;
-    
+
     private Integer age;
-    
+
     private Double torso;
-    
+
     private Double hip;
-    
+
     private Double leftArm;
-    
+
     private Double rightArm;
-    
+
     private Double leftLeg;
-    
+
     private Double rightLeg;
-    
+
     private Double leftCalf;
-    
+
     private Double rightCalf;
 
     public UserMetricsDto(Long id,
@@ -61,4 +62,6 @@ public class UserMetricsDto {
         this.leftCalf = leftCalf;
         this.rightCalf = rightCalf;
     }
+
+    public UserMetricsDto() {}
 }

@@ -4,6 +4,7 @@ import br.com.apppersonal.apppersonal.exceptions.NotFoundProfileException;
 import br.com.apppersonal.apppersonal.exceptions.ParameterNullException;
 import br.com.apppersonal.apppersonal.exceptions.UpdateProfileException;
 import br.com.apppersonal.apppersonal.model.Dto.ProfileDto;
+import br.com.apppersonal.apppersonal.model.Dto.UserMetricsDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserProfileDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
@@ -151,9 +152,32 @@ public class ProfileService {
         profileDTO.setNumeroTelefone(profileEntity.getPhoneNumber());
         profileDTO.setObservacao(profileEntity.getObservation());
         profileDTO.setObjetivo(profileEntity.getGoal());
-        profileDTO.setUserMetrics(profileEntity.getUser().getUserMetrics());
+        profileDTO.setUserMetrics(convertMetricsToDTO(userEntity.getUserMetrics()));
 
         return profileDTO;
+    }
+
+    private UserMetricsDto convertMetricsToDTO(UserMetricsEntity metricsEntity) {
+        if (metricsEntity == null) {
+            throw new ParameterNullException("Métricas não informadas");
+        }
+
+        UserMetricsDto metricsDto = new UserMetricsDto();
+
+        metricsDto.setDataStart(metricsEntity.getDataStart());
+        metricsDto.setAge(metricsEntity.getAge());
+        metricsDto.setWeight(metricsEntity.getWeight());
+        metricsDto.setHeight(metricsEntity.getHeight());
+        metricsDto.setHip(metricsEntity.getHip());
+        metricsDto.setTorso(metricsEntity.getTorso());
+        metricsDto.setLeftArm(metricsEntity.getLeftArm());
+        metricsDto.setRightArm(metricsEntity.getRightArm());
+        metricsDto.setLeftLeg(metricsEntity.getLeftLeg());
+        metricsDto.setRightLeg(metricsEntity.getRightLeg());
+        metricsDto.setLeftCalf(metricsEntity.getLeftCalf());
+        metricsDto.setRightCalf(metricsEntity.getRightCalf());
+
+        return metricsDto;
     }
 
     /**
