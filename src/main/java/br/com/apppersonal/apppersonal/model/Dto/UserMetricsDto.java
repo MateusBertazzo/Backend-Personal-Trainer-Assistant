@@ -21,30 +21,30 @@ public class UserMetricsDto {
     
     private Integer age;
     
-    private Double tronco;
+    private Double torso;
     
-    private Double quadril;
+    private Double hip;
     
-    private Double bracoEsquerdo;
+    private Double leftArm;
     
-    private Double bracoDireito;
+    private Double rightArm;
     
-    private Double pernaEsquerda;
+    private Double leftLeg;
     
-    private Double pernaDireita;
+    private Double rightLeg;
     
-    private Double panturrilhaEsquerda;
+    private Double leftCalf;
     
-    private Double panturrilhaDireita;
+    private Double rightCalf;
 
     public UserMetricsDto(Long id,
                           Long userId, Role role,
                           LocalDate dataStart,
                           Double weight, Double height,
-                          Integer age, Double tronco,
-                          Double quadril, Double bracoEsquerdo,
-                          Double bracoDireito, Double pernaEsquerda,
-                          Double pernaDireita, Double panturrilhaEsquerda, Double panturrilhaDireita) {
+                          Integer age, Double torso,
+                          Double hip, Double leftArm,
+                          Double rightArm, Double leftLeg,
+                          Double rightLeg, Double leftCalf, Double rightCalf) {
         this.id = id;
         this.userId = userId;
         this.role = role;
@@ -52,13 +52,13 @@ public class UserMetricsDto {
         this.weight = weight;
         this.height = height;
         this.age = age;
-        this.tronco = tronco;
-        this.quadril = quadril;
-        this.bracoEsquerdo = bracoEsquerdo;
-        this.bracoDireito = bracoDireito;
-        this.pernaEsquerda = pernaEsquerda;
-        this.pernaDireita = pernaDireita;
-        this.panturrilhaEsquerda = panturrilhaEsquerda;
-        this.panturrilhaDireita = panturrilhaDireita;
+        this.torso = torso;
+        this.hip = hip;
+        this.leftArm = leftArm;
+        this.rightArm = rightArm;
+        this.leftLeg = leftLeg;
+        this.rightLeg = rightLeg;
+        this.leftCalf = leftCalf;
+        this.rightCalf = rightCalf;
     }
 }

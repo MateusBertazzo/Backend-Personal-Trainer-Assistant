@@ -13,21 +13,21 @@ public class ProfileEntity extends BaseEntity{
     @JoinColumn(name = "user_id")
     private UserEntity user;
 
-    private String foto;
+    private String photo;
 
-    @Column(name = "numero_telefone", unique = true)
-    private String numeroTelefone;
+    @Column(name = "phone_number", unique = true)
+    private String phoneNumber;
 
-    private String observacao;
+    private String observation;
 
-    private String objetivo;
+    private String goal;
 
-    public ProfileEntity(UserEntity user, String foto, String numeroTelefone, String observacao, String objetivo) {
+    public ProfileEntity(UserEntity user, String photo, String phoneNumber, String observation, String goal) {
         this.user = user;
-        this.foto = foto;
-        this.numeroTelefone = numeroTelefone;
-        this.observacao = observacao;
-        this.objetivo = objetivo;
+        this.photo = photo;
+        this.phoneNumber = phoneNumber;
+        this.observation = observation;
+        this.goal = goal;
     }
 
     public ProfileEntity() {}

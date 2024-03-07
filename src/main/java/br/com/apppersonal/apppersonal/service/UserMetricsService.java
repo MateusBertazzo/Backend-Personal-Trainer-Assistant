@@ -28,14 +28,15 @@ public class UserMetricsService {
      * @param   UserMetricsEntity userMetricsEntity
      * @return  ResponseEntity
      */
-    public ResponseEntity<?> updateUserMetrics(UserMetricsEntity userMetricsEntity) {
+    public ResponseEntity<?> updateUserMetrics(UserMetricsEntity userMetricsEntity, Long userId) {
         try {
 
             if (userMetricsEntity == null ) throw new ParameterNullException("Parâmetros não informados");
 
             // busco o usuario pelo id
-            UserMetricsEntity userMetrics = userMetricsRepository.findById(userMetricsEntity.getUser().getId())
+            UserMetricsEntity userMetrics = userMetricsRepository.findById(userId)
                     .orElseThrow(NotFoundUserMetrics::new);
+
             // verifico se o usuario foi deletado
             if (userMetrics.getUser().getDeleted()) throw new NotFoundUserMetrics("Usuário deletado");
 
@@ -43,14 +44,14 @@ public class UserMetricsService {
             userMetrics.setWeight(userMetricsEntity.getWeight());
             userMetrics.setHeight(userMetricsEntity.getHeight());
             userMetrics.setAge(userMetricsEntity.getAge());
-            userMetrics.setTronco(userMetricsEntity.getTronco());
-            userMetrics.setQuadril(userMetricsEntity.getQuadril());
-            userMetrics.setBracoEsquerdo(userMetricsEntity.getBracoEsquerdo());
-            userMetrics.setBracoDireito(userMetricsEntity.getBracoDireito());
-            userMetrics.setPernaEsquerda(userMetricsEntity.getPernaEsquerda());
-            userMetrics.setPernaDireita(userMetricsEntity.getPernaDireita());
-            userMetrics.setPanturrilhaEsquerda(userMetricsEntity.getPanturrilhaEsquerda());
-            userMetrics.setPanturrilhaDireita(userMetricsEntity.getPanturrilhaDireita());
+            userMetrics.setTorso(userMetricsEntity.getTorso());
+            userMetrics.setHip(userMetricsEntity.getHip());
+            userMetrics.setLeftArm(userMetricsEntity.getLeftArm());
+            userMetrics.setRightArm(userMetricsEntity.getRightArm());
+            userMetrics.setLeftLeg(userMetricsEntity.getLeftLeg());
+            userMetrics.setRightLeg(userMetricsEntity.getRightLeg());
+            userMetrics.setLeftCalf(userMetricsEntity.getLeftCalf());
+            userMetrics.setRightCalf(userMetricsEntity.getRightCalf());
 
             userMetricsRepository.save(userMetrics);
 
@@ -105,14 +106,14 @@ public class UserMetricsService {
                     userMetrics.getWeight(),
                     userMetrics.getHeight(),
                     userMetrics.getAge(),
-                    userMetrics.getTronco(),
-                    userMetrics.getQuadril(),
-                    userMetrics.getBracoEsquerdo(),
-                    userMetrics.getBracoDireito(),
-                    userMetrics.getPernaEsquerda(),
-                    userMetrics.getPernaDireita(),
-                    userMetrics.getPanturrilhaEsquerda(),
-                    userMetrics.getPanturrilhaDireita()
+                    userMetrics.getTorso(),
+                    userMetrics.getHip(),
+                    userMetrics.getLeftArm(),
+                    userMetrics.getRightArm(),
+                    userMetrics.getLeftLeg(),
+                    userMetrics.getRightLeg(),
+                    userMetrics.getLeftCalf(),
+                    userMetrics.getRightCalf()
             );
 
             return ResponseEntity

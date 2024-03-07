@@ -62,10 +62,10 @@ public class ProfileService {
                 throw new UpdateProfileException("Usuário não autorizado a atualizar este perfil");
             }
 
-            profileEntity.setFoto(profileDto.getFoto());
-            profileEntity.setNumeroTelefone(profileDto.getNumeroTelefone());
-            profileEntity.setObservacao(profileDto.getObservacao());
-            profileEntity.setObjetivo(profileDto.getObjetivo());
+            profileEntity.setPhoto(profileDto.getPhoto());
+            profileEntity.setPhoneNumber(profileDto.getPhoneNumber());
+            profileEntity.setObservation(profileDto.getObservation());
+            profileEntity.setGoal(profileDto.getGoal());
 
             profileRepository.save(profileEntity);
 
@@ -149,10 +149,10 @@ public class ProfileService {
         profileDTO.setUsername(userEntity.getUsername());
         profileDTO.setEmail(userEntity.getEmail());
         profileDTO.setRole(userEntity.getRole().name());
-        profileDTO.setFoto(profileEntity.getFoto());
-        profileDTO.setNumeroTelefone(profileEntity.getNumeroTelefone());
-        profileDTO.setObservacao(profileEntity.getObservacao());
-        profileDTO.setObjetivo(profileEntity.getObjetivo());
+        profileDTO.setFoto(profileEntity.getPhoto());
+        profileDTO.setNumeroTelefone(profileEntity.getPhoneNumber());
+        profileDTO.setObservacao(profileEntity.getObservation());
+        profileDTO.setObjetivo(profileEntity.getGoal());
 
         return profileDTO;
     }
