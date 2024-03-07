@@ -2,7 +2,6 @@ package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.NotFoundProfileException;
 import br.com.apppersonal.apppersonal.exceptions.ParameterNullException;
-import br.com.apppersonal.apppersonal.exceptions.UnauthorizedProfileUpdateException;
 import br.com.apppersonal.apppersonal.exceptions.UpdateProfileException;
 import br.com.apppersonal.apppersonal.model.Dto.ProfileDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserProfileDto;
@@ -11,8 +10,6 @@ import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.ProfileRepository;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.transaction.Transactional;
-import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
