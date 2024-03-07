@@ -1,7 +1,5 @@
 package br.com.apppersonal.apppersonal.model.Dto;
 
-import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
-
 public class ProfileDto {
     private String photo;
 

@@ -35,4 +35,5 @@ public class ProfileEntity extends BaseEntity{
     public ProfileEntity(UserEntity userEntity) {
         this.user = userEntity;
     }
+
 }

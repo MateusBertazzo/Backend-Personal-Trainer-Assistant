@@ -2,17 +2,16 @@ package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.NotFoundProfileException;
 import br.com.apppersonal.apppersonal.exceptions.ParameterNullException;
-import br.com.apppersonal.apppersonal.exceptions.UnauthorizedProfileUpdateException;
 import br.com.apppersonal.apppersonal.exceptions.UpdateProfileException;
 import br.com.apppersonal.apppersonal.model.Dto.ProfileDto;
+import br.com.apppersonal.apppersonal.model.Dto.UserMetricsDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserProfileDto;
 import br.com.apppersonal.apppersonal.model.entitys.ProfileEntity;
 import br.com.apppersonal.apppersonal.model.entitys.UserEntity;
+import br.com.apppersonal.apppersonal.model.entitys.UserMetricsEntity;
 import br.com.apppersonal.apppersonal.model.repositorys.ProfileRepository;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import jakarta.transaction.Transactional;
-import org.apache.coyote.Response;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -153,17 +152,47 @@ public class ProfileService {
         profileDTO.setNumeroTelefone(profileEntity.getPhoneNumber());
         profileDTO.setObservacao(profileEntity.getObservation());
         profileDTO.setObjetivo(profileEntity.getGoal());
+        profileDTO.setUserMetrics(convertMetricsToDTO(userEntity.getUserMetrics()));
 
         return profileDTO;
     }
 
     /**
-     * Método para retornar o perfil do usuário pelo id
+     * Método para converter uma entidade de métricas do usuário (UserMetricsEntity) em um objeto de transferência de dados de métricas do usuário (UserMetricsDto).
+     *
+     * @param   UserMetricsEntity metricsEntity
+     * @return  ResponseEntity
+     */
+    private UserMetricsDto convertMetricsToDTO(UserMetricsEntity metricsEntity) {
+        if (metricsEntity == null) {
+            throw new ParameterNullException("Métricas não informadas");
+        }
+
+        UserMetricsDto metricsDto = new UserMetricsDto();
+
+        metricsDto.setDataStart(metricsEntity.getDataStart());
+        metricsDto.setAge(metricsEntity.getAge());
+        metricsDto.setWeight(metricsEntity.getWeight());
+        metricsDto.setHeight(metricsEntity.getHeight());
+        metricsDto.setHip(metricsEntity.getHip());
+        metricsDto.setTorso(metricsEntity.getTorso());
+        metricsDto.setLeftArm(metricsEntity.getLeftArm());
+        metricsDto.setRightArm(metricsEntity.getRightArm());
+        metricsDto.setLeftLeg(metricsEntity.getLeftLeg());
+        metricsDto.setRightLeg(metricsEntity.getRightLeg());
+        metricsDto.setLeftCalf(metricsEntity.getLeftCalf());
+        metricsDto.setRightCalf(metricsEntity.getRightCalf());
+
+        return metricsDto;
+    }
+
+    /**
+     * Método para retornar o perfil do usuário juntamente com suas metricas(UserMetricsEntity) pelo id
      *
      * @param   Long id
      * @return  ResponseEntity
      */
-    public ResponseEntity<?> getProfileById(Long id) {
+    public ResponseEntity<?> getProfileAndMetricsById(Long id) {
         try {
             if (id == null) throw new ParameterNullException("Identificar do usuário não informado");
 
