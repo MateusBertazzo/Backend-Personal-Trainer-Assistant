@@ -13,6 +13,6 @@ public interface ProfileRepository extends JpaRepository<ProfileEntity, Long> {
     @Query("select p from ProfileEntity p where p.deleted = false")
     List<ProfileEntity> findAllNotDeleted();
 
-    @Query("select p from ProfileEntity p where p.id = ?1 and p.deleted = false")
+    @Query("select p from ProfileEntity p where p.user.id = ?1 and p.deleted = false")
     ProfileEntity findByIdAndNotDeleted(Long id);
 }

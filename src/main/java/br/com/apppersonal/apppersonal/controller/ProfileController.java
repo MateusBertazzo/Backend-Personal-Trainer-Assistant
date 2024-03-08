@@ -55,7 +55,6 @@ public class ProfileController {
      * @return  ResponseEntity
      */
     @GetMapping("/get/{id}")
-    @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> getProfileById(@PathVariable Long id) {
         return apiResponse.request(profileService.getProfileAndMetricsById(id));
     }
