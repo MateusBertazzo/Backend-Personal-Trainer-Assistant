@@ -30,7 +30,6 @@ public class UserMetricsController {
      * @return  ResponseEntity
      */
     @PutMapping("/update/{userId}")
-    @PreAuthorize("hasRole('PERSONAL') or hasRole('ADMIN')")
     public ResponseEntity<ApiResponse> updateUserMetrics(@RequestBody UserMetricsEntity userMetricsEntity,@PathVariable Long userId) {
         return apiResponse.request(userMetricsService.updateUserMetrics(userMetricsEntity, userId));
     }
