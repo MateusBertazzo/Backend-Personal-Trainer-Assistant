@@ -1,7 +1,6 @@
 package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.*;
-import br.com.apppersonal.apppersonal.model.Dto.EmailRequestDto;
 import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordDto;
 import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordForgotDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserCreateDto;
@@ -38,7 +37,6 @@ public class UserService implements UserDetailsService {
     private final ProfileRepository profileRepository;
     private final UserMetricsRepository userMetricsRepository;
     private final VerificationCodeRepository verificationCodeRepository;
-    private final EmailService emailService;
     private final TokenService tokenService;
     private final Base64Code base64Code;
 
@@ -59,7 +57,6 @@ public class UserService implements UserDetailsService {
         this.profileRepository = profileRepository;
         this.userMetricsRepository = userMetricsRepository;
         this.verificationCodeRepository = verificationCodeRepository;
-        this.emailService = emailService;
         this.tokenService = tokenService;
         this.base64Code = base64Code;
         this.userProducer = userProducer;
@@ -318,8 +315,6 @@ public class UserService implements UserDetailsService {
 
             // Codifico o Json em Base64
             String base64Encoded = base64Code.encode(tokenJson);
-
-//            EmailRequestDto emailRequest = new EmailRequestDto();
 
             // Configuro o email
 //            emailRequest.setTo(user.getEmail());
