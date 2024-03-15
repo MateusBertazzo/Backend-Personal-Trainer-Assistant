@@ -13,3 +13,5 @@ O Personal Trainer Assistant é uma aplicação web desenvolvida para auxiliar o
 - Bcrypt: Utilizado para criptografar senhas e garantir a segurança dos usuários.
 - JWT (JSON Web Token): Para autenticação e autorização seguras em APIs REST.
 - API Rest: Comunicação eficiente entre o frontend e o backend.
+- Maven
+- RabbitMQ
