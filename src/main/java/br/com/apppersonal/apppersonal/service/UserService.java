@@ -13,6 +13,7 @@ import br.com.apppersonal.apppersonal.model.repositorys.ProfileRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.UserMetricsRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.UserRepository;
 import br.com.apppersonal.apppersonal.model.repositorys.VerificationCodeRepository;
+import br.com.apppersonal.apppersonal.producers.UserProducer;
 import br.com.apppersonal.apppersonal.security.Role;
 import br.com.apppersonal.apppersonal.utils.ApiResponse;
 import br.com.apppersonal.apppersonal.utils.Base64Code;
@@ -41,6 +42,8 @@ public class UserService implements UserDetailsService {
     private final TokenService tokenService;
     private final Base64Code base64Code;
 
+    private final UserProducer userProducer;
+
     @Autowired
     public UserService(
             UserRepository userRepository,
@@ -49,7 +52,8 @@ public class UserService implements UserDetailsService {
             VerificationCodeRepository verificationCodeRepository,
             EmailService emailService,
             TokenService tokenService,
-            Base64Code base64Code
+            Base64Code base64Code,
+            UserProducer userProducer
     ) {
         this.userRepository = userRepository;
         this.profileRepository = profileRepository;
@@ -58,6 +62,7 @@ public class UserService implements UserDetailsService {
         this.emailService = emailService;
         this.tokenService = tokenService;
         this.base64Code = base64Code;
+        this.userProducer = userProducer;
     }
 
     /**
@@ -314,15 +319,19 @@ public class UserService implements UserDetailsService {
             // Codifico o Json em Base64
             String base64Encoded = base64Code.encode(tokenJson);
 
-            EmailRequestDto emailRequest = new EmailRequestDto();
+//            EmailRequestDto emailRequest = new EmailRequestDto();
 
             // Configuro o email
-            emailRequest.setTo(user.getEmail());
-            emailRequest.setSubject("Recuperação de senha");
-            emailRequest.setText("Clique aqui para redefinir sua senha: http://localhost:3000/resetPassword?param=" + base64Encoded);
+//            emailRequest.setTo(user.getEmail());
+//            emailRequest.setSubject("Recuperação de senha");
+//            emailRequest.setText("Clique aqui para redefinir sua senha: http://localhost:3000/resetPassword?param=" + base64Encoded);
 
-            // Envio o email
-            emailService.sendEmail(emailRequest);
+//            // Envio o email
+//            emailService.sendEmail(emailRequest);
+
+            var text = "Clique aqui para redefinir sua senha: http://localhost:3000/resetPassword?param=" + base64Encoded;
+
+            userProducer.publishMessageEmail(user, text);
 
             return ResponseEntity
                     .status(HttpStatus.OK)
