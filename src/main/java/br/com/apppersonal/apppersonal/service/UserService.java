@@ -48,7 +48,6 @@ public class UserService implements UserDetailsService {
             ProfileRepository profileRepository,
             UserMetricsRepository userMetricsRepository,
             VerificationCodeRepository verificationCodeRepository,
-            EmailService emailService,
             TokenService tokenService,
             Base64Code base64Code,
             UserProducer userProducer
@@ -315,14 +314,6 @@ public class UserService implements UserDetailsService {
 
             // Codifico o Json em Base64
             String base64Encoded = base64Code.encode(tokenJson);
-
-            // Configuro o email
-//            emailRequest.setTo(user.getEmail());
-//            emailRequest.setSubject("Recuperação de senha");
-//            emailRequest.setText("Clique aqui para redefinir sua senha: http://localhost:3000/resetPassword?param=" + base64Encoded);
-
-//            // Envio o email
-//            emailService.sendEmail(emailRequest);
 
             // Monta a mensagem que será enviada para o usuário
             var text = "Clique aqui para redefinir sua senha: http://localhost:3000/resetPassword?param=" + base64Encoded;
