@@ -329,8 +329,10 @@ public class UserService implements UserDetailsService {
 //            // Envio o email
 //            emailService.sendEmail(emailRequest);
 
+            // Monta a mensagem que será enviada para o usuário
             var text = "Clique aqui para redefinir sua senha: http://localhost:3000/resetPassword?param=" + base64Encoded;
 
+            // Envia a mensagem para a fila do RabbitMQ para ser consumida pelo serviço de email
             userProducer.publishMessageEmail(user, text);
 
             return ResponseEntity
