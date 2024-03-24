@@ -7,7 +7,7 @@ public class EmailRequestDto {
 
     private Long userId;
     private String to;
-    private String subject;
+    private String subject = "Redefinição de senha";
     private String text;
 
     public EmailRequestDto(String to, String subject, String text, Long userId) {

@@ -1,6 +1,7 @@
 package br.com.apppersonal.apppersonal.service;
 
 import br.com.apppersonal.apppersonal.exceptions.*;
+import br.com.apppersonal.apppersonal.model.Dto.EmailRequestDto;
 import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordDto;
 import br.com.apppersonal.apppersonal.model.Dto.ResetPasswordForgotDto;
 import br.com.apppersonal.apppersonal.model.Dto.UserCreateDto;
@@ -318,8 +319,15 @@ public class UserService implements UserDetailsService {
             // Monta a mensagem que será enviada para o usuário
             String text = "Clique aqui para redefinir sua senha: http://localhost:3000/resetPassword?param=" + base64Encoded;
 
+            EmailRequestDto emailRequestDto = new EmailRequestDto();
+
+            emailRequestDto.setUserId(user.getId());
+            emailRequestDto.setTo(user.getEmail());
+            emailRequestDto.setSubject("Redefinição de senha");
+            emailRequestDto.setText(text);
+
             // Envia a mensagem para a fila do RabbitMQ para ser consumida pelo serviço de email
-            userProducer.publishMessageEmail(user, text);
+            userProducer.publishMessageEmail(emailRequestDto);
 
             return ResponseEntity
                     .status(HttpStatus.OK)

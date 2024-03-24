@@ -17,15 +17,16 @@ public class UserProducer {
     @Value("${broker.queue.email.name}")
     private String routingKey;
 
-    public void publishMessageEmail(UserEntity userEntity, String text) {
+    public void publishMessageEmail(EmailRequestDto emailRequestDto) {
+
         // logica para enviar dados ao email service atraves do rabbitmq
-        var emailRequestDto = new EmailRequestDto();
+        try {
 
-        emailRequestDto.setUserId(userEntity.getId());
-        emailRequestDto.setTo(userEntity.getEmail());
-        emailRequestDto.setSubject("Redefinição de senha");
-        emailRequestDto.setText(text);
+            rabbitTemplate.convertAndSend("", routingKey, emailRequestDto);
 
-        rabbitTemplate.convertAndSend("", routingKey, emailRequestDto);
+        } catch (Exception e){
+
+            throw new RuntimeException("Erro ao enviar email");
+        }
     }
 }
