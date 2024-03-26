@@ -21,11 +21,8 @@ public class UserProducer {
 
         // logica para enviar dados ao email service atraves do rabbitmq
         try {
-
             rabbitTemplate.convertAndSend("", routingKey, emailRequestDto);
-
         } catch (Exception e){
-
             throw new RuntimeException("Erro ao enviar email");
         }
     }
