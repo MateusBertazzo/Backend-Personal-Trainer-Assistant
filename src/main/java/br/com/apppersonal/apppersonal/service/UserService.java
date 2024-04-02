@@ -38,9 +38,9 @@ public class UserService implements UserDetailsService {
     private final UserMetricsRepository userMetricsRepository;
     private final VerificationCodeRepository verificationCodeRepository;
     private final TokenService tokenService;
-    private final Base64Code base64Code;
-
     private final UserProducer userProducer;
+
+    private final Base64Code base64Code = new Base64Code();
 
     @Autowired
     public UserService(
@@ -49,7 +49,6 @@ public class UserService implements UserDetailsService {
             UserMetricsRepository userMetricsRepository,
             VerificationCodeRepository verificationCodeRepository,
             TokenService tokenService,
-            Base64Code base64Code,
             UserProducer userProducer
     ) {
         this.userRepository = userRepository;
@@ -57,7 +56,6 @@ public class UserService implements UserDetailsService {
         this.userMetricsRepository = userMetricsRepository;
         this.verificationCodeRepository = verificationCodeRepository;
         this.tokenService = tokenService;
-        this.base64Code = base64Code;
         this.userProducer = userProducer;
     }
 

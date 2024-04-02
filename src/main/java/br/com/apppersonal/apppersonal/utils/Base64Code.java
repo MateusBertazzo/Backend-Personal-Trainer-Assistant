@@ -1,11 +1,12 @@
 package br.com.apppersonal.apppersonal.utils;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Base64;
 
-@Service
 public class Base64Code {
+
     public String encode(String value) {
         return Base64.getEncoder().encodeToString(value.getBytes());
     }
