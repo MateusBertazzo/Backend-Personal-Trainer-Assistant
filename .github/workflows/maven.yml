@@ -9,7 +9,7 @@ on:
       - main
 
 jobs:
-  test:
+  test ci/cd com Docker Compose:
     runs-on: ubuntu-latest
 
     steps:
