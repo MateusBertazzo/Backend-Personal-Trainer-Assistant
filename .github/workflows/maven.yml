@@ -1,1 +1,30 @@
+name: CI/CD
 
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Configurar Maven
+        uses: actions/setup-java@v2
+        with:
+          java-version: 20
+
+      - name: Cache de dependências do Maven
+        uses: actions/cache@v2
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
+
+      - name: Testes com Maven
+        run: mvn test
