@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI/CD Spring Boot com Docker Compose
 
 on:
   push:
@@ -15,17 +15,29 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Configurar Maven
+      - name: Configurar JDK
         uses: actions/setup-java@v2
         with:
           java-version: 20
           distribution: temurin
 
-      - name: Cache de dependências do Maven
+      - name: Cache de Dependências do Maven
         uses: actions/cache@v2
         with:
           path: ~/.m2/repository
           key: ${{ runner.os }}-maven-${{ hashFiles('**/pom.xml') }}
 
-      - name: Testes com Maven
+      - name: Iniciar ambiente Docker Compose
+        run: docker-compose up -d
+
+      - name: Aguardar inicialização do MySQL (ajuste o tempo se necessário)
+        run: sleep 30
+
+      - name: Instalar Dependências
+        run: mvn clean install -DskipTests
+
+      - name: Executar Testes
         run: mvn test
+
+      - name: Parar ambiente Docker Compose
+        run: docker-compose down

@@ -1,9 +1,12 @@
+version: "3.8"
+
 services:
   mysql:
     image: mysql:8.0.32
     restart: always
-    ports:
-      - 3306:3306
     environment:
-      MYSQL_ROOT_USER: root
+      MYSQL_ROOT_USERNAME: root
       MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: db_personal
+    ports:
+      - "3306:3306" 
