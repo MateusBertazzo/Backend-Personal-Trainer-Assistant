@@ -13,10 +13,12 @@ spring.jpa.hibernate.ddl-auto=update
 
 # Configurações de segurança
 security.jwt.secret=segredo_super_secreto
-security.jwt.expiration-time=86400000 # Tempo de expiração do token em milissegundos (24 horas)
 api.security.token.secret="secret"
 
 # Outras configurações
 debug=true
-log-level=debug
 spring.jpa.show-sql=true
+
+# Configuracoes do RabbitMQ
+spring.rabbitmq.addresses=servidor_rabbitmq
+broker.queue.email.name=nome_fila
