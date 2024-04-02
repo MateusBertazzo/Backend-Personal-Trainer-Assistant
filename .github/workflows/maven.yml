@@ -39,11 +39,5 @@ jobs:
       - name: Executar Testes
         run: mvn test
 
-      - name: Upload de Relatórios de Teste
-        uses: actions/upload-artifact@v3
-        with:
-          name: relatórios-de-teste
-          path: target/surefire-reports/
-
       - name: Parar ambiente Docker Compose
         run: docker-compose down
