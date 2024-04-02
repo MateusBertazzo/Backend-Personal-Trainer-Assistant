@@ -6,6 +6,7 @@ import br.com.apppersonal.apppersonal.utils.Base64Code;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import lombok.SneakyThrows;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.token.KeyBasedPersistenceTokenService;
 import org.springframework.security.core.token.SecureRandomFactoryBean;
@@ -23,6 +24,7 @@ import java.util.Map;
 public class TokenService {
     private final Base64Code base64Code;
 
+    @Autowired
     public TokenService(Base64Code base64Code) {
         this.base64Code = base64Code;
     }
