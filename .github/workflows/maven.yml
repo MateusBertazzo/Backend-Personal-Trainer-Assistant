@@ -19,6 +19,7 @@ jobs:
         uses: actions/setup-java@v2
         with:
           java-version: 20
+          distribution: temurin
 
       - name: Cache de dependências do Maven
         uses: actions/cache@v2
