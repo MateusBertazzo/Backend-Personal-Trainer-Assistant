@@ -6,11 +6,16 @@ on:
       - main
 
 jobs:
-  test-ci-cd-com-docker-compose:
+  testing-application:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Generate sha
+        id: generate_sha
+        run: |
+          SHA=$(echo $GITHUB_SHA | head -c7)
 
       - name: Configurar JDK
         uses: actions/setup-java@v2
