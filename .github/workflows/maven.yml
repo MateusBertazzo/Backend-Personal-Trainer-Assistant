@@ -12,11 +12,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Generate sha
-        id: generate_sha
-        run: |
-          SHA=$(echo $GITHUB_SHA | head -c7)
-          echo "sha=$SHA" >> $GITHUB_OUTPUT
+      - name: Configurar JDK
+        uses: actions/setup-java@v2
+        with:
+          java-version: 20
+          distribution: temurin
 
       - name: Cache de Dependências do Maven
         uses: actions/cache@v2
@@ -26,9 +26,6 @@ jobs:
 
       - name: Iniciar ambiente Docker Compose
         run: docker-compose up -d
-
-      - name: Aguardar inicialização do MySQL
-        run: sleep 30
 
       - name: Instalar Dependências
         run: mvn clean install -DskipTests
