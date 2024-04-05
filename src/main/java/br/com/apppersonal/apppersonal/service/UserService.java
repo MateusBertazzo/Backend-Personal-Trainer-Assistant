@@ -354,13 +354,8 @@ public class UserService implements UserDetailsService {
      */
     public ResponseEntity<?> resetPasswordForgot(ResetPasswordForgotDto resetPasswordForgotDto) {
         try {
-            if (resetPasswordForgotDto.getEmail() == null) throw new ParameterNullException("Email não informado");
 
-            if (resetPasswordForgotDto.getNewPassword() == null) throw new ParameterNullException("Senha não informada");
-
-            if (resetPasswordForgotDto.getConfirmPassword() == null) throw new ParameterNullException("Confirmação de senha não informada");
-
-            if (resetPasswordForgotDto.getCode() == null) throw new ParameterNullException("Código de verificação não informado");
+            if (resetPasswordForgotDto == null) throw new ParameterNullException("Parâmetros não informados");
 
             // Verifico se a nova senha é igual a confirmação de senha
             if (!resetPasswordForgotDto.getNewPassword().equals(resetPasswordForgotDto.getConfirmPassword())) {
