@@ -393,7 +393,7 @@ public class UserService implements UserDetailsService {
             Instant now = new Date().toInstant();
 
             // comparo se o timesTamp do token foi criado a + de 10 minutos e retorna um boolean
-            Boolean isExpiredToken = createdAt.plus(Duration.ofMinutes(10)).isBefore(now);
+            boolean isExpiredToken = createdAt.plus(Duration.ofMinutes(10)).isBefore(now);
 
             // faço a verificação se o token está expirado, caso for true é porque o token expirou
             if (isExpiredToken) {
